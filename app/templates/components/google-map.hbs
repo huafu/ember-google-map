@@ -1,0 +1,12 @@
+<div class="map-canvas"></div>
+<div class="markers">
+  <ul>
+    {{!
+    FIXME: itemViewClass whould be bound to the markerViewClass of the componenet
+    but for some reason it is failing :-(
+     }}
+    {{#each markers itemController=markerController itemView="google-map/views/marker"}}
+      <li>{{title}} @ {{lat}},{{lng}}</li>
+    {{/each}}
+  </ul>
+</div>
