@@ -1,0 +1,7 @@
+html, body {
+  margin: 20px;
+}
+div.map-canvas {
+  width: 100%;
+  height: 500px;
+}
