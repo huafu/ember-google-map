@@ -82,21 +82,30 @@ import Ember from 'ember';
 import {MAP_TYPES} from 'google-map/components/google-map';
 
 export default Ember.Controller.extend({
-  lat:     0,
-  lng:     0,
-  zoom:    5,
-  type:    'road',
-  mapTypes: MAP_TYPES,
-  markers: [
-    {title: 'one', lat: 5, lng: 5},
-    {title: 'two', lat: 5, lng: 0}
+  lat:         0,
+  lng:         0,
+  zoom:        5,
+  type:        'road',
+  mapTypes:    MAP_TYPES,
+  markers:     [
+    {title: 'one', lat: 5, lng: 5, description: 'hello 1'},
+    {title: 'two', lat: 5, lng: 0, hasInfoWindow: false},
+    {title: 'three', lat: 0, lng: 5, infoWindowTemplateName: 'marker-info-window', helloWorld: 'Hello World!'}
+  ],
+  infoWindows: [
+    {title: 'some info window', lat: -5, lng: -5, description: 'hello everybody!'}
   ]
 });
+
 ```
 
 ```handlebars
 {{! app/templates/application.hbs }}
-{{google-map lat=lat lng=lng type=type zoom=zoom markers=markers}}
+
+{{google-map lat=lat lng=lng
+    type=type
+    zoom=zoom markers=markers
+    infoWindows=infoWindows}}
 
 <div>
   <label>Lat: {{input value=lat}}</label>
@@ -105,4 +114,5 @@ export default Ember.Controller.extend({
   <label>Type: {{view Ember.Select content=mapTypes
   optionLabelPath='content.label' optionValuePath='content.id' value=type}}</label>
 </div>
+
 ```
