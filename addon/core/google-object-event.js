@@ -12,6 +12,7 @@ var GoogleObjectEvent = function (name, config) {
 GoogleObjectEvent.prototype.callHandler = function (emberObject) {
   var method, target = this._cfg.target || emberObject;
   if (this._cfg.action) {
+    target.set('lastGoogleEventName', this._cfg.name);
     return target.send.apply(target, [this._cfg.action].concat([].slice.call(arguments, 1)));
   }
   method = this._cfg.method;
@@ -19,7 +20,7 @@ GoogleObjectEvent.prototype.callHandler = function (emberObject) {
     method = target[method];
   }
   if (method) {
-    return method.apply(target, [].slice.call(arguments));
+    return method.apply(target, [].slice.call(arguments).concat([this._cfg.name]));
   }
   else {
     // silently warn that the method does not exists and return
