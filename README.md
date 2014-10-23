@@ -8,7 +8,9 @@ An Ember addon to include a google-map Ember friendly component in your apps.
 
 Here is what is working for now:
     
-`{{google-map lat=centerLat lng=centerLng zoom=zoom type=type markers=markersArray}}`
+```handlebars
+{{google-map lat=centerLat lng=centerLng zoom=zoom type=type markers=markersArray}}
+```
 
 * `lat` and `lng`: bindings or static coordinates of the center
 * `zoom`: binding to the current zoom
@@ -51,7 +53,7 @@ Here is what is working for now:
 ## Using
 
 ```js
-// app/controllers/some-controller.js
+// app/controllers/application.js
 import Ember from 'ember';
 import {MAP_TYPES} from 'google-map/components/google-map';
 
@@ -69,6 +71,7 @@ export default Ember.Controller.extend({
 ```
 
 ```handlebars
+// app/templates/application.hbs
 {{google-map lat=lat lng=lng type=type zoom=zoom markers=markers}}
 
 <div>
