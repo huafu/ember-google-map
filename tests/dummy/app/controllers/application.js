@@ -17,11 +17,17 @@ export default Ember.Controller.extend({
   ],
 
   actions: {
-    addMarker:    function () {
+    addMarker:        function () {
       this.get('markers').addObject({title: 'new', lat: 0, lng: 0, isDraggable: true});
     },
-    removeMarker: function (marker) {
+    removeMarker:     function (marker) {
       this.get('markers').removeObject(marker);
+    },
+    addInfoWindow:    function () {
+      this.get('infoWindows').addObject({title: 'new iw', description: 'hello', lat: -5, lng: 0});
+    },
+    removeInfoWindow: function (marker) {
+      this.get('infoWindows').removeObject(marker);
     }
   }
 });

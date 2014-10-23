@@ -23,3 +23,18 @@
   {{/each}}
   <button {{action 'addMarker'}}>add</button>
 </ul>
+
+<h3>Info windows</h3>
+<ul>
+  {{#each infoWindows}}
+    <li>
+      <label>Title: {{input value=title}}</label>
+      <label>Description: {{input value=description}}</label>
+      <label>Lat: {{input value=lat}}</label>
+      <label>Lng: {{input value=lng}}</label>
+      <label>Is visible: {{input type='checkbox' checked=isVisible}}</label>
+      <button {{action 'removeInfoWindow' this}}>remove</button>
+    </li>
+  {{/each}}
+  <button {{action 'addInfoWindow'}}>add</button>
+</ul>

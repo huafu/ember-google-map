@@ -34,9 +34,9 @@ var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
   }.property('controller.googleEvents'),
 
   // aliased from controller so that if they are not defined they use the values from the controller
-  zIndex:           Ember.computed.oneWay('controller.zIndex'),
-  lat:              Ember.computed.oneWay('controller.lat'),
-  lng:              Ember.computed.oneWay('controller.lng'),
+  zIndex:           Ember.computed.alias('controller.zIndex'),
+  lat:              Ember.computed.alias('controller.lat'),
+  lng:              Ember.computed.alias('controller.lng'),
   anchor:           Ember.computed.oneWay('parentView.infoWindowAnchor'),
 
   visible: function (key, value) {
@@ -46,6 +46,7 @@ var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
       }
       else {
         value = this.getWithDefault('controller.isVisible', true);
+        this.set('controller.isVisible', value);
       }
     }
     else {
