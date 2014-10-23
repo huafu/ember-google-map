@@ -76,7 +76,44 @@ Here is what is working for now:
 
 ## Using
 
-Here is a very basic example (corresponding to what is on the [GitHub pages](http://huafu.github.io/ember-google-map/) of this repository):
+### Here is a very basic example:
+
+```js
+// app/controllers/application.js
+
+import Ember from 'ember';
+import {MAP_TYPES} from 'google-map/components/google-map';
+
+export default Ember.Controller.extend({
+  lat:         0,
+  lng:         0,
+  zoom:        5,
+  type:        'road',
+  mapTypes:    MAP_TYPES,
+});
+```
+
+```handlebars
+{{! app/templates/application.hbs }}
+
+{{google-map lat=lat lng=lng type=type zoom=zoom}}
+
+<h3>Map settings</h3>
+<div>
+  <label>Lat: {{input value=lat}}</label>
+  <label>Lng: {{input value=lng}}</label>
+  <label>Zoom: {{input value=zoom}}</label>
+  <label>Type: {{view Ember.Select content=mapTypes
+    optionLabelPath='content.label' optionValuePath='content.id' value=type}}
+  </label>
+</div>
+
+```
+
+
+---
+
+### Here is anotehr example, corresponding to what is on the [GitHub pages](http://huafu.github.io/ember-google-map/) of this repository:
 
 ```js
 // app/controllers/application.js
