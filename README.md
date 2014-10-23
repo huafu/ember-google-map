@@ -71,7 +71,7 @@ export default Ember.Controller.extend({
 ```
 
 ```handlebars
-// app/templates/application.hbs
+{{! app/templates/application.hbs }}
 {{google-map lat=lat lng=lng type=type zoom=zoom markers=markers}}
 
 <div>
