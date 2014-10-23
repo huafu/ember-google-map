@@ -70,7 +70,7 @@ var MarkerView = Ember.View.extend(GoogleObjectMixin, {
   initGoogleMarker: function () {
     var opt;
     // force the creation of the marker
-    if (helpers.hasGoogleLib() && !this.cacheFor('googleObject')) {
+    if (helpers.hasGoogleLib() && !this.get('googleObject')) {
       opt = this.serializeGoogleOptions();
       Ember.debug('[google-maps] creating new marker: %@'.fmt(opt));
       this.set('googleObject', new google.maps.Marker(opt));
@@ -79,12 +79,13 @@ var MarkerView = Ember.View.extend(GoogleObjectMixin, {
   }.on('didInsertElement'),
 
   destroyGoogleMarker: function () {
-    var marker = this.cacheFor('googleObject');
+    var marker = this.get('googleObject');
     if (marker) {
       // detach from the map
       marker.setMap(null);
+      this.set('googleObject', null);
     }
-  }.on('destroy'),
+  }.on('willDestroyElement'),
 
   actions: {
     handleMarkerEvent: function () {

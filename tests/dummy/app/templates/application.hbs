@@ -1,5 +1,6 @@
 {{google-map lat=lat lng=lng type=type zoom=zoom markers=markers infoWindows=infoWindows}}
 
+<h3>Map settings</h3>
 <div>
   <label>Lat: {{input value=lat}}</label>
   <label>Lng: {{input value=lng}}</label>
@@ -7,3 +8,18 @@
   <label>Type: {{view Ember.Select content=mapTypes
   optionLabelPath='content.label' optionValuePath='content.id' value=type}}</label>
 </div>
+<h3>Markers</h3>
+<ul>
+  {{#each markers}}
+    <li>
+      <label>Title: {{input value=title}}</label>
+      <label>Lat: {{input value=lat}}</label>
+      <label>Lng: {{input value=lng}}</label>
+      <label>Is visible: {{input type='checkbox' checked=isVisible}}</label>
+      <label>Is draggable: {{input type='checkbox' checked=isDraggable}}</label>
+      <label>Description: {{input value=description}}</label>
+      <button {{action 'removeMarker' this}}>remove</button>
+    </li>
+  {{/each}}
+  <button {{action 'addMarker'}}>add</button>
+</ul>
