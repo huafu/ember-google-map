@@ -4,7 +4,7 @@ import helpers from '../core/helpers';
 import GoogleObjectMixin from '../mixins/google-object';
 
 var MarkerView = Ember.View.extend(GoogleObjectMixin, {
-  googleProperties: {
+  googleProperties:       {
     isClickable: { name: 'clickable', event: 'clickable_changed' },
     isVisible:   { name: 'visible', event: 'visible_changed' },
     isDraggable: { name: 'draggable', event: 'draggable_changed' },
@@ -22,7 +22,7 @@ var MarkerView = Ember.View.extend(GoogleObjectMixin, {
   },
 
   // merge from whatever defined from the controller so we can handle click to show infowindow or such
-  googleEvents:     function (key, value) {
+  googleEvents:           function (key, value) {
     if (arguments.length < 2) {
       value = Ember.merge({
         click:      'handleMarkerEvent',
@@ -40,18 +40,25 @@ var MarkerView = Ember.View.extend(GoogleObjectMixin, {
   }.property('controller.googleEvents'),
 
   // aliased from controller so that if they are not defined they use the values from the controller
-  title:            Ember.computed.oneWay('controller.title'),
-  opacity:          Ember.computed.oneWay('controller.opacity'),
-  zIndex:           Ember.computed.oneWay('controller.zIndex'),
-  isVisible:        Ember.computed.oneWay('controller.isVisible'),
-  isDraggable:      Ember.computed.oneWay('controller.isDraggable'),
-  isClickable:      Ember.computed.oneWay('controller.isClickable'),
-  icon:             Ember.computed.oneWay('controller.icon'),
-  lat:              Ember.computed.oneWay('controller.lat'),
-  lng:              Ember.computed.oneWay('controller.lng'),
+  title:                  Ember.computed.alias('controller.title'),
+  opacity:                Ember.computed.alias('controller.opacity'),
+  zIndex:                 Ember.computed.alias('controller.zIndex'),
+  isVisible:              Ember.computed.alias('controller.isVisible'),
+  isDraggable:            Ember.computed.alias('controller.isDraggable'),
+  isClickable:            Ember.computed.alias('controller.isClickable'),
+  icon:                   Ember.computed.alias('controller.icon'),
+  lat:                    Ember.computed.alias('controller.lat'),
+  lng:                    Ember.computed.alias('controller.lng'),
+
+  // get the info window template name from the component or own controller
+  infoWindowTemplateName: function () {
+    return this.get('controller.infoWindowTemplateName') || this.get('parentView.markerInfoWindowTemplateName');
+  }.property('controller.infoWindowTemplateName', 'parentView.markerInfoWindowTemplateName').readOnly(),
+  infoWindowAnchor:       Ember.computed.oneWay('googleObject'),
+  isInfoWindowVisible:    Ember.computed.alias('controller.isInfoWindowVisible'),
 
   // bound to the google map object of the component
-  map:              Ember.computed.oneWay('parentView.googleObject'),
+  map:                    Ember.computed.oneWay('parentView.map'),
 
   initGoogleMarker: function () {
     var opt;
@@ -76,7 +83,12 @@ var MarkerView = Ember.View.extend(GoogleObjectMixin, {
     handleMarkerEvent: function () {
       var args = [].slice.call(arguments);
       var event = this.get('lastGoogleEventName');
-      Ember.warn('[google-map] unhandled marker event %@ with arguments %@'.fmt(event, args.join(', ')));
+      if (event === 'click') {
+        this.set('isInfoWindowVisible', true);
+      }
+      else {
+        Ember.warn('[google-map] unhandled marker event %@ with arguments %@'.fmt(event, args.join(', ')));
+      }
     }
   }
 });

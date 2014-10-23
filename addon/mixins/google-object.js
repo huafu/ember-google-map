@@ -67,7 +67,9 @@ var GoogleObjectMixin = Ember.Mixin.create({
     }
     this.beginPropertyChanges();
     for (var i = 0; i < def.length; i++) {
-      this.setProperties(def[i].readGoogle(go));
+      if (!def[i]._cfg.readOnly) {
+        this.setProperties(def[i].readGoogle(go));
+      }
     }
     this.endPropertyChanges();
   },

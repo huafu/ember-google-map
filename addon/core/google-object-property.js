@@ -12,7 +12,8 @@ var GoogleObjectProperty = function (key, config) {
     read:       config.read || null,
     write:      config.write || null,
     event:      config.event || null,
-    cast:       config.cast || null
+    cast:       config.cast || null,
+    readOnly:   config.readOnly || false
   };
 };
 GoogleObjectProperty.prototype.fromGoogleValue = function (value) {

@@ -61,12 +61,19 @@ var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
    */
   type: 'road',
 
-  markers: null,
-
-  markerController: 'google-map/controllers/marker',
+  markers:                      null,
+  markerController:             'google-map/marker',
   //FIXME: ember does not allow to set itemView neither itemViewClass bound on that!
-  markerViewClass:  'google-map/views/marker',
+  markerViewClass:              'google-map/marker',
+  markerInfoWindowTemplateName: 'google-map/info-window',
 
+  infoWindows:            null,
+  infoWindowController:   'google-map/info-window',
+  //FIXME: ember does not allow to set itemView neither itemViewClass bound on that!
+  infoWindowViewClass:    'google-map/info-window',
+  infoWindowTemplateName: 'google-map/info-window',
+
+  map: Ember.computed.oneWay('googleObject'),
 
   initGoogleMap: function () {
     var canvas, opt, map;

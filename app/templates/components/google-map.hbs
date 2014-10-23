@@ -5,8 +5,14 @@
     FIXME: itemViewClass whould be bound to the markerViewClass of the componenet
     but for some reason it is failing :-(
      }}
-    {{#each markers itemController=markerController itemView="google-map/views/marker"}}
+    {{#each markers itemController=markerController itemView="google-map/marker"}}
       <li>{{title}} @ {{lat}},{{lng}}</li>
+      {{view 'google-map/info-window'}}
     {{/each}}
+    {{!
+    FIXME: itemViewClass whould be bound to the infoWindowViewClass of the componenet
+    but for some reason it is failing :-(
+     }}
+    {{each infoWindows itemController=infoWindowController itemView="google-map/info-window"}}
   </ul>
 </div>
