@@ -2,24 +2,32 @@
 
 An Ember addon to include a google-map Ember friendly component in your apps.
 
-**This is a work in progress, plan is to handle info-windows and other tools provided by google-map API.**
+**This is a work in progress, plan is to other tools provided by google-map API.**
 
 ## What is implemented for now:
 
 Here is what is working for now:
     
 ```handlebars
-{{google-map lat=centerLat lng=centerLng zoom=zoom type=type markers=markersArray}}
+{{google-map
+    lat=centerLat lng=centerLng
+    zoom=zoom
+    type=type
+    markers=markersArray
+    markerInfoWindowTemplateName='some/custom/template'
+    infoWindows=infoWindowsArray
+    infoWindowTemplateName='another/custom/template'
+}}
 ```
 
-* `lat` and `lng`: bindings or static coordinates of the center
+* `lat` and `lng`: bindings or static coordinates of the center **(required)**
 * `zoom`: binding to the current zoom
 * `type`: binding to the type of map (can be found with `import {MAP_TYPES} from 'google-map/components/google-map';`)
 * `markerController`: the `ObjectController` to use as a marker controller, must extend from `google-map/controllers/marker`
 * `markerInfoWindowTemplateName`: default template for a marker info-window
 * `markerHasInfoWindow`: whether to disable all markers info window or not
 * `markers`: binding to an array of markers (all properties are bound back an forth)
-    * `lat` and `lng`: coordinates of the marker position
+    * `lat` and `lng`: coordinates of the marker position **(required)**
     * `isClickable`: if the marker is clickable
     * `isVisible`:  marker visibility
     * `isDraggable`: marker draggability
@@ -35,7 +43,7 @@ Here is what is working for now:
 * `infoWindowTemplateName`: default template to use for all info-windows
 * `infoWindows`: bindings to an array of info-windows (not attached to any marker)
     * `isVisible`: whether the info-window is visible or not (default to true)
-    * `lat` and `lng`: coordinates of the info-window position
+    * `lat` and `lng`: coordinates of the info-window position **(required)**
     * `zIndex`: info-window's z-index
     * `title`: if using the default template
     * `description`: if using the default template
@@ -44,6 +52,7 @@ Here is what is working for now:
 ## TODO:
 
 * Implement an auto-complete input for an address:
+    
     ```handlebars
     {{google-address
         value=theText
@@ -57,6 +66,7 @@ Here is what is working for now:
         map=theOptionalMapToBeLinked
     }}
     ```
+
 * Write unit tests!!!
 
 
