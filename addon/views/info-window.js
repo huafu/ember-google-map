@@ -6,7 +6,9 @@ import MarkerView from '../views/marker';
 
 var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
   // will be either the marker using us, or the component if this is a detached info-window
-  templateName: Ember.computed.oneWay('parentView.infoWindowTemplateName'),
+  templateName: function () {
+    return this.get('controller.templateName') || this.get('parentView.infoWindowTemplateName');
+  }.property('parentView.infoWindowTemplateName', 'controller.templateName').readOnly(),
 
   googleProperties: {
     zIndex:              { event: 'zindex_changed', cast: helpers.cast.integer },
@@ -43,7 +45,7 @@ var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
         value = this.get('parentView.isInfoWindowVisible');
       }
       else {
-        value = this.get('controller.isVisible');
+        value = this.getWithDefault('controller.isVisible', true);
       }
     }
     else {

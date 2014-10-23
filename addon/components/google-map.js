@@ -66,6 +66,7 @@ var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
   //FIXME: ember does not allow to set itemView neither itemViewClass bound on that!
   markerViewClass:              'google-map/marker',
   markerInfoWindowTemplateName: 'google-map/info-window',
+  markerHasInfoWindow:          true,
 
   infoWindows:            null,
   infoWindowController:   'google-map/info-window',

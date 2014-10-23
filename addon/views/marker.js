@@ -56,6 +56,13 @@ var MarkerView = Ember.View.extend(GoogleObjectMixin, {
   }.property('controller.infoWindowTemplateName', 'parentView.markerInfoWindowTemplateName').readOnly(),
   infoWindowAnchor:       Ember.computed.oneWay('googleObject'),
   isInfoWindowVisible:    Ember.computed.alias('controller.isInfoWindowVisible'),
+  hasInfoWindow:          function () {
+    var fromCtrl = this.get('controller.hasInfoWindow');
+    if (fromCtrl === null || fromCtrl === undefined) {
+      return !!this.get('parentView.markerHasInfoWindow');
+    }
+    return fromCtrl;
+  }.property('parentView.markerHasInfoWindow', 'controller.hasInfoWindow').readOnly(),
 
   // bound to the google map object of the component
   map:                    Ember.computed.oneWay('parentView.map'),
