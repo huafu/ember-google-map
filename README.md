@@ -7,7 +7,7 @@ An Ember addon to include a google-map Ember friendly component in your apps.
 ## What is implemented for now:
 
 Here is what is working for now:
-    
+
 ```handlebars
 {{google-map
     lat=centerLat lng=centerLng
@@ -52,7 +52,7 @@ Here is what is working for now:
 ## TODO:
 
 * Implement an auto-complete input for an address:
-    
+
     ```handlebars
     {{google-address
         value=theText
@@ -73,6 +73,17 @@ Here is what is working for now:
 ## Installation
 
 * `npm install --save-dev ember-google-map`
+
+## Google Api key configuration
+
+The google map script tag will be inserted in the head section of your index.html.
+Also, if you define a `ENV.googleMapKey` variable in your Ember CLI project's configuration (`config/environment.js`), it will be used as an API Key within this script tag.
+
+Here is an example :
+
+```javascript
+ENV.googleMapKey = 'AbCDeFgHiJkLmNoPqRsTuVwXyZ'
+```
 
 ## Using
 

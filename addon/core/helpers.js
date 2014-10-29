@@ -42,8 +42,8 @@ var helpers = {
         _hasGoogleLib = window.google && google.maps;
       }
       if (!_hasGoogleLib && !noCache) {
-        Ember.warn('You must include Google map script tag in your `index.html` to use `google-map` addon');
-        Ember.warn('<script src="//maps.googleapis.com/maps/api/js?v=3"></script>');
+        Ember.warn('It seems Google map has not been correctly loaded, check your index.html to make sure everything is correct there');
+        Ember.warn('If your index.html file is correct please report this error at https://github.com/huafu/ember-google-map/issues');
       }
     }
     return !!_hasGoogleLib;
