@@ -1,12 +1,16 @@
 module.exports = {
   name: 'google-map',
   contentFor: function(type, config) {
-    var googleMapKey = config.googleMapKey;
-
-    if (type === 'head' && googleMapKey) {
-      return '<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key='+googleMapKey+'"></script>';
+    var content='';
+    if (type === 'head') {
+        var googleMapKey = config.googleMapKey;
+        var scriptSrc = "http://maps.googleapis.com/maps/api/js?v=3";
+        if (googleMapKey) {
+          scriptSrc = scriptSrc + '&key='+googleMapKey;
+        }
+        content = '<script type="text/javascript" src="'+scriptSrc+'"></script>';
     }
 
-    return '';
+    return content;
   }
 };

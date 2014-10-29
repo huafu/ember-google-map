@@ -76,11 +76,10 @@ Here is what is working for now:
 
 ## Google Api key configuration
 
-This addon uses the Ember CLI project's configuration (`config/environment.js`).
+The google map script tag will be inserted in the head section of your index.html.
+Also, if you define a `ENV.googleMapKey` variable in your Ember CLI project's configuration (`config/environment.js`), it will be used as an API Key within this script tag.
 
-The map code will appear in the head section of your index.html as long as `ENV.googleMapKey` is defined.
-
-here is an example :
+Here is an example :
 
 ```javascript
 ENV.googleMapKey = 'AbCDeFgHiJkLmNoPqRsTuVwXyZ'
