@@ -1,14 +1,16 @@
 module.exports = {
   name: 'google-map',
-  contentFor: function(type, config) {
-    var content='';
+
+  contentFor: function (type, config) {
+    var src, content = '', google = config.googleMap || {}, params = [];
     if (type === 'head') {
-        var googleMapKey = config.googleMapKey;
-        var scriptSrc = "http://maps.googleapis.com/maps/api/js?v=3";
-        if (googleMapKey) {
-          scriptSrc = scriptSrc + '&key='+googleMapKey;
-        }
-        content = '<script type="text/javascript" src="'+scriptSrc+'"></script>';
+      src = "http://maps.googleapis.com/maps/api/js";
+      // shouldn't need encoding, but who knows what version format it can handle
+      params.push('v=' + encodeURIComponent(google.version || '3'));
+      if (google.key) {
+        params.push('key=' + encodeURIComponent(google.key));
+      }
+      content = '<script type="text/javascript" src="' + src + '?' + params.join('&') + '"></script>';
     }
 
     return content;

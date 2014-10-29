@@ -77,12 +77,14 @@ Here is what is working for now:
 ## Google Api key configuration
 
 The google map script tag will be inserted in the head section of your index.html.
-Also, if you define a `ENV.googleMapKey` variable in your Ember CLI project's configuration (`config/environment.js`), it will be used as an API Key within this script tag.
+Also, if you define a `ENV.googleMap.key` variable in your Ember CLI project's configuration file (`config/environment.js`), it will be used as an API Key within this script tag.
 
 Here is an example :
 
-```javascript
-ENV.googleMapKey = 'AbCDeFgHiJkLmNoPqRsTuVwXyZ'
+```js
+ENV.googleMap = {
+  key: 'AbCDeFgHiJkLmNoPqRsTuVwXyZ'
+};
 ```
 
 ## Using
@@ -124,7 +126,7 @@ export default Ember.Controller.extend({
 
 ---
 
-### Here is anotehr example, corresponding to what is on the [GitHub pages](http://huafu.github.io/ember-google-map/) of this repository:
+### Here is another example, corresponding to what is on the [GitHub pages](http://huafu.github.io/ember-google-map/) of this repository:
 
 ```js
 // app/controllers/application.js
