@@ -4,6 +4,8 @@ An Ember addon to include a google-map Ember friendly component in your apps.
 
 **This is a work in progress, plan is to other tools provided by google-map API.**
 
+[![NPM](https://nodei.co/npm/ember-google-map.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/ember-google-map/)
+
 ## What is implemented for now:
 
 Here is what is working for now:
@@ -212,7 +214,12 @@ export default Ember.Controller.extend({
 
 ```
 
+---
 
 ## Authors
 
 * ![Huafu Gandon](https://s.gravatar.com/avatar/950590a0d4bc96f4a239cac955112eeb?s=24) [Huafu Gandon](https://github.com/huafu)
+
+## Contributors
+
+* [List of all contributors](https://github.com/huafu/ember-google-map/graphs/contributors)

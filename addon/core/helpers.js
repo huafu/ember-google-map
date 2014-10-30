@@ -1,7 +1,7 @@
 /* globals google */
 import Ember from 'ember';
 
-var _hasGoogleLib = Object.create(null);
+var _hasGoogleLib = {};
 
 export var cast = {
   number:  function (val) {
@@ -45,7 +45,7 @@ var helpers = {
 
   hasGoogleLib: function (lib) {
     lib = lib || '';
-    if (_hasGoogleLib.hasOwnProperty(lib)) {
+    if (!_hasGoogleLib.hasOwnProperty(lib)) {
       if (lib) {
         helpers.hasGoogleLib('');
       }
@@ -56,19 +56,32 @@ var helpers = {
         _hasGoogleLib[lib] = !!(window.google && google.maps);
       }
       if (!_hasGoogleLib['']) {
-        Ember.warn('[google-map] Something went wrong with Google Map library. If the script tag is in your `index.html`');
         Ember.warn(
-          '[google-map] please report the issue at https://github.com/huafu/ember-google-map/issues')
+          '[google-map] Something went wrong with Google Map library. If the script tag is in your `index.html`'
+        );
+        Ember.warn(
+          '[google-map] please report the issue at https://github.com/huafu/ember-google-map/issues'
         );
       }
       else if (lib && !_hasGoogleLib[lib]) {
-        Ember.warn('[google-map] You are using a module of ember-google-map which needs the %@ google library.'.fmt(lib));
-        Ember.warn('[google-map] But \'%@\' is not in the `ENV.googleMap.libraries` config array of your `config/environment.js`'.fmt(lib));
+        Ember.warn(
+          '[google-map] You are using a module of ember-google-map which needs the %@ google library.'.fmt(lib)
+        );
+        Ember.warn(
+          '[google-map] But \'%@\' is not in the `ENV.googleMap.libraries` config array of your `config/environment.js`'.fmt(lib)
+        );
       }
     }
     return _hasGoogleLib[lib];
   },
 
+  /**
+   * Creates an object using arguments (propertyName1, propertyValue1, propertyName2, propertyValue2, ...)
+   * @param {String} [propName1]
+   * @param {String} [propValue1]
+   * @param {String} [others]*
+   * @returns {Object}
+   */
   makeObj: function () {
     var res = {};
     for (var i = 0; i < arguments.length; i += 2) {
@@ -162,11 +175,11 @@ var helpers = {
             resolve(results || []);
           }
           else {
-            var err = new Error('error retrieving completion (' + status + ')');
+            err = new Error('error retrieving completion (' + status + ')');
             err.status = status;
             reject(err);
           }
-        })
+        });
       });
     }
     return Ember.RSVP.reject(new Error('could not access google place library'));
