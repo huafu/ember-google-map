@@ -211,3 +211,8 @@ export default Ember.Controller.extend({
 </ul>
 
 ```
+
+
+## Authors
+
+* ![Huafu Gandon](https://s.gravatar.com/avatar/950590a0d4bc96f4a239cac955112eeb?s=24) [Huafu Gandon](https://github.com/huafu)

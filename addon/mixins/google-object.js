@@ -2,10 +2,13 @@ import Ember from 'ember';
 import GoogleObjectProperty from '../core/google-object-property';
 import GoogleObjectEvent from '../core/google-object-event';
 
-var GoogleObjectMixin = Ember.Mixin.create({
+var GoogleObjectMixin = Ember.Mixin.create(Ember.Evented, {
+  _listeningForGoogleOptions: null,
+
   googleProperties:    Ember.required(),
   googleEvents:        Ember.required(),
   googleObject:        null,
+
   /**
    * @property _compiledProperties
    * @type Array<Object>
@@ -75,7 +78,7 @@ var GoogleObjectMixin = Ember.Mixin.create({
   },
 
   unlinkGoogleObject: function () {
-    var old = this.cacheFor('googleObject');
+    var old = this.get('googleObject');
     if (old) {
       this.get('_compiledEvents').invoke('unlink', this, old);
       this.get('_compiledProperties').invoke('unlink', this, old);
@@ -94,7 +97,13 @@ var GoogleObjectMixin = Ember.Mixin.create({
     this.set('googleObject', null);
     this.get('_compiledEvents').clear();
     this.get('_compiledProperties').clear();
-  }.on('destroy')
+  }.on('destroy'),
+
+  setupGoogleOptionsDidChange: function (){
+    if(!this._listeningForGoogleOptions){
+      this._listeningForGoogleOptions = true;
+    }
+  }
 });
 
 export default GoogleObjectMixin;

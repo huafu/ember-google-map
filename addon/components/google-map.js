@@ -4,11 +4,22 @@ import helpers from '../core/helpers';
 import GoogleObjectMixin from '../mixins/google-object';
 
 
+function obj(o) {
+  return Ember.Object.create(o);
+}
+
 export var MAP_TYPES = Ember.A([
-  Ember.Object.create({ id: 'road', label: 'road'}),
-  Ember.Object.create({ id: 'satellite', label: 'satellite'}),
-  Ember.Object.create({ id: 'terrain', label: 'terrain'}),
-  Ember.Object.create({ id: 'hybrid', label: 'hybrid'})
+  obj({ id: 'road', label: 'road'}),
+  obj({ id: 'satellite', label: 'satellite'}),
+  obj({ id: 'terrain', label: 'terrain'}),
+  obj({ id: 'hybrid', label: 'hybrid'})
+]);
+
+export var PLACE_TYPES = Ember.A([
+  obj({ id: helpers.PLACE_TYPE_ADDRESS, label: 'address' }),
+  obj({ id: helpers.PLACE_TYPE_LOCALITY, label: 'locality' }),
+  obj({ id: helpers.PLACE_TYPE_ADMIN_REGION, label: 'administrative region' }),
+  obj({ id: helpers.PLACE_TYPE_BUSINESS, label: 'business' })
 ]);
 
 var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {

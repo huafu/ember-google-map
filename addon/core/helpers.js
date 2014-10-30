@@ -1,7 +1,7 @@
 /* globals google */
 import Ember from 'ember';
 
-var _hasGoogleLib = null;
+var _hasGoogleLib = Object.create(null);
 
 export var cast = {
   number:  function (val) {
@@ -27,6 +27,11 @@ var helpers = {
   TYPE_HYBRID:    'hybrid',
   TYPE_SATELLITE: 'satellite',
 
+  PLACE_TYPE_ADDRESS:      'geocode',
+  PLACE_TYPE_BUSINESS:     'establishment',
+  PLACE_TYPE_ADMIN_REGION: '(regions)',
+  PLACE_TYPE_LOCALITY:     '(cities)',
+
   _typeMap: {
     road:      'ROADMAP',
     terrain:   'TERRAIN',
@@ -34,21 +39,37 @@ var helpers = {
     satellite: 'SATELLITE'
   },
 
+  _autoCompleteService: null,
+
   cast: cast,
 
-  hasGoogleLib: function (noCache) {
-    if (_hasGoogleLib === null || noCache) {
-      if (!noCache) {
-        _hasGoogleLib = window.google && google.maps;
+  hasGoogleLib: function (lib) {
+    lib = lib || '';
+    if (_hasGoogleLib.hasOwnProperty(lib)) {
+      if (lib) {
+        helpers.hasGoogleLib('');
       }
-      if (!_hasGoogleLib && !noCache) {
-        Ember.warn('It seems Google map has not been correctly loaded, check your index.html to make sure everything is correct there');
-        Ember.warn('If your index.html file is correct please report this error at https://github.com/huafu/ember-google-map/issues');
+      if (lib) {
+        _hasGoogleLib[lib] = !!(_hasGoogleLib[''] && google.maps[lib]);
+      }
+      else {
+        _hasGoogleLib[lib] = !!(window.google && google.maps);
+      }
+      if (!_hasGoogleLib['']) {
+        Ember.warn('[google-map] Something went wrong with Google Map library. If the script tag is in your `index.html`');
+        Ember.warn(
+          '[google-map] please report the issue at https://github.com/huafu/ember-google-map/issues')
+        );
+      }
+      else if (lib && !_hasGoogleLib[lib]) {
+        Ember.warn('[google-map] You are using a module of ember-google-map which needs the %@ google library.'.fmt(lib));
+        Ember.warn('[google-map] But \'%@\' is not in the `ENV.googleMap.libraries` config array of your `config/environment.js`'.fmt(lib));
       }
     }
-    return !!_hasGoogleLib;
+    return _hasGoogleLib[lib];
   },
-  makeObj:      function () {
+
+  makeObj: function () {
     var res = {};
     for (var i = 0; i < arguments.length; i += 2) {
       res[arguments[i]] = arguments[i + 1];
@@ -101,6 +122,56 @@ var helpers = {
     return [obj.lat(), obj.lng()];
   },
 
+  /**
+   * Converts SW lat/lng + NE lat/lng to a google.map.LatLngBounds object
+   * @param {Number} swLat
+   * @param {Number} swLng
+   * @param {Number} neLat
+   * @param {Number} neLng
+   * @returns {google.maps.LatLngBounds}
+   */
+  boundsToGoogle: function (swLat, swLng, neLat, neLng) {
+    if (swLat != null && swLng != null && neLat != null && neLng != null && helpers.hasGoogleLib()) {
+      return new google.maps.LatLngBounds(
+        helpers.latLngToGoogleLatLng(swLat, swLng),
+        helpers.latLngToGoogleLatLng(neLat, neLng)
+      );
+    }
+  },
+
+  latLngProperty: function () {
+    return function () {
+      return {lat: null, lng: null};
+    }.property();
+  },
+
+  autoCompleteService: function () {
+    if (!helpers._autoCompleteService && helpers.hasGoogleLib('places')) {
+      helpers._autoCompleteService = new google.maps.places.AutocompleteService();
+    }
+    return helpers._autoCompleteService;
+  },
+
+  autoCompleteAddress: function (options) {
+    var service = helpers.autoCompleteService();
+    if (service) {
+      return new Ember.RSVP.Promise(function (resolve, reject) {
+        var Status = google.maps.places.PlacesServiceStatus, err;
+        service.getPlacePredictions(options, function (results, status) {
+          if (status === Status.OK || status === Status.ZERO_RESULTS) {
+            resolve(results || []);
+          }
+          else {
+            var err = new Error('error retrieving completion (' + status + ')');
+            err.status = status;
+            reject(err);
+          }
+        })
+      });
+    }
+    return Ember.RSVP.reject(new Error('could not access google place library'));
+  },
+
   _typeFromGoogle:   function (key, val) {
     if (arguments.length === 1) {
       val = key;
@@ -128,6 +199,16 @@ var helpers = {
       latKey = null;
     }
     return helpers.latLngToGoogleLatLng(obj[latKey || 'lat'], obj[lngKey || 'lng']);
+  },
+  _boundsToGoogle:   function (swLatKey, swLngKey, neLatKey, neLngKey, obj) {
+    if (arguments.length === 1) {
+      obj = swLatKey;
+      swLatKey = null;
+    }
+    return helpers.boundsToGoogle(
+      obj[swLatKey || 'southWestLat'], obj[swLngKey || 'southWestLng'],
+      obj[neLatKey || 'northEastLat'], obj[neLngKey || 'northEastLng']
+    );
   }
 };
 

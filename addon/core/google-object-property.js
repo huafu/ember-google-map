@@ -125,4 +125,23 @@ GoogleObjectProperty.prototype.toOptions = function (source, options) {
   }
 };
 
+GoogleObjectProperty.prototype.startListeningOptions = function (emberObject) {
+  Ember.warn('listening for option changes but it has not been detached first', !this._optionsListener);
+  if (emberObject) {
+    this._optionsListener = function () {
+        Ember.run.once(this, 'trigger', 'googleOptionsDidChange');
+    };
+    this._cfg.properties.forEach(function (name) {
+      emberObject.addObserver(name, this, this._optionsListener);
+    }, this);
+  }
+};
+GoogleObjectProperty.prototype.stopListeningOptions = function (emberObject) {
+  if (emberObject && this._optionsListener) {
+    this._cfg.properties.forEach(function (name) {
+      emberObject.removeObserver(name, this, this._optionsListener);
+    }, this);
+  }
+};
+
 export default GoogleObjectProperty;
