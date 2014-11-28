@@ -1,6 +1,6 @@
 # ember-google-map
 
-An Ember addon to include a google-map Ember friendly component in your apps.
+An Ember addon to include a google-map Ember friendly component in your apps. See a bare simple demo [there](http://huafu.github.io/ember-google-map/).
 
 **This is a work in progress, plan is to other tools provided by google-map API.**
 
