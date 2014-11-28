@@ -12,7 +12,7 @@ var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
 
   googleProperties: {
     zIndex:              { event: 'zindex_changed', cast: helpers.cast.integer },
-    map:                 true,
+    map:                 {readOnly: true},
     'element.outerHTML': {name: 'content', readOnly: true},
     'lat,lng':           {
       name:       'position',

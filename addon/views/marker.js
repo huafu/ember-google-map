@@ -12,7 +12,7 @@ var MarkerView = Ember.View.extend(GoogleObjectMixin, {
     opacity:     { cast: helpers.cast.number },
     icon:        { event: 'icon_changed' },
     zIndex:      { event: 'zindex_changed', cast: helpers.cast.integer },
-    map:         true,
+    map:         {readOnly: true},
     'lat,lng':   {
       name:       'position',
       event:      'position_changed',
