@@ -1,6 +1,14 @@
 import Ember from 'ember';
 import helpers from './helpers';
 
+/**
+ * Handle the linking between a google and an ember object's properties
+ *
+ * @class GoogleObjectProperty
+ * @param {String} key
+ * @param {{name: String, toGoogle: Function, fromGoogle: Function, read: Function, write: Function, event: String, cast: Function, readOnly: Boolean}} config
+ * @constructor
+ */
 var GoogleObjectProperty = function (key, config) {
   var props = key.split(',');
   this._cfg = {
@@ -16,6 +24,14 @@ var GoogleObjectProperty = function (key, config) {
     readOnly:   config.readOnly || false
   };
 };
+
+/**
+ * Convert the value from google to Ember
+ *
+ * @method fromGoogleValue
+ * @param {*} value
+ * @returns {Object}
+ */
 GoogleObjectProperty.prototype.fromGoogleValue = function (value) {
   var val;
   if (this._cfg.fromGoogle) {
@@ -26,6 +42,14 @@ GoogleObjectProperty.prototype.fromGoogleValue = function (value) {
   }
   return val;
 };
+
+/**
+ * Convert the value from Ember to google
+ *
+ * @method toGoogleValue
+ * @param {Object} obj
+ * @returns {*}
+ */
 GoogleObjectProperty.prototype.toGoogleValue = function (obj) {
   var val;
   if (this._cfg.toGoogle) {
@@ -39,6 +63,14 @@ GoogleObjectProperty.prototype.toGoogleValue = function (obj) {
   }
   return val;
 };
+
+/**
+ * Reads the value from the given google object
+ *
+ * @method readGoogle
+ * @param {google.maps.MVCObject} googleObject
+ * @returns {Object}
+ */
 GoogleObjectProperty.prototype.readGoogle = function (googleObject) {
   var val;
   if (this._cfg.read) {
@@ -49,6 +81,14 @@ GoogleObjectProperty.prototype.readGoogle = function (googleObject) {
   }
   return this.fromGoogleValue(val);
 };
+
+/**
+ * Writes the given value to the given google object
+ *
+ * @method writeGoogle
+ * @param {google.maps.MVCObject} googleObject
+ * @param {Object} obj
+ */
 GoogleObjectProperty.prototype.writeGoogle = function (googleObject, obj) {
   var val, p, diff = false,
     actual = this.readGoogle(googleObject);
@@ -71,21 +111,31 @@ GoogleObjectProperty.prototype.writeGoogle = function (googleObject, obj) {
   }
 };
 
+/**
+ * Links the given google and ember objects together
+ *
+ * @method link
+ * @param {Ember.Object} emberObject
+ * @param {google.maps.MVCObject} googleObject
+ */
 GoogleObjectProperty.prototype.link = function (emberObject, googleObject) {
+  var _this = this, event, props, listeners;
   Ember.warn('linking a google object property but it has not been unlinked first', !this._listeners);
   if (emberObject && googleObject) {
-    this._listeners = {
+    props = this._cfg.properties;
+    event = this._cfg.event;
+    // define our listeners
+    this._listeners = listeners = {
       ember:  function () {
-        var obj = emberObject.getProperties(this._cfg.properties);
-        //console.warn('setting GOOGLE', obj);
+        var obj = emberObject.getProperties(props);
         this.writeGoogle(googleObject, obj);
       },
       google: Ember.run.bind(this, function () {
         var p, diff = true,
           obj = this.readGoogle(googleObject),
-          actual = emberObject.getProperties(this._cfg.properties);
-        for (var i = 0; i < this._cfg.properties.length; i++) {
-          p = this._cfg.properties[i];
+          actual = emberObject.getProperties(props);
+        for (var i = 0; i < props.length; i++) {
+          p = props[i];
           if ('' + obj[p] !== '' + actual[p]) {
             diff = true;
             break;
@@ -94,30 +144,49 @@ GoogleObjectProperty.prototype.link = function (emberObject, googleObject) {
         if (!diff) {
           return;
         }
-        //console.warn('setting EMBER', obj);
         emberObject.setProperties(obj);
       })
     };
-    if (this._cfg.event) {
-      googleObject.addListener(this._cfg.event, this._listeners.google);
+    // listen google event
+    if (event) {
+      listeners._googleHandle = googleObject.addListener(event, listeners.google);
     }
-    this._cfg.properties.forEach(function (name) {
-      emberObject.addObserver(name, this, this._listeners.ember);
+    // listen change on Ember properties
+    props.forEach(function (name) {
+      emberObject.addObserver(name, this, listeners.ember);
     }, this);
+
+    // setup the un-linkers
+    listeners.unlink = function () {
+      props.forEach(function (name) {
+        emberObject.removeObserver(name, this, listeners.ember);
+      }, _this);
+      listeners.ember = null;
+      if (event) {
+        google.maps.event.removeListener(listeners._googleHandle);
+      }
+      listeners.google = null;
+    };
   }
 };
-GoogleObjectProperty.prototype.unlink = function (emberObject, googleObject) {
-  if (this._listeners) {
 
-    if (this._cfg.event) {
-      googleObject.removeListener(this._cfg.event, this._listeners.google);
-    }
-    this._cfg.properties.forEach(function (name) {
-      emberObject.removeObserver(name, this, this._listeners.ember);
-    }, this);
+/**
+ * Unlink the previously linked ember and google objects, and stop listening for events
+ */
+GoogleObjectProperty.prototype.unlink = function () {
+  if (this._listeners) {
+    this._listeners.unlink();
     this._listeners = null;
   }
 };
+
+/**
+ * Fill a google options object reading the options from the given Ember Object
+ *
+ * @method toOptions
+ * @param {Ember.Object} source
+ * @param {Object} options
+ */
 GoogleObjectProperty.prototype.toOptions = function (source, options) {
   var val = this.toGoogleValue(source.getProperties(this._cfg.properties));
   if (val !== undefined) {
@@ -125,22 +194,38 @@ GoogleObjectProperty.prototype.toOptions = function (source, options) {
   }
 };
 
+/**
+ * Start to listen for the properties corresponding to the google object options
+ *
+ * @method startListeningOptions
+ * @param {Ember.Object} emberObject
+ */
 GoogleObjectProperty.prototype.startListeningOptions = function (emberObject) {
+  var listener, props, _this = this;
   Ember.warn('listening for option changes but it has not been detached first', !this._optionsListener);
   if (emberObject) {
-    this._optionsListener = function () {
-        Ember.run.once(this, 'trigger', 'googleOptionsDidChange');
+    props = this._cfg.properties;
+    this._optionsListener = listener = function () {
+      Ember.run.once(this, 'trigger', 'googleOptionsDidChange');
     };
-    this._cfg.properties.forEach(function (name) {
-      emberObject.addObserver(name, this, this._optionsListener);
+    props.forEach(function (name) {
+      emberObject.addObserver(name, this, listener);
     }, this);
+    listener.unlink = function () {
+      props.forEach(function (name) {
+        emberObject.removeObserver(name, this, listener);
+      }, _this);
+    };
   }
 };
-GoogleObjectProperty.prototype.stopListeningOptions = function (emberObject) {
-  if (emberObject && this._optionsListener) {
-    this._cfg.properties.forEach(function (name) {
-      emberObject.removeObserver(name, this, this._optionsListener);
-    }, this);
+
+/**
+ * Stop listening for google options related properties
+ */
+GoogleObjectProperty.prototype.stopListeningOptions = function () {
+  if (this._optionsListener) {
+    this._optionsListener.unlink();
+    this._optionsListener = null;
   }
 };
 

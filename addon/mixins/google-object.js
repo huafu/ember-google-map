@@ -2,18 +2,37 @@ import Ember from 'ember';
 import GoogleObjectProperty from '../core/google-object-property';
 import GoogleObjectEvent from '../core/google-object-event';
 
+/**
+ * @mixin GoogleObjectMixin
+ * @uses Ember.Evented
+ */
 var GoogleObjectMixin = Ember.Mixin.create(Ember.Evented, {
-  _listeningForGoogleOptions: null,
-
-  googleProperties:    Ember.required(),
-  googleEvents:        Ember.required(),
-  googleObject:        null,
+  /**
+   * The definition of all google properties to bind
+   * @property googleProperties
+   * @type Object
+   */
+  googleProperties: Ember.required(),
+  /**
+   * The definition of all google events to bind
+   * @property googleEvents
+   * @type Object
+   */
+  googleEvents:     Ember.required(),
+  /**
+   * The google object itself
+   * @property googleObject
+   * @type google.maps.MVCObject
+   */
+  googleObject:     null,
 
   /**
+   * An array of all compiled (parsed) properties
    * @property _compiledProperties
-   * @type Array<Object>
+   * @type Array.<GoogleObjectProperty>
+   * @private
    */
-  _compiledProperties: function () {
+  _compiledProperties: Ember.computed(function () {
     var def = this.get('googleProperties') || {},
       res = [], d;
     for (var k in def) {
@@ -30,12 +49,15 @@ var GoogleObjectMixin = Ember.Mixin.create(Ember.Evented, {
       }
     }
     return res;
-  }.property().readOnly(),
+  }).readOnly(),
+
   /**
+   * An array of all compiled (parsed) events
    * @property _compiledEvents
-   * @type Array<Object>
+   * @type Array.<GoogleObjectEvent>
+   * @private
    */
-  _compiledEvents:     function () {
+  _compiledEvents: Ember.computed(function () {
     var def = this.get('googleEvents') || {},
       res = [], d;
     for (var k in def) {
@@ -52,8 +74,14 @@ var GoogleObjectMixin = Ember.Mixin.create(Ember.Evented, {
       }
     }
     return res;
-  }.property().readOnly(),
+  }).readOnly(),
 
+  /**
+   * Serialize all google options into an object usable with google object constructor
+   *
+   * @method serializeGoogleOptions
+   * @returns {Object}
+   */
   serializeGoogleOptions: function () {
     var res = {}, def = this.get('_compiledProperties');
     for (var i = 0; i < def.length; i++) {
@@ -62,6 +90,9 @@ var GoogleObjectMixin = Ember.Mixin.create(Ember.Evented, {
     return res;
   },
 
+  /**
+   * Synchronize this Ember object by reading all values of the properties from google object
+   */
   synchronizeEmberObject: function () {
     var def = this.get('_compiledProperties'),
       go = this.get('googleObject');
@@ -77,33 +108,33 @@ var GoogleObjectMixin = Ember.Mixin.create(Ember.Evented, {
     this.endPropertyChanges();
   },
 
-  unlinkGoogleObject: function () {
-    var old = this.get('googleObject');
-    if (old) {
-      this.get('_compiledEvents').invoke('unlink', this, old);
-      this.get('_compiledProperties').invoke('unlink', this, old);
-    }
-  }.observesBefore('googleObject'),
+  /**
+   * Unlink the google object
+   */
+  unlinkGoogleObject: Ember.beforeObserver('googleObject', function () {
+    this.get('_compiledEvents').invoke('unlink');
+    this.get('_compiledProperties').invoke('unlink');
+  }),
 
-  linkGoogleObject: function () {
+  /**
+   * Link the google object to this object
+   */
+  linkGoogleObject: Ember.observer('googleObject', function () {
     var obj = this.get('googleObject');
     if (obj) {
       this.get('_compiledProperties').invoke('link', this, obj);
       this.get('_compiledEvents').invoke('link', this, obj);
     }
-  }.observes('googleObject'),
+  }),
 
-  destroyGoogleObject: function () {
+  /**
+   * Destroy our object, removing all listeners and pointers to google's object
+   */
+  destroyGoogleObject: Ember.on('destroy', function () {
     this.set('googleObject', null);
     this.get('_compiledEvents').clear();
     this.get('_compiledProperties').clear();
-  }.on('destroy'),
-
-  setupGoogleOptionsDidChange: function (){
-    if(!this._listeningForGoogleOptions){
-      this._listeningForGoogleOptions = true;
-    }
-  }
+  })
 });
 
 export default GoogleObjectMixin;

@@ -54,21 +54,19 @@ GoogleObjectEvent.prototype.link = function (emberObject, googleObject) {
   if (emberObject && googleObject) {
     this._listener = listener = Ember.run.bind(this, 'callHandler', emberObject);
     name = this._cfg.name;
-    googleObject.addListener(name, listener);
+    listener._googleHandle = googleObject.addListener(name, listener);
     this._listener.unlink = function () {
-      googleObject.removeListener(name, listener);
+      google.maps.event.removeListener(listener._googleHandle);
     };
   }
 };
 
 /**
- * Unlink the given ember and google objects, and stop listening for the google event
+ * Unlink the previously linked ember and google objects, and stop listening for the google event
  *
  * @method unlink
- * @param {Ember.Object} emberObject
- * @param {google.maps.MVCObject} googleObject
  */
-GoogleObjectEvent.prototype.unlink = function (emberObject, googleObject) {
+GoogleObjectEvent.prototype.unlink = function () {
   if (this._listener) {
     this._listener.unlink();
     this._listener = null;

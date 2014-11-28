@@ -5,13 +5,13 @@ import GoogleObjectMixin from '../mixins/google-object';
 
 var MarkerView = Ember.View.extend(GoogleObjectMixin, {
   googleProperties:       {
-    isClickable: { name: 'clickable', event: 'clickable_changed' },
-    isVisible:   { name: 'visible', event: 'visible_changed' },
-    isDraggable: { name: 'draggable', event: 'draggable_changed' },
-    title:       { event: 'title_changed' },
-    opacity:     { cast: helpers.cast.number },
-    icon:        { event: 'icon_changed' },
-    zIndex:      { event: 'zindex_changed', cast: helpers.cast.integer },
+    isClickable: {name: 'clickable', event: 'clickable_changed'},
+    isVisible:   {name: 'visible', event: 'visible_changed'},
+    isDraggable: {name: 'draggable', event: 'draggable_changed'},
+    title:       {event: 'title_changed'},
+    opacity:     {cast: helpers.cast.number},
+    icon:        {event: 'icon_changed'},
+    zIndex:      {event: 'zindex_changed', cast: helpers.cast.integer},
     map:         {readOnly: true},
     'lat,lng':   {
       name:       'position',
@@ -22,7 +22,7 @@ var MarkerView = Ember.View.extend(GoogleObjectMixin, {
   },
 
   // merge from whatever defined from the controller so we can handle click to show infowindow or such
-  googleEvents:           function (key, value) {
+  googleEvents:           Ember.computed('controller.googleEvents', function (key, value) {
     if (arguments.length < 2) {
       value = Ember.merge({
         click:      'handleMarkerEvent',
@@ -37,7 +37,7 @@ var MarkerView = Ember.View.extend(GoogleObjectMixin, {
       }, this.get('controller.googleEvents') || {});
     }
     return value;
-  }.property('controller.googleEvents'),
+  }),
 
   // aliased from controller so that if they are not defined they use the values from the controller
   title:                  Ember.computed.alias('controller.title'),
@@ -51,23 +51,23 @@ var MarkerView = Ember.View.extend(GoogleObjectMixin, {
   lng:                    Ember.computed.alias('controller.lng'),
 
   // get the info window template name from the component or own controller
-  infoWindowTemplateName: function () {
+  infoWindowTemplateName: Ember.computed('controller.infoWindowTemplateName', 'parentView.markerInfoWindowTemplateName', function () {
     return this.get('controller.infoWindowTemplateName') || this.get('parentView.markerInfoWindowTemplateName');
-  }.property('controller.infoWindowTemplateName', 'parentView.markerInfoWindowTemplateName').readOnly(),
+  }).readOnly(),
   infoWindowAnchor:       Ember.computed.oneWay('googleObject'),
   isInfoWindowVisible:    Ember.computed.alias('controller.isInfoWindowVisible'),
-  hasInfoWindow:          function () {
+  hasInfoWindow:          Ember.computed('parentView.markerHasInfoWindow', 'controller.hasInfoWindow', function () {
     var fromCtrl = this.get('controller.hasInfoWindow');
     if (fromCtrl === null || fromCtrl === undefined) {
       return !!this.get('parentView.markerHasInfoWindow');
     }
     return fromCtrl;
-  }.property('parentView.markerHasInfoWindow', 'controller.hasInfoWindow').readOnly(),
+  }).readOnly(),
 
   // bound to the google map object of the component
   map:                    Ember.computed.oneWay('parentView.map'),
 
-  initGoogleMarker: function () {
+  initGoogleMarker: Ember.on('didInsertElement', function () {
     var opt;
     // force the creation of the marker
     if (helpers.hasGoogleLib() && !this.get('googleObject')) {
@@ -76,16 +76,16 @@ var MarkerView = Ember.View.extend(GoogleObjectMixin, {
       this.set('googleObject', new google.maps.Marker(opt));
       this.synchronizeEmberObject();
     }
-  }.on('didInsertElement'),
+  }),
 
-  destroyGoogleMarker: function () {
+  destroyGoogleMarker: Ember.on('willDestroyElement', function () {
     var marker = this.get('googleObject');
     if (marker) {
       // detach from the map
       marker.setMap(null);
       this.set('googleObject', null);
     }
-  }.on('willDestroyElement'),
+  }),
 
   actions: {
     handleMarkerEvent: function () {

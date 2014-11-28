@@ -6,12 +6,12 @@ import MarkerView from '../views/marker';
 
 var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
   // will be either the marker using us, or the component if this is a detached info-window
-  templateName: function () {
+  templateName: Ember.computed('parentView.infoWindowTemplateName', 'controller.templateName', function () {
     return this.get('controller.templateName') || this.get('parentView.infoWindowTemplateName');
-  }.property('parentView.infoWindowTemplateName', 'controller.templateName').readOnly(),
+  }).readOnly(),
 
   googleProperties: {
-    zIndex:              { event: 'zindex_changed', cast: helpers.cast.integer },
+    zIndex:              {event: 'zindex_changed', cast: helpers.cast.integer},
     map:                 {readOnly: true},
     'element.outerHTML': {name: 'content', readOnly: true},
     'lat,lng':           {
@@ -23,7 +23,7 @@ var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
   },
 
   // merge from whatever defined from the controller so we can handle events locally if needed
-  googleEvents:     function (key, value) {
+  googleEvents:     Ember.computed('controller.googleEvents', function (key, value) {
     if (arguments.length < 2) {
       value = Ember.merge({
         closeclick: 'handleInfoWindowEvent',
@@ -31,7 +31,7 @@ var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
       }, this.get('controller.googleEvents') || {});
     }
     return value;
-  }.property('controller.googleEvents'),
+  }),
 
   // aliased from controller so that if they are not defined they use the values from the controller
   zIndex:           Ember.computed.alias('controller.zIndex'),
@@ -39,7 +39,7 @@ var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
   lng:              Ember.computed.alias('controller.lng'),
   anchor:           Ember.computed.oneWay('parentView.infoWindowAnchor'),
 
-  visible: function (key, value) {
+  visible: Ember.computed('parentView.isInfoWindowVisible', 'controller.isVisible', function (key, value) {
     if (arguments.length < 2) {
       if (this.get('parentView') instanceof MarkerView) {
         value = this.get('parentView.isInfoWindowVisible');
@@ -58,16 +58,16 @@ var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
       }
     }
     return value;
-  }.property('parentView.isInfoWindowVisible', 'controller.isVisible'),
+  }),
 
   // bound to the google map object of the component
   map:     Ember.computed.oneWay('parentView.map'),
 
-  initGoogleInfoWindow: function () {
+  initGoogleInfoWindow: Ember.on('didInsertElement', function () {
     Ember.run.schedule('afterRender', this, '_initGoogleInfoWindow');
-  }.on('didInsertElement'),
+  }),
 
-  handleInfoWindowVisibility: function () {
+  handleInfoWindowVisibility: Ember.observer('visible', function () {
     if (this._changingVisible) {
       return;
     }
@@ -81,7 +81,7 @@ var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
         iw.close();
       }
     }
-  }.observes('visible'),
+  }),
 
   _initGoogleInfoWindow: function () {
     var opt, anchor;
@@ -95,11 +95,11 @@ var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
     }
   },
 
-  refreshInfoWindow: function () {
+  refreshInfoWindow: Ember.on('willClearRender', function () {
     Ember.run.scheduleOnce('afterRender', this, 'notifyPropertyChange', 'element.outerHTML');
-  }.on('willClearRender'),
+  }),
 
-  destroyGoogleInfoWindow: function () {
+  destroyGoogleInfoWindow: Ember.on('willDestroyElement', function () {
     var infoWindow = this.get('googleObject');
     if (infoWindow) {
       this._changingVisible = true;
@@ -109,7 +109,7 @@ var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
       this.set('googleObject', null);
       this._changingVisible = false;
     }
-  }.on('willDestroyElement'),
+  }),
 
   actions: {
     handleInfoWindowEvent: function () {
