@@ -22,9 +22,20 @@ export var PLACE_TYPES = Ember.A([
   obj({ id: helpers.PLACE_TYPE_BUSINESS, label: 'business' })
 ]);
 
+/**
+ * @class GoogleMapComponent
+ * @extends Ember.Component
+ * @uses GoogleObjectMixin
+ * @constructor
+ */
 var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
   classNames: ['google-map'],
 
+  /**
+   * Defines all properties bound to the google map object
+   * @property googleProperties
+   * @type {Object}
+   */
   googleProperties: {
     zoom:      { event: 'zoom_changed', cast: helpers.cast.integer },
     type:      {
@@ -42,52 +53,117 @@ var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
   },
 
   /**
+   * Our google map object
    * @property googleObject
-   * @type google.maps.Map
+   * @type {google.maps.Map}
    * @private
    */
   googleObject: null,
   /**
+   * Initial center's latitude of the map
    * @property lat
-   * @type Number
+   * @type {Number}
    */
   lat:          0,
   /**
+   * Initial center's longitude of the map
    * @property lng
-   * @type Number
+   * @type {Number}
    */
   lng:          0,
   /**
+   * Initial zoom of the map
    * @property zoom
-   * @type Number
+   * @type {Number}
    * @default 5
    */
   zoom:         5,
 
   /**
+   * Initial type of the map
    * @property type
-   * @type String
+   * @type {String}
    * @enum ['road', 'hybrid', 'terrain', 'satellite']
    * @default 'road'
    */
   type: 'road',
 
+  /**
+   * List of markers to handle/show on the map
+   * @property markers
+   * @type {Array.<{lat: Number, lng: Number, title: String}>}
+   */
   markers:                      null,
+  /**
+   * Controller to use for each marker
+   * @property markerController
+   * @type {String}
+   * @default 'google-map/marker'
+   */
   markerController:             'google-map/marker',
   //FIXME: ember does not allow to set itemView neither itemViewClass bound on that!
+  /**
+   * View to use for each marker
+   * @property markerViewClass
+   * @type {String}
+   * @default 'google-map/marker'
+   */
   markerViewClass:              'google-map/marker',
+  /**
+   * Info-window template name to use for each marker
+   * @property markerInfoWindowTemplateName
+   * @type {String}
+   * @default 'google-map/info-window'
+   */
   markerInfoWindowTemplateName: 'google-map/info-window',
+  /**
+   * Whether the markers have an info-window by default
+   * @property markerHasInfoWindow
+   * @type {Boolean}
+   * @default true
+   */
   markerHasInfoWindow:          true,
 
+  /**
+   * Array of al info-windows to handle/show (independent from the markers' info-windows)
+   * @property infoWindows
+   * @type {Array.<{lat: Number, lng: Number, title: String, description: String}>}
+   */
   infoWindows:            null,
+  /**
+   * Controller for each info-window
+   * @property infoWindowController
+   * @type {String}
+   * @default 'google-map/info-window'
+   */
   infoWindowController:   'google-map/info-window',
   //FIXME: ember does not allow to set itemView neither itemViewClass bound on that!
+  /**
+   * View for each info-window
+   * @property infoWindowViewClass
+   * @type {String}
+   * @default 'google-map/info-window'
+   */
   infoWindowViewClass:    'google-map/info-window',
+  /**
+   * Template for each info-window
+   * @property infoWindowTemplateName
+   * @type {String}
+   * @default 'google-map/info-window'
+   */
   infoWindowTemplateName: 'google-map/info-window',
 
+  /**
+   * The google map object
+   * @property map
+   * @type {google.maps.Map}
+   */
   map: Ember.computed.oneWay('googleObject'),
 
-  initGoogleMap: function () {
+  /**
+   * Initialize the map
+   */
+  initGoogleMap: Ember.on('didInsertElement', function () {
     var canvas, opt, map;
     this.destroyGoogleMap();
     if (helpers.hasGoogleLib()) {
@@ -98,14 +174,17 @@ var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
       this.set('googleObject', map);
       this.synchronizeEmberObject();
     }
-  }.on('didInsertElement'),
+  }),
 
-  destroyGoogleMap: function () {
+  /**
+   * Destroy the map
+   */
+  destroyGoogleMap: Ember.on('willDestroyElement', function () {
     if (this.get('googleObject')) {
       Ember.debug('[google-map] destroying map');
       this.set('googleObject', null);
     }
-  }.on('willDestroyElement')
+  })
 });
 
 export default GoogleMapComponent;

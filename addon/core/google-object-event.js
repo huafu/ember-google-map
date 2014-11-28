@@ -1,5 +1,11 @@
 import Ember from 'ember';
 
+/**
+ * @class GoogleObjectEvent
+ * @param {String} name
+ * @param {{target: Ember.Object, action: String, method: String|Function}} config
+ * @constructor
+ */
 var GoogleObjectEvent = function (name, config) {
   this._cfg = {
     name:   name,
@@ -9,6 +15,13 @@ var GoogleObjectEvent = function (name, config) {
   };
 };
 
+/**
+ * Event handler wrapper
+ *
+ * @method callHandler
+ * @param {Ember.Object} emberObject
+ * @returns {*}
+ */
 GoogleObjectEvent.prototype.callHandler = function (emberObject) {
   var method, target = this._cfg.target || emberObject;
   if (this._cfg.action) {
@@ -28,17 +41,37 @@ GoogleObjectEvent.prototype.callHandler = function (emberObject) {
   }
 };
 
+/**
+ * Link the given ember object and google object, and start listening for the google event
+ *
+ * @method link
+ * @param {Ember.Object} emberObject
+ * @param {google.maps.MVCObject} googleObject
+ */
 GoogleObjectEvent.prototype.link = function (emberObject, googleObject) {
+  var name, listener;
   Ember.warn('linking a google object event but it has not been unlinked first', !this._listener);
   if (emberObject && googleObject) {
-    this._listener = Ember.run.bind(this, 'callHandler', emberObject);
-    googleObject.addListener(this._cfg.name, this._listener);
-    //console.log('linked an event', this._cfg);
+    this._listener = listener = Ember.run.bind(this, 'callHandler', emberObject);
+    name = this._cfg.name;
+    googleObject.addListener(name, listener);
+    this._listener.unlink = function () {
+      googleObject.removeListener(name, listener);
+    };
   }
 };
+
+/**
+ * Unlink the given ember and google objects, and stop listening for the google event
+ *
+ * @method unlink
+ * @param {Ember.Object} emberObject
+ * @param {google.maps.MVCObject} googleObject
+ */
 GoogleObjectEvent.prototype.unlink = function (emberObject, googleObject) {
   if (this._listener) {
-    googleObject.removeListener(this._cfg.name, this._listener);
+    this._listener.unlink();
+    this._listener = null;
   }
 };
 
