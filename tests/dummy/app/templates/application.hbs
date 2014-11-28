@@ -1,41 +1,52 @@
-<h1>Dead simple example of using <a href="https://github.com/huafu/ember-google-map">ember-google-map</a></h1>
+<div class="social-networks-bar">
+  <iframe
+      src="http://ghbtns.com/github-btn.html?user=huafu&repo=ember-google-map&type=watch&count=true"
+      allowtransparency="true" frameborder="0" scrolling="0" width="80" height="20"></iframe>
+  <iframe
+      src="//platform.twitter.com/widgets/follow_button.html?screen_name=HuafuGandon"
+      style="width: 240px; height: 20px;"
+      allowtransparency="true"
+      frameborder="0"
+      scrolling="no">
+  </iframe>
+</div>
+
+<h2 id="title">Dead simple example of using <a href="https://github.com/huafu/ember-google-map">ember-google-map</a>
+</h2>
 
 {{google-map lat=lat lng=lng type=type zoom=zoom markers=markers infoWindows=infoWindows}}
 
 <h3>Map settings</h3>
 <div>
-  <label>Lat: {{input value=lat}}</label>
-  <label>Lng: {{input value=lng}}</label>
-  <label>Zoom: {{input value=zoom}}</label>
-  <label>Type: {{view Ember.Select content=mapTypes
+  <label>center lat/lng: {{input value=lat class='coord'}}/{{input value=lng class='coord'}}</label>
+  <label>zoom: {{input value=zoom}}</label>
+  <label>type: {{view Ember.Select content=mapTypes
   optionLabelPath='content.label' optionValuePath='content.id' value=type}}</label>
 </div>
 <h3>Markers</h3>
-<ul>
+<ul class="markers">
   {{#each markers}}
     <li>
-      <label>Title: {{input value=title}}</label>
-      <label>Lat: {{input value=lat}}</label>
-      <label>Lng: {{input value=lng}}</label>
-      <label>Is visible: {{input type='checkbox' checked=isVisible}}</label>
-      <label>Is draggable: {{input type='checkbox' checked=isDraggable}}</label>
-      <label>Description: {{input value=description}}</label>
-      <button {{action 'removeMarker' this}}>remove</button>
+      <label>title: {{input value=title}}</label>
+      <label>desc.: {{input value=description}}</label>
+      <label>lat/lng: {{input value=lat class='coord'}}/{{input value=lng class='coord'}}</label>
+      <label>{{input type='checkbox' checked=isVisible}}visible</label> |
+      <label>{{input type='checkbox' checked=isDraggable}}draggable</label>
+      <button {{action 'removeMarker' this}}>x</button>
     </li>
   {{/each}}
   <button {{action 'addMarker'}}>add</button>
 </ul>
 
 <h3>Info windows</h3>
-<ul>
+<ul class="info-windows">
   {{#each infoWindows}}
     <li>
-      <label>Title: {{input value=title}}</label>
-      <label>Description: {{input value=description}}</label>
-      <label>Lat: {{input value=lat}}</label>
-      <label>Lng: {{input value=lng}}</label>
-      <label>Is visible: {{input type='checkbox' checked=isVisible}}</label>
-      <button {{action 'removeInfoWindow' this}}>remove</button>
+      <label>title: {{input value=title}}</label>
+      <label>desc.: {{input value=description}}</label>
+      <label>lat/lng: {{input value=lat class='coord'}}/{{input value=lng class='coord'}}</label>
+      <label>{{input type='checkbox' checked=isVisible}}visible</label>
+      <button {{action 'removeInfoWindow' this}}>x</button>
     </li>
   {{/each}}
   <button {{action 'addInfoWindow'}}>add</button>
