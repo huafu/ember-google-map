@@ -6,7 +6,7 @@ import helpers from './helpers';
  *
  * @class GoogleObjectProperty
  * @param {String} key
- * @param {{name: String, toGoogle: Function, fromGoogle: Function, read: Function, write: Function, event: String, cast: Function, readOnly: Boolean}} config
+ * @param {{name: String, toGoogle: Function, fromGoogle: Function, read: Function, write: Function, event: String, cast: Function, readOnly: Boolean, optionOnly: Boolean}} config
  * @constructor
  */
 var GoogleObjectProperty = function (key, config) {
@@ -21,7 +21,8 @@ var GoogleObjectProperty = function (key, config) {
     write:      config.write || null,
     event:      config.event || null,
     cast:       config.cast || null,
-    readOnly:   config.readOnly || false
+    readOnly:   config.readOnly || false,
+    optionOnly: config.optionOnly || false
   };
 };
 
@@ -76,6 +77,9 @@ GoogleObjectProperty.prototype.readGoogle = function (googleObject) {
   if (this._cfg.read) {
     val = this._cfg.read.call(this, googleObject);
   }
+  else if (this._cfg.optionOnly) {
+    return Object.create(null);
+  }
   else {
     val = googleObject['get' + this._cfg.name.capitalize()]();
   }
@@ -90,8 +94,11 @@ GoogleObjectProperty.prototype.readGoogle = function (googleObject) {
  * @param {Object} obj
  */
 GoogleObjectProperty.prototype.writeGoogle = function (googleObject, obj) {
-  var val, p, diff = false,
-    actual = this.readGoogle(googleObject);
+  var val, p, diff = false, actual;
+  if (this._cfg.optionOnly) {
+    return;
+  }
+  actual = this.readGoogle(googleObject);
   for (var i = 0; i < this._cfg.properties.length; i++) {
     p = this._cfg.properties[i];
     if ('' + obj[p] !== '' + actual[p]) {
@@ -121,7 +128,7 @@ GoogleObjectProperty.prototype.writeGoogle = function (googleObject, obj) {
 GoogleObjectProperty.prototype.link = function (emberObject, googleObject) {
   var _this = this, event, props, listeners;
   Ember.warn('linking a google object property but it has not been unlinked first', !this._listeners);
-  if (emberObject && googleObject) {
+  if (emberObject && googleObject && !this._cfg.optionOnly) {
     props = this._cfg.properties;
     event = this._cfg.event;
     // define our listeners
