@@ -1,3 +1,4 @@
+/* globals google */
 import Ember from 'ember';
 
 /**

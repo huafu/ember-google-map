@@ -34,7 +34,7 @@ var GoogleObjectMixin = Ember.Mixin.create(Ember.Evented, {
    */
   _compiledProperties: Ember.computed(function () {
     var def = this.get('googleProperties') || {},
-      res = [], d;
+      res = [], d, defined = Object.create(null);
     for (var k in def) {
       if (def.hasOwnProperty(k)) {
         d = def[k];
@@ -44,8 +44,16 @@ var GoogleObjectMixin = Ember.Mixin.create(Ember.Evented, {
         else if (d === true) {
           d = {};
         }
-        res.push(new GoogleObjectProperty(k, d));
+        res.push(d = new GoogleObjectProperty(k, d));
+        defined[d.getName()] = null;
         d = null;
+      }
+    }
+    // now read all properties of the object which name start with 'gopt_'
+    def = Ember.keys(this);
+    for (var i = 0; i < def.length; i++) {
+      if (/^gopt_/.test(def[i]) && (k = def[i].substr(5)) && !(k in defined)) {
+        res.push(new GoogleObjectProperty(def[i], {name: k, optionOnly: true}));
       }
     }
     return res;

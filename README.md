@@ -51,6 +51,11 @@ Here is what is working for now:
     * `description`: if using the default template
     * `templateName`: the name of the template to use with this info-window
 
+* Any component or Ember object corresponding to a Google object can have additional Google options (the hash given to the Google object constructor) defined: they have to be properties on the Ember object, prefixed with `gopt_`. For example to disable the controls of the map (which is `disableDefaultUI` Google option):
+```handlebars
+{{google-map ... gopt_disableDefaultUI=true}}
+```
+
 ## TODO:
 
 * Implement an auto-complete input for an address:

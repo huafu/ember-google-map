@@ -1,3 +1,4 @@
+/* globals google */
 import Ember from 'ember';
 import helpers from './helpers';
 
@@ -24,6 +25,15 @@ var GoogleObjectProperty = function (key, config) {
     readOnly:   config.readOnly || false,
     optionOnly: config.optionOnly || false
   };
+};
+
+/**
+ * Gets the name of the google property
+ *
+ * @returns {String}
+ */
+GoogleObjectProperty.prototype.getName = function(){
+  return this._cfg.name;
 };
 
 /**
@@ -198,41 +208,6 @@ GoogleObjectProperty.prototype.toOptions = function (source, options) {
   var val = this.toGoogleValue(source.getProperties(this._cfg.properties));
   if (val !== undefined) {
     options[this._cfg.name] = val;
-  }
-};
-
-/**
- * Start to listen for the properties corresponding to the google object options
- *
- * @method startListeningOptions
- * @param {Ember.Object} emberObject
- */
-GoogleObjectProperty.prototype.startListeningOptions = function (emberObject) {
-  var listener, props, _this = this;
-  Ember.warn('listening for option changes but it has not been detached first', !this._optionsListener);
-  if (emberObject) {
-    props = this._cfg.properties;
-    this._optionsListener = listener = function () {
-      Ember.run.once(this, 'trigger', 'googleOptionsDidChange');
-    };
-    props.forEach(function (name) {
-      emberObject.addObserver(name, this, listener);
-    }, this);
-    listener.unlink = function () {
-      props.forEach(function (name) {
-        emberObject.removeObserver(name, this, listener);
-      }, _this);
-    };
-  }
-};
-
-/**
- * Stop listening for google options related properties
- */
-GoogleObjectProperty.prototype.stopListeningOptions = function () {
-  if (this._optionsListener) {
-    this._optionsListener.unlink();
-    this._optionsListener = null;
   }
 };
 

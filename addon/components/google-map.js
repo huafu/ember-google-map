@@ -37,35 +37,25 @@ var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
    * @type {Object}
    */
   googleProperties: {
-    zoom:                   {event: 'zoom_changed', cast: helpers.cast.integer},
-    type:                   {
+    zoom:      {event: 'zoom_changed', cast: helpers.cast.integer},
+    type:      {
       name:       'mapTypeId',
       event:      'maptypeid_changed',
       toGoogle:   helpers._typeToGoogle,
       fromGoogle: helpers._typeFromGoogle
     },
-    'lat,lng':              {
+    'lat,lng': {
       name:       'center',
       event:      'center_changed',
       toGoogle:   helpers._latLngToGoogle,
       fromGoogle: helpers._latLngFromGoogle
-    },
-    // initialization options
-    backgroundColor:        {optionOnly: true},
-    disableDefaultUI:       {optionOnly: true},
-    disableDoubleClickZoom: {optionOnly: true},
-    draggable:              {optionOnly: true},
-    keyboardShortcuts:      {optionOnly: true},
-    mapTypeControl:         {optionOnly: true},
-    maxZoom:                {optionOnly: true},
-    minZoom:                {optionOnly: true},
-    overviewMapControl:     {optionOnly: true},
-    panControl:             {optionOnly: true},
-    rotateControl:          {optionOnly: true},
-    scaleControl:           {optionOnly: true},
-    scrollwheel:            {optionOnly: true},
-    streetViewControl:      {optionOnly: true},
-    zoomControl:            {optionOnly: true}
+    }
+    /**
+     * available options (prepend with `gopt_` to use):
+     * `backgroundColor`, `disableDefaultUI`, `disableDoubleClickZoom`, `draggable`, `keyboardShortcuts`,
+     * `mapTypeControl`, `maxZoom`, `minZoom`, `overviewMapControl`, `panControl`, `rotateControl`, `scaleControl`,
+     * `scrollwheel`, `streetViewControl`, `zoomControl`
+     */
   },
 
   /**
