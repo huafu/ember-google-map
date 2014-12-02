@@ -81,6 +81,13 @@ Here is what is working for now:
 
 * `npm install --save-dev ember-google-map`
 
+## Updating
+
+* From `0.0.8`, the component has been renamed to `ember-google-map`, so when importing in your js files, change `google-map/...` to `ember-google-map/...`:
+```javascript
+import {MAP_TYPES} from 'ember-google-map/components/google-map';
+```
+
 ## Google Api key configuration
 
 The google map script tag will be inserted in the head section of your index.html.
@@ -130,96 +137,7 @@ export default Ember.Controller.extend({
 
 ```
 
-
----
-
-### Here is another example, corresponding to what is on the [GitHub pages](http://huafu.github.io/ember-google-map/) of this repository:
-
-```js
-// app/controllers/application.js
-import Ember from 'ember';
-import {MAP_TYPES} from 'google-map/components/google-map';
-
-export default Ember.Controller.extend({
-  lat:         0,
-  lng:         0,
-  zoom:        5,
-  type:        'road',
-  mapTypes:    MAP_TYPES,
-  markers:     [
-    {title: 'one', lat: 5, lng: 5, description: 'hello 1', isDraggable: true},
-    {title: 'two', lat: 5, lng: 0, hasInfoWindow: false},
-    {title: 'three', lat: 0, lng: 5, infoWindowTemplateName: 'marker-info-window', helloWorld: 'Hello World!'}
-  ],
-  infoWindows: [
-    {title: 'some info window', lat: -5, lng: -5, description: 'hello everybody!'}
-  ],
-
-  actions: {
-    addMarker:        function () {
-      this.get('markers').addObject({title: 'new', lat: 0, lng: 0, isDraggable: true});
-    },
-    removeMarker:     function (marker) {
-      this.get('markers').removeObject(marker);
-    },
-    addInfoWindow:    function () {
-      this.get('infoWindows').addObject({title: 'new iw', description: 'hello', lat: -5, lng: 0});
-    },
-    removeInfoWindow: function (marker) {
-      this.get('infoWindows').removeObject(marker);
-    }
-  }
-});
-
-```
-
-```handlebars
-{{! app/templates/application.hbs }}
-
-{{google-map lat=lat lng=lng type=type zoom=zoom markers=markers infoWindows=infoWindows}}
-
-<h3>Map settings</h3>
-<div>
-  <label>Lat: {{input value=lat}}</label>
-  <label>Lng: {{input value=lng}}</label>
-  <label>Zoom: {{input value=zoom}}</label>
-  <label>Type: {{view Ember.Select content=mapTypes
-  optionLabelPath='content.label' optionValuePath='content.id' value=type}}</label>
-</div>
-<h3>Markers</h3>
-<ul>
-  {{#each markers}}
-    <li>
-      <label>Title: {{input value=title}}</label>
-      <label>Lat: {{input value=lat}}</label>
-      <label>Lng: {{input value=lng}}</label>
-      <label>Is visible: {{input type='checkbox' checked=isVisible}}</label>
-      <label>Is draggable: {{input type='checkbox' checked=isDraggable}}</label>
-      <label>Description: {{input value=description}}</label>
-      <button {{action 'removeMarker' this}}>remove</button>
-    </li>
-  {{/each}}
-  <button {{action 'addMarker'}}>add</button>
-</ul>
-
-<h3>Info windows</h3>
-<ul>
-  {{#each infoWindows}}
-    <li>
-      <label>Title: {{input value=title}}</label>
-      <label>Description: {{input value=description}}</label>
-      <label>Lat: {{input value=lat}}</label>
-      <label>Lng: {{input value=lng}}</label>
-      <label>Is visible: {{input type='checkbox' checked=isVisible}}</label>
-      <button {{action 'removeInfoWindow' this}}>remove</button>
-    </li>
-  {{/each}}
-  <button {{action 'addInfoWindow'}}>add</button>
-</ul>
-
-```
-
----
+### For a more complex example, visit the [GitHub page](http://huafu.github.io/ember-google-map/) of this repository.
 
 ## Authors
 
