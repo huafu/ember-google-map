@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {MAP_TYPES} from 'google-map/components/google-map';
+import {MAP_TYPES} from 'ember-google-map/components/google-map';
 
 export default Ember.Controller.extend({
   lat:         0,

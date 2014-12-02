@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { initialize } from 'google-map/initializers/google-map-component';
+import { initialize } from 'ember-google-map/initializers/google-map-component';
 
 var container, application;
 

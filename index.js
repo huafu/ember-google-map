@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'google-map',
+  name: 'ember-google-map',
 
   contentFor: function (type, config) {
     var src, content = '', google = config.googleMap || {}, params = [];

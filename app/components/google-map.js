@@ -1,3 +1,3 @@
-import GoogleMapComponent from 'google-map/components/google-map';
+import GoogleMapComponent from 'ember-google-map/components/google-map';
 
 export default GoogleMapComponent;
