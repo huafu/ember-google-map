@@ -6,6 +6,7 @@ An Ember addon to include a google-map Ember friendly component in your apps. Se
 
 [![NPM](https://nodei.co/npm/ember-google-map.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/ember-google-map/)
 
+
 ## What is implemented for now:
 
 Here is what is working for now:
@@ -56,6 +57,7 @@ Here is what is working for now:
 {{google-map ... gopt_disableDefaultUI=true}}
 ```
 
+
 ## TODO:
 
 * Implement an auto-complete input for an address:
@@ -88,7 +90,10 @@ Here is what is working for now:
 import {MAP_TYPES} from 'ember-google-map/components/google-map';
 ```
 
-## Google Api key configuration
+
+## Usage & configuration
+
+### Google Api key configuration
 
 The google map script tag will be inserted in the head section of your index.html.
 Also, if you define a `ENV.googleMap.key` variable in your Ember CLI project's configuration file (`config/environment.js`), it will be used as an API Key within this script tag.
@@ -100,8 +105,6 @@ ENV.googleMap = {
   key: 'AbCDeFgHiJkLmNoPqRsTuVwXyZ'
 };
 ```
-
-## Using
 
 ### Here is a very basic example:
 
@@ -139,9 +142,11 @@ export default Ember.Controller.extend({
 
 ### For a more complex example, visit the [GitHub page](http://huafu.github.io/ember-google-map/) of this repository.
 
+
 ## Authors
 
 * ![Huafu Gandon](https://s.gravatar.com/avatar/950590a0d4bc96f4a239cac955112eeb?s=24) [Huafu Gandon](https://github.com/huafu)
+
 
 ## Contributors
 
