@@ -1,20 +1,11 @@
-<div class="social-networks-bar">
-  <iframe
-      src="http://ghbtns.com/github-btn.html?user=huafu&repo=ember-google-map&type=watch&count=true"
-      allowtransparency="true" frameborder="0" scrolling="0" width="80" height="20"></iframe>
-  <iframe
-      src="//platform.twitter.com/widgets/follow_button.html?screen_name=HuafuGandon"
-      style="width: 240px; height: 20px;"
-      allowtransparency="true"
-      frameborder="0"
-      scrolling="no">
-  </iframe>
-</div>
-
-<h2 id="title">Dead simple example of using <a href="https://github.com/huafu/ember-google-map">ember-google-map</a>
+<h2 id="title">
+  Dead simple example of using <a href="https://github.com/huafu/ember-google-map">ember-google-map</a>
 </h2>
 
-{{google-map lat=lat lng=lng type=type zoom=zoom markers=markers infoWindows=infoWindows}}
+{{google-map
+    lat=lat lng=lng type=type zoom=zoom markers=markers
+    infoWindows=infoWindows infoWindowTemplateName='marker-info-window'
+    gopt_mapTypeControl=false gopt_backgroundColor='transparent'}}
 
 <h3>Map settings</h3>
 <div>
