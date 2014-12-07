@@ -1,4 +1,13 @@
 
+0.0.9 / 2014-12-07
+==================
+
+  * [MISC] Using dynamic views
+  * [FIX] Using dedicated array controllers
+  * [MISC] Moved everything directly in the app tree
+  * [MISC] Updated to EmberCLI 1.3
+  * [MISC] Updated readme
+
 0.0.8 / 2014-12-02
 ==================
 
