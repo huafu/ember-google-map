@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import {MAP_TYPES} from 'ember-google-map/components/google-map';
+import {MAP_TYPES} from '../components/google-map';
 
 export default Ember.Controller.extend({
   lat:         0,
@@ -15,6 +15,8 @@ export default Ember.Controller.extend({
   infoWindows: [
     {title: 'some info window', lat: -5, lng: -5, description: 'hello everybody!'}
   ],
+
+  selectView: Ember.Select,
 
   actions: {
     addMarker:        function () {

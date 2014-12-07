@@ -11,7 +11,7 @@
 <div>
   <label>center lat/lng: {{input value=lat class='coord'}}/{{input value=lng class='coord'}}</label>
   <label>zoom: {{input value=zoom}}</label>
-  <label>type: {{view Ember.Select content=mapTypes
+  <label>type: {{view selectView content=mapTypes
   optionLabelPath='content.label' optionValuePath='content.id' value=type}}</label>
 </div>
 <h3>Markers</h3>

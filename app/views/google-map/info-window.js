@@ -1,8 +1,8 @@
 /* global google */
 import Ember from 'ember';
-import helpers from '../core/helpers';
-import GoogleObjectMixin from '../mixins/google-object';
-import MarkerView from '../views/marker';
+import helpers from 'ember-google-map/core/helpers';
+import GoogleObjectMixin from 'ember-google-map/mixins/google-object';
+import MarkerView from './marker';
 
 var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
   // will be either the marker using us, or the component if this is a detached info-window

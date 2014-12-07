@@ -1,11 +1,7 @@
 <div class="map-canvas"></div>
 <div class="markers" style="display: none;">
   <ul>
-    {{!
-    FIXME: itemViewClass whould be bound to the markerViewClass of the componenet
-    but for some reason it is failing :-(
-     }}
-    {{#each markers itemController=markerController itemView="google-map/marker"}}
+    {{#each marker in markers itemController=markerController itemView=markerViewClass}}
       <li>{{title}} @ {{lat}},{{lng}}</li>
       {{#if view.hasInfoWindow}}
         {{view 'google-map/info-window'}}
@@ -13,10 +9,6 @@
     {{/each}}
   </ul>
   <ul>
-    {{!
-    FIXME: itemViewClass whould be bound to the infoWindowViewClass of the componenet
-    but for some reason it is failing :-(
-     }}
-    {{each infoWindows itemController=infoWindowController itemView="google-map/info-window"}}
+    {{each infoWindows itemController=infoWindowController itemView=infoWindowViewClass}}
   </ul>
 </div>

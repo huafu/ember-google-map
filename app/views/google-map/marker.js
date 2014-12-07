@@ -1,7 +1,7 @@
 /* global google */
 import Ember from 'ember';
-import helpers from '../core/helpers';
-import GoogleObjectMixin from '../mixins/google-object';
+import helpers from 'ember-google-map/core/helpers';
+import GoogleObjectMixin from 'ember-google-map/mixins/google-object';
 
 var MarkerView = Ember.View.extend(GoogleObjectMixin, {
   googleProperties:       {
