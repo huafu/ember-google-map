@@ -99,7 +99,20 @@ var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
    * @property markers
    * @type {Array.<{lat: Number, lng: Number, title: String}>}
    */
-  markers:                      null,
+  markers: null,
+
+  /**
+   * The array controller holding the markers
+   * @property _markers
+   * @type {Ember.ArrayController}
+   * @private
+   */
+  _markers: Ember.computed(function () {
+    return this.container.lookupFactory('controller:google-map/markers').create({
+      parentController: this
+    });
+  }).readOnly(),
+
   /**
    * Controller to use for each marker
    * @property markerController
@@ -135,7 +148,20 @@ var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
    * @property infoWindows
    * @type {Array.<{lat: Number, lng: Number, title: String, description: String}>}
    */
-  infoWindows:            null,
+  infoWindows: null,
+
+  /**
+   * The array controller holding the info-windows
+   * @property _infoWindows
+   * @type {Ember.ArrayController}
+   * @private
+   */
+  _infoWindows: Ember.computed(function () {
+    return this.container.lookupFactory('controller:google-map/info-windows').create({
+      parentController: this
+    });
+  }).readOnly(),
+
   /**
    * Controller for each info-window
    * @property infoWindowController

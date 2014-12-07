@@ -1,7 +1,7 @@
 <div class="map-canvas"></div>
 <div class="markers" style="display: none;">
   <ul>
-    {{#each marker in markers itemController=markerController itemView=markerViewClass}}
+    {{#each _markers itemView='google-map/marker'}}
       <li>{{title}} @ {{lat}},{{lng}}</li>
       {{#if view.hasInfoWindow}}
         {{view 'google-map/info-window'}}
@@ -9,6 +9,6 @@
     {{/each}}
   </ul>
   <ul>
-    {{each infoWindows itemController=infoWindowController itemView=infoWindowViewClass}}
+    {{each _infoWindows itemView='google-map/info-window'}}
   </ul>
 </div>
