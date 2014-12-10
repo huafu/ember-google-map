@@ -143,6 +143,47 @@ var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
   markerHasInfoWindow:          true,
 
   /**
+   * List of polylines to handle/show on the map
+   * @property polylines
+   * @type {Array.<{lat: Number, lng: Number, title: String}>}
+   */
+  polylines: null,
+
+  /**
+   * The array controller holding the polylines
+   * @property _polylines
+   * @type {Ember.ArrayController}
+   * @private
+   */
+  _polylines: Ember.computed(function () {
+    return this.container.lookupFactory('controller:google-map/polylines').create({
+      parentController: this
+    });
+  }).readOnly(),
+
+  /**
+   * Controller to use for each polyline
+   * @property polylineController
+   * @type {String}
+   * @default 'google-map/polyline'
+   */
+  polylineController:         'google-map/polyline',
+  /**
+   * Controller to use for each polyline's path
+   * @property polylinePathController
+   * @type {String}
+   * @default 'google-map/polyline-path'
+   */
+  polylinePathController: 'google-map/polyline-path',
+  /**
+   * View to use for each polyline
+   * @property polylineViewClass
+   * @type {String}
+   * @default 'google-map/polyline'
+   */
+  polylineViewClass:          'google-map/polyline',
+
+  /**
    * Array of al info-windows to handle/show (independent from the markers' info-windows)
    * @property infoWindows
    * @type {Array.<{lat: Number, lng: Number, title: String, description: String}>}

@@ -5,13 +5,14 @@
 {{google-map
     lat=lat lng=lng type=type zoom=zoom markers=markers
     infoWindows=infoWindows markerInfoWindowTemplateName='marker-info-window'
+    polylines=polylines
     gopt_mapTypeControl=false gopt_backgroundColor='transparent'}}
 
 <h3>Map settings</h3>
 <div>
   <label>center lat/lng: {{input value=lat class='coord'}}/{{input value=lng class='coord'}}</label>
   <label>zoom: {{input value=zoom}}</label>
-  <label>type: {{view selectView content=mapTypes
+  <label>type: {{view 'select' content=mapTypes
   optionLabelPath='content.label' optionValuePath='content.id' value=type}}</label>
 </div>
 <h3>Markers</h3>
@@ -26,8 +27,8 @@
       <button {{action 'removeMarker' this}}>x</button>
     </li>
   {{/each}}
-  <button {{action 'addMarker'}}>add</button>
 </ul>
+<button {{action 'addMarker'}}>add</button>
 
 <h3>Info windows</h3>
 <ul class="info-windows">
@@ -40,5 +41,27 @@
       <button {{action 'removeInfoWindow' this}}>x</button>
     </li>
   {{/each}}
-  <button {{action 'addInfoWindow'}}>add</button>
 </ul>
+<button {{action 'addInfoWindow'}}>add</button>
+
+<h3>Polylines</h3>
+<ul class="polylines">
+  {{#each polylines}}
+    <li>
+      <label>{{input type='checkbox' checked=isVisible}}visible</label> |
+      <label>{{input type='checkbox' checked=isDraggable}}draggable</label>
+      <label>{{input type='checkbox' checked=isEditable}}editable</label>
+      <button {{action 'removePolyline' this}}>x</button>
+      <ul class="plyline-path">
+        {{#each entry in path}}
+          <li>
+          <label>lat/lng: {{input value=entry.lat class='coord'}}/{{input value=entry.lng class='coord'}}</label>
+            <button {{action 'removePolylinePathItem' path entry}}>x</button>
+          </li>
+        {{/each}}
+      </ul>
+      <button {{action 'addPolylinePathItem' path}}>add</button>
+    </li>
+  {{/each}}
+</ul>
+<button {{action 'addPolyline'}}>add</button>

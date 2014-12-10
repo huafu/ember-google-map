@@ -3,6 +3,9 @@ import Ember from 'ember';
 import helpers from 'ember-google-map/core/helpers';
 import GoogleObjectMixin from 'ember-google-map/mixins/google-object';
 
+var alias = Ember.computed.alias;
+var oneWay = Ember.computed.oneWay;
+
 var MarkerView = Ember.View.extend(GoogleObjectMixin, {
   googleProperties:       {
     isClickable: {name: 'clickable', event: 'clickable_changed'},
@@ -29,7 +32,9 @@ var MarkerView = Ember.View.extend(GoogleObjectMixin, {
         dblclick:   'handleMarkerEvent',
         drag:       'handleMarkerEvent',
         dragend:    'handleMarkerEvent',
+        dragstart:  'handleMarkerEvent',
         mousedown:  'handleMarkerEvent',
+        //mousemove:  'handleMarkerEvent',
         mouseout:   'handleMarkerEvent',
         mouseover:  'handleMarkerEvent',
         mouseup:    'handleMarkerEvent',
@@ -40,22 +45,22 @@ var MarkerView = Ember.View.extend(GoogleObjectMixin, {
   }),
 
   // aliased from controller so that if they are not defined they use the values from the controller
-  title:                  Ember.computed.alias('controller.title'),
-  opacity:                Ember.computed.alias('controller.opacity'),
-  zIndex:                 Ember.computed.alias('controller.zIndex'),
-  isVisible:              Ember.computed.alias('controller.isVisible'),
-  isDraggable:            Ember.computed.alias('controller.isDraggable'),
-  isClickable:            Ember.computed.alias('controller.isClickable'),
-  icon:                   Ember.computed.alias('controller.icon'),
-  lat:                    Ember.computed.alias('controller.lat'),
-  lng:                    Ember.computed.alias('controller.lng'),
+  title:                  alias('controller.title'),
+  opacity:                alias('controller.opacity'),
+  zIndex:                 alias('controller.zIndex'),
+  isVisible:              alias('controller.isVisible'),
+  isDraggable:            alias('controller.isDraggable'),
+  isClickable:            alias('controller.isClickable'),
+  icon:                   alias('controller.icon'),
+  lat:                    alias('controller.lat'),
+  lng:                    alias('controller.lng'),
 
   // get the info window template name from the component or own controller
   infoWindowTemplateName: Ember.computed('controller.infoWindowTemplateName', 'parentView.markerInfoWindowTemplateName', function () {
     return this.get('controller.infoWindowTemplateName') || this.get('parentView.markerInfoWindowTemplateName');
   }).readOnly(),
-  infoWindowAnchor:       Ember.computed.oneWay('googleObject'),
-  isInfoWindowVisible:    Ember.computed.alias('controller.isInfoWindowVisible'),
+  infoWindowAnchor:       oneWay('googleObject'),
+  isInfoWindowVisible:    alias('controller.isInfoWindowVisible'),
   hasInfoWindow:          Ember.computed('parentView.markerHasInfoWindow', 'controller.hasInfoWindow', function () {
     var fromCtrl = this.get('controller.hasInfoWindow');
     if (fromCtrl === null || fromCtrl === undefined) {
@@ -65,7 +70,7 @@ var MarkerView = Ember.View.extend(GoogleObjectMixin, {
   }).readOnly(),
 
   // bound to the google map object of the component
-  map:                    Ember.computed.oneWay('parentView.map'),
+  map:                    oneWay('parentView.map'),
 
   initGoogleMarker: Ember.on('didInsertElement', function () {
     var opt;

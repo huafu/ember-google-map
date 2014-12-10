@@ -15,8 +15,9 @@ export default Ember.Controller.extend({
   infoWindows: [
     {title: 'some info window', lat: -5, lng: -5, description: 'hello everybody!'}
   ],
-
-  selectView: Ember.Select,
+  polylines: [
+    {editable: true, path: [{lat: -2,lng:2}, {lat: -3, lng:2}, {lat:-4, lng: 1}]}
+  ],
 
   actions: {
     addMarker:        function () {

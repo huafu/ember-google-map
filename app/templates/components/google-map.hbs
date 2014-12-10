@@ -1,5 +1,5 @@
 <div class="map-canvas"></div>
-<div class="markers" style="display: none;">
+<div style="display: none;">
   <ul>
     {{#each _markers itemView=markerViewClass}}
       <li>{{title}} @ {{lat}},{{lng}}</li>
@@ -10,5 +10,8 @@
   </ul>
   <ul>
     {{each _infoWindows itemView=infoWindowViewClass}}
+  </ul>
+  <ul>
+    {{each _polylines itemView=polylineViewClass}}
   </ul>
 </div>
