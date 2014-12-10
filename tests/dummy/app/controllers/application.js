@@ -26,7 +26,7 @@ export default Ember.Controller.extend({
 
   polylines: [
     {
-      editable:      true,
+      isEditable:    true,
       path:          [
         {lat: 2.8, lng: -3.6}, {lat: 1.5, lng: 0.2}, {lat: -3, lng: 2}, {lat: -5.5, lng: -0.8},
         {lat: -5.9, lng: -8.9}, {lat: -3.4, lng: -11.6}, {lat: 1.2, lng: -11.1}, {lat: 2.8, lng: -7}
@@ -51,6 +51,25 @@ export default Ember.Controller.extend({
 
     removeInfoWindow: function (marker) {
       this.get('infoWindows').removeObject(marker);
+    },
+
+    addPolyline: function () {
+      this.get('polylines').addObject({
+        isEditable: false,
+        path:       [{lat: 0, lng: 0}, {lat: 1, lng: 0}]
+      });
+    },
+
+    removePolyline: function (polyline) {
+      this.get('polylines').removeObject(polyline);
+    },
+
+    addPolylinePathItem: function (path) {
+      path.addObject({lat: 1, lng: 1});
+    },
+
+    removePolylinePathItem: function (path, item) {
+      path.removeObject(item);
     }
   }
 });

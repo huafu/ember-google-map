@@ -6,19 +6,20 @@ var EMPTY = [];
 export default Ember.Mixin.create({
 
   googleArray: Ember.computed(function (key, value) {
+    var array;
     if (arguments.length > 1) {
       // set
-      value = value ? value.getArray().slice() : [];
+      array = value ? value.getArray().slice() : [];
       this.set('observersEnabled', false);
       this.replace(0, this.get('length') || 0, this._startObservingEmberProperties(
-        this._google2ember(value, true), true
+        this._google2ember(array, true), true
       ));
       this.set('observersEnabled', true);
       return value;
     }
     else {
       return new google.maps.MVCArray(
-        this._ember2google(this._startObservingEmberProperties(this.toArray(), true).slice(), true)
+        this._ember2google(this._startObservingEmberProperties(this.toArray().slice(), true), true)
       );
     }
   }),
@@ -95,7 +96,7 @@ export default Ember.Mixin.create({
     return object;
   },
 
-  _handleObjectPropertyChange: function (sender, key, value) {
+  _handleObjectPropertyChange: function (sender/*, key, value*/) {
     var index = -1, array, googleArray;
     if (this.get('observersEnabled')) {
       this.set('observersEnabled', false);
@@ -114,10 +115,12 @@ export default Ember.Mixin.create({
 
   observersEnabled: Ember.computed(function (key, value) {
     if (arguments.length > 1) {
-      // set
-      this.incrementProperty('observersEnabledLevel', value ? 1 : -1);
+      value = this.incrementProperty('observersEnabledLevel', value ? 1 : -1);
     }
-    return (this.get('observersEnabledLevel') === 0);
+    else {
+      value = this.get('observersEnabledLevel');
+    }
+    return (value === 0);
   }),
 
   setupGoogleArray: Ember.observer('googleArray', Ember.on('init', function () {
@@ -126,9 +129,9 @@ export default Ember.Mixin.create({
     if (googleArray) {
       // setup observers/events
       this._googleListeners = {
-        insertAt: googleArray.addListener('insert_at', Ember.run.bind(this, 'handleGoogleInsertAt')),
-        removeAt: googleArray.addListener('remove_at', Ember.run.bind(this, 'handleGoogleRemoveAt')),
-        setAt:    googleArray.addListener('set_at', Ember.run.bind(this, 'handleGoogleSetAt'))
+        insertAt: googleArray.addListener('insert_at', this.handleGoogleInsertAt.bind(this)),
+        removeAt: googleArray.addListener('remove_at', this.handleGoogleRemoveAt.bind(this)),
+        setAt:    googleArray.addListener('set_at', this.handleGoogleSetAt.bind(this))
       };
     }
   })),
