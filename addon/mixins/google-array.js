@@ -10,17 +10,22 @@ export default Ember.Mixin.create({
       // set
       value = value ? value.getArray().slice() : [];
       this.set('observersEnabled', false);
-      this.replace(0, this.get('length') || 0, this._google2ember(value, true));
+      this.replace(0, this.get('length') || 0, this._startObservingEmberProperties(
+        this._google2ember(value, true), true
+      ));
       this.set('observersEnabled', true);
       return value;
     }
     else {
-      return new google.maps.MVCArray(this._ember2google(this.toArray().slice()));
+      return new google.maps.MVCArray(
+        this._ember2google(this._startObservingEmberProperties(this.toArray(), true).slice(), true)
+      );
     }
   }),
 
-  emberItemFactory:  null,
-  googleItemFactory: null,
+  emberItemFactory:       null,
+  googleItemFactory:      null,
+  observeEmberProperties: null,
 
   _google2ember: function (item, isArray) {
     if (this.emberItemFactory) {
@@ -48,6 +53,59 @@ export default Ember.Mixin.create({
       }
     }
     return item;
+  },
+
+  _startObservingEmberProperties: function (object, isArray) {
+    var props = this.get('observeEmberProperties'), emberArray = this;
+    if (props && props.length) {
+      var one = function (obj) {
+        for (var i = 0; i < props.length; i++) {
+          Ember.addObserver(obj, props[i], emberArray, '_handleObjectPropertyChange');
+        }
+      };
+      if (isArray) {
+        for (var i = 0; i < object.length; i++) {
+          one(object[i]);
+        }
+      }
+      else {
+        one(object);
+      }
+    }
+    return object;
+  },
+
+  _stopObservingEmberProperties: function (object, isArray) {
+    var props = this.get('observeEmberProperties'), emberArray = this;
+    if (props && props.length) {
+      var one = function (obj) {
+        for (var i = 0; i < props.length; i++) {
+          Ember.removeObserver(obj, props[i], emberArray, '_handleObjectPropertyChange');
+        }
+      };
+      if (isArray) {
+        for (var i = 0; i < object.length; i++) {
+          one(object[i]);
+        }
+      }
+      else {
+        one(object);
+      }
+    }
+    return object;
+  },
+
+  _handleObjectPropertyChange: function (sender, key, value) {
+    var index = -1, array, googleArray;
+    if (this.get('observersEnabled')) {
+      this.set('observersEnabled', false);
+      array = this.toArray();
+      googleArray = this.get('googleArray');
+      while ((index = array.indexOf(sender, index + 1)) !== -1) {
+        googleArray.setAt(index, this._ember2google(array[index]));
+      }
+      this.set('observersEnabled', true);
+    }
   },
 
   googleListenersEnabled: null,
@@ -85,12 +143,15 @@ export default Ember.Mixin.create({
       }
       this._googleListeners = null;
     }
+    this._stopObservingEmberProperties(this.toArray(), true);
   })),
 
   handleGoogleInsertAt: function (index) {
     if (this.get('observersEnabled')) {
       this.set('observersEnabled', false);
-      this.replace(index, 0, [this._google2ember(this.get('googleArray').getAt(index))]);
+      this.replace(index, 0, [
+        this._startObservingEmberProperties(this._google2ember(this.get('googleArray').getAt(index)))
+      ]);
       this.set('observersEnabled', true);
     }
   },
@@ -98,6 +159,7 @@ export default Ember.Mixin.create({
   handleGoogleRemoveAt: function (index) {
     if (this.get('observersEnabled')) {
       this.set('observersEnabled', false);
+      this._stopObservingEmberProperties(this.objectAt(index));
       this.replace(index, 1, EMPTY);
       this.set('observersEnabled', true);
     }
@@ -106,7 +168,10 @@ export default Ember.Mixin.create({
   handleGoogleSetAt: function (index) {
     if (this.get('observersEnabled')) {
       this.set('observersEnabled', false);
-      this.replace(index, 1, [this._google2ember(this.get('googleArray').getAt(index))]);
+      this._stopObservingEmberProperties(this.objectAt(index));
+      this.replace(index, 1, [
+        this._startObservingEmberProperties(this._google2ember(this.get('googleArray').getAt(index)))
+      ]);
       this.set('observersEnabled', true);
     }
   },
@@ -118,9 +183,12 @@ export default Ember.Mixin.create({
       this.set('observersEnabled', false);
       googleArray = this.get('googleArray');
       for (i = 0; i < removeCount; i++) {
+        this._stopObservingEmberProperties(this.objectAt(start));
         googleArray.removeAt(start);
       }
-      slice = this._ember2google(this.toArray().slice(start, start + addCount), true);
+      slice = this._ember2google(
+        this._startObservingEmberProperties(this.toArray().slice(start, start + addCount), true), true
+      );
       while (slice.length) {
         googleArray.insertAt(start, slice.pop());
       }
