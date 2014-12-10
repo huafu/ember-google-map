@@ -20,6 +20,7 @@ Here is what is working for now:
     markerInfoWindowTemplateName='some/custom/template'
     infoWindows=infoWindowsArray
     infoWindowTemplateName='another/custom/template'
+    polylines=polylinesArray
 }}
 ```
 
@@ -51,6 +52,15 @@ Here is what is working for now:
     * `title`: if using the default template
     * `description`: if using the default template
     * `templateName`: the name of the template to use with this info-window
+* `polylines`: bindings to an array of polylines
+    * `isVisible`: whether the polyline is visible
+    * `isEditable`: whether the polyline is editable
+    * `isDraggable`: whether the polyline is draggable
+    * `strokeColor`: the color of the line
+    * `strokeWeight`: the weight of the line
+    * `strokeOpacity`: the opacity of the line
+    * `zIndex`: polyline's z-index
+    * `path`: binding to an array of lat/lng array **(required)**
 
 * Any component or Ember object corresponding to a Google object can have additional Google options (the hash given to the Google object constructor) defined: they have to be properties on the Ember object, prefixed with `gopt_`. For example to disable the controls of the map (which is `disableDefaultUI` Google option):
 ```handlebars

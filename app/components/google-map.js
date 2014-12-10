@@ -167,7 +167,7 @@ var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
    * @type {String}
    * @default 'google-map/polyline'
    */
-  polylineController:         'google-map/polyline',
+  polylineController:     'google-map/polyline',
   /**
    * Controller to use for each polyline's path
    * @property polylinePathController
@@ -181,7 +181,7 @@ var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
    * @type {String}
    * @default 'google-map/polyline'
    */
-  polylineViewClass:          'google-map/polyline',
+  polylineViewClass:      'google-map/polyline',
 
   /**
    * Array of al info-windows to handle/show (independent from the markers' info-windows)
