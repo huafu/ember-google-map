@@ -21,6 +21,7 @@ Here is what is working for now:
     infoWindows=infoWindowsArray
     infoWindowTemplateName='another/custom/template'
     polylines=polylinesArray
+    circles=circlesArray
 }}
 ```
 
@@ -61,6 +62,18 @@ Here is what is working for now:
     * `strokeOpacity`: the opacity of the line
     * `zIndex`: polyline's z-index
     * `path`: binding to an array of lat/lng array **(required)**
+* `circles`: bindings to an array of circles
+    * `lat` and `lng`: coordinates of the circle's center **(required)**
+    * `radius`: radius of the circle **(required)**
+    * `isVisible`: whether the circle is visible
+    * `isEditable`: whether the circle is editable
+    * `isDraggable`: whether the circle is draggable
+    * `strokeColor`: the color of the circle border
+    * `strokeOpacity`: the opacity of the circle border
+    * `strokeWeight`: the weight of the circle border
+    * `fillColor`: the fill color of the circle
+    * `fillOpacity`: the fill opacity of the circle
+    * `zIndex`: circle's z-index
 
 * Any component or Ember object corresponding to a Google object can have additional Google options (the hash given to the Google object constructor) defined: they have to be properties on the Ember object, prefixed with `gopt_`. For example to disable the controls of the map (which is `disableDefaultUI` Google option):
 ```handlebars
