@@ -1,12 +1,13 @@
 <h2 id="title">
-  Dead simple example of using <a href="https://github.com/huafu/ember-google-map">ember-google-map</a>
+  Simple example of using
+  <a href="https://github.com/huafu/ember-google-map">ember-google-map</a>
 </h2>
 
 {{google-map
-    lat=lat lng=lng type=type zoom=zoom markers=markers
-    infoWindows=infoWindows markerInfoWindowTemplateName='marker-info-window'
-    polylines=polylines
-    gopt_mapTypeControl=false gopt_backgroundColor='transparent'}}
+  lat=lat lng=lng type=type zoom=zoom markers=markers
+  infoWindows=infoWindows markerInfoWindowTemplateName='marker-info-window'
+  polylines=polylines circles=circles
+  gopt_mapTypeControl=false gopt_backgroundColor='transparent'}}
 
 <h3>Map settings</h3>
 <div>
@@ -15,53 +16,79 @@
   <label>type: {{view 'select' content=mapTypes
   optionLabelPath='content.label' optionValuePath='content.id' value=type}}</label>
 </div>
+
 <h3>Markers</h3>
-<ul class="markers">
-  {{#each markers}}
-    <li>
-      <label>title: {{input value=title}}</label>
-      <label>desc.: {{input value=description}}</label>
-      <label>lat/lng: {{input value=lat class='coord'}}/{{input value=lng class='coord'}}</label>
-      <label>{{input type='checkbox' checked=isVisible}}visible</label> |
-      <label>{{input type='checkbox' checked=isDraggable}}draggable</label>
-      <button {{action 'removeMarker' this}}>x</button>
-    </li>
-  {{/each}}
-</ul>
-<button {{action 'addMarker'}}>add</button>
+<div>
+  <ul class="markers">
+    {{#each markers}}
+      <li>
+        <label>title: {{input value=title}}</label>
+        <label>desc.: {{input value=description}}</label>
+        <label>lat/lng: {{input value=lat class='coord'}}/{{input value=lng class='coord'}}</label>
+        <label>{{input type='checkbox' checked=isVisible}}visible</label> |
+        <label>{{input type='checkbox' checked=isDraggable}}draggable</label>
+        <button {{action 'removeMarker' this}}>x</button>
+      </li>
+    {{/each}}
+  </ul>
+  <button {{action 'addMarker'}}>add</button>
+</div>
 
 <h3>Info windows</h3>
-<ul class="info-windows">
-  {{#each infoWindows}}
-    <li>
-      <label>title: {{input value=title}}</label>
-      <label>desc.: {{input value=description}}</label>
-      <label>lat/lng: {{input value=lat class='coord'}}/{{input value=lng class='coord'}}</label>
-      <label>{{input type='checkbox' checked=isVisible}}visible</label>
-      <button {{action 'removeInfoWindow' this}}>x</button>
-    </li>
-  {{/each}}
-</ul>
-<button {{action 'addInfoWindow'}}>add</button>
+<div>
+  <ul class="info-windows">
+    {{#each infoWindows}}
+      <li>
+        <label>title: {{input value=title}}</label>
+        <label>desc.: {{input value=description}}</label>
+        <label>lat/lng: {{input value=lat class='coord'}}/{{input value=lng class='coord'}}</label>
+        <label>{{input type='checkbox' checked=isVisible}}visible</label>
+        <button {{action 'removeInfoWindow' this}}>x</button>
+      </li>
+    {{/each}}
+  </ul>
+  <button {{action 'addInfoWindow'}}>add</button>
+</div>
 
 <h3>Polylines</h3>
-<ul class="polylines">
-  {{#each polylines}}
-    <li>
-      <label>{{input type='checkbox' checked=isVisible}}visible</label> |
-      <label>{{input type='checkbox' checked=isDraggable}}draggable</label>
-      <label>{{input type='checkbox' checked=isEditable}}editable</label>
-      <button {{action 'removePolyline' this}}>x</button>
-      <ul class="plyline-path">
-        {{#each entry in path}}
-          <li>
-          <label>lat/lng: {{input value=entry.lat class='coord'}}/{{input value=entry.lng class='coord'}}</label>
-            <button {{action 'removePolylinePathItem' path entry}}>x</button>
-          </li>
-        {{/each}}
-      </ul>
-      <button {{action 'addPolylinePathItem' path}}>add</button>
-    </li>
-  {{/each}}
-</ul>
-<button {{action 'addPolyline'}}>add</button>
+<div>
+  <ul class="polylines">
+    {{#each polylines}}
+      <li>
+        <label>{{input type='checkbox' checked=isVisible}}visible</label> |
+        <label>{{input type='checkbox' checked=isDraggable}}draggable</label>
+        <label>{{input type='checkbox' checked=isEditable}}editable</label>
+        <button {{action 'removePolyline' this}}>x</button>
+        <ul class="plyline-path">
+          {{#each entry in path}}
+            <li>
+              <label>lat/lng: {{input value=entry.lat class='coord'}}
+                /{{input value=entry.lng class='coord'}}</label>
+              <button {{action 'removePolylinePathItem' path entry}}>x</button>
+            </li>
+          {{/each}}
+        </ul>
+        <button {{action 'addPolylinePathItem' path}}>add</button>
+      </li>
+    {{/each}}
+  </ul>
+  <button {{action 'addPolyline'}}>add</button>
+</div>
+
+<h3>Circles</h3>
+<div>
+  <ul class="circles">
+    {{#each circles}}
+      <li>
+        <label>center lat/lng: {{input value=lat class='coord'}}
+          /{{input value=lng class='coord'}}</label>
+        <label>radius: {{input value=radius class='coord'}}</label>
+        <label>{{input type='checkbox' checked=isVisible}}visible</label> |
+        <label>{{input type='checkbox' checked=isDraggable}}draggable</label> |
+        <label>{{input type='checkbox' checked=isEditable}}editable</label>
+        <button {{action 'removeCircle' this}}>x</button>
+      </li>
+    {{/each}}
+  </ul>
+  <button {{action 'addCircle'}}>add</button>
+</div>

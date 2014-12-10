@@ -145,7 +145,7 @@ var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
   /**
    * List of polylines to handle/show on the map
    * @property polylines
-   * @type {Array.<{lat: Number, lng: Number, title: String}>}
+   * @type {Array.<{path: Array.<{lat: Number, lng: Number}>>}
    */
   polylines: null,
 
@@ -182,6 +182,40 @@ var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
    * @default 'google-map/polyline'
    */
   polylineViewClass:      'google-map/polyline',
+
+  /**
+   * List of circles to handle/show on the map
+   * @property circles
+   * @type {Array.<{lat: Number, lng: Number, radius: Number}>}
+   */
+  circles: null,
+
+  /**
+   * The array controller holding the circles
+   * @property _circles
+   * @type {Ember.ArrayController}
+   * @private
+   */
+  _circles: Ember.computed(function () {
+    return this.container.lookupFactory('controller:google-map/circles').create({
+      parentController: this
+    });
+  }).readOnly(),
+
+  /**
+   * Controller to use for each circle
+   * @property circleController
+   * @type {String}
+   * @default 'google-map/circle'
+   */
+  circleController: 'google-map/circle',
+  /**
+   * View to use for each circle
+   * @property circleViewClass
+   * @type {String}
+   * @default 'google-map/circle'
+   */
+  circleViewClass:  'google-map/circle',
 
   /**
    * Array of al info-windows to handle/show (independent from the markers' info-windows)

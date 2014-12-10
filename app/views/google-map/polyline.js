@@ -19,8 +19,8 @@ var PolylineView = Ember.View.extend(GoogleObjectMixin, {
     zIndex:        {optionOnly: true, cast: helpers.cast.integer},
     map:           {readOnly: true},
     strokeColor:   {optionOnly: true},
-    strokeWeight:  {optionOnly: true},
-    strokeOpacity: {optionOnly: true}
+    strokeWeight:  {optionOnly: true, cast: helpers.cast.number},
+    strokeOpacity: {optionOnly: true, cast: helpers.cast.number}
   },
 
   googleEvents:  Ember.computed('controller.googleEvents', function (key, value) {

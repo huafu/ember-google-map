@@ -36,6 +36,15 @@ export default Ember.Controller.extend({
     }
   ],
 
+  circles: [
+    {
+      isEditable: true,
+      lat:        -4.4,
+      lng:        6.8,
+      radius:     314907
+    }
+  ],
+
   actions: {
     addMarker: function () {
       this.get('markers').addObject({title: 'new', lat: 0, lng: 0, isDraggable: true});
@@ -43,6 +52,14 @@ export default Ember.Controller.extend({
 
     removeMarker: function (marker) {
       this.get('markers').removeObject(marker);
+    },
+
+    addCircle: function () {
+      this.get('circles').addObject({lat: 0, lng: 0, radius: 300000, isEditable: true});
+    },
+
+    removeCircle: function (circle) {
+      this.get('circles').removeObject(circle);
     },
 
     addInfoWindow: function () {

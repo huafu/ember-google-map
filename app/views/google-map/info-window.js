@@ -4,9 +4,13 @@ import helpers from 'ember-google-map/core/helpers';
 import GoogleObjectMixin from 'ember-google-map/mixins/google-object';
 import MarkerView from './marker';
 
+var computed = Ember.computed;
+var alias = computed.alias;
+var oneWay = computed.oneWay;
+
 var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
   // will be either the marker using us, or the component if this is a detached info-window
-  templateName: Ember.computed('parentView.infoWindowTemplateName', 'controller.templateName', function () {
+  templateName: computed('parentView.infoWindowTemplateName', 'controller.templateName', function () {
     return this.get('controller.templateName') || this.get('parentView.infoWindowTemplateName');
   }).readOnly(),
 
@@ -23,7 +27,7 @@ var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
   },
 
   // merge from whatever defined from the controller so we can handle events locally if needed
-  googleEvents:     Ember.computed('controller.googleEvents', function (key, value) {
+  googleEvents:     computed('controller.googleEvents', function (key, value) {
     if (arguments.length < 2) {
       value = Ember.merge({
         closeclick: 'handleInfoWindowEvent',
@@ -34,12 +38,12 @@ var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
   }),
 
   // aliased from controller so that if they are not defined they use the values from the controller
-  zIndex:           Ember.computed.alias('controller.zIndex'),
-  lat:              Ember.computed.alias('controller.lat'),
-  lng:              Ember.computed.alias('controller.lng'),
-  anchor:           Ember.computed.oneWay('parentView.infoWindowAnchor'),
+  zIndex:           alias('controller.zIndex'),
+  lat:              alias('controller.lat'),
+  lng:              alias('controller.lng'),
+  anchor:           oneWay('parentView.infoWindowAnchor'),
 
-  visible: Ember.computed('parentView.isInfoWindowVisible', 'controller.isVisible', function (key, value) {
+  visible: computed('parentView.isInfoWindowVisible', 'controller.isVisible', function (key, value) {
     if (arguments.length < 2) {
       if (this.get('parentView') instanceof MarkerView) {
         value = this.get('parentView.isInfoWindowVisible');
@@ -61,7 +65,7 @@ var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
   }),
 
   // bound to the google map object of the component
-  map:     Ember.computed.oneWay('parentView.map'),
+  map:     oneWay('parentView.map'),
 
   initGoogleInfoWindow: Ember.on('didInsertElement', function () {
     Ember.run.schedule('afterRender', this, '_initGoogleInfoWindow');

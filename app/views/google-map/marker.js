@@ -3,8 +3,9 @@ import Ember from 'ember';
 import helpers from 'ember-google-map/core/helpers';
 import GoogleObjectMixin from 'ember-google-map/mixins/google-object';
 
-var alias = Ember.computed.alias;
-var oneWay = Ember.computed.oneWay;
+var computed = Ember.computed;
+var alias = computed.alias;
+var oneWay = computed.oneWay;
 
 var MarkerView = Ember.View.extend(GoogleObjectMixin, {
   googleProperties:       {
@@ -25,7 +26,7 @@ var MarkerView = Ember.View.extend(GoogleObjectMixin, {
   },
 
   // merge from whatever defined from the controller so we can handle click to show infowindow or such
-  googleEvents:           Ember.computed('controller.googleEvents', function (key, value) {
+  googleEvents:           computed('controller.googleEvents', function (key, value) {
     if (arguments.length < 2) {
       value = Ember.merge({
         click:      'handleMarkerEvent',
@@ -56,12 +57,12 @@ var MarkerView = Ember.View.extend(GoogleObjectMixin, {
   lng:                    alias('controller.lng'),
 
   // get the info window template name from the component or own controller
-  infoWindowTemplateName: Ember.computed('controller.infoWindowTemplateName', 'parentView.markerInfoWindowTemplateName', function () {
+  infoWindowTemplateName: computed('controller.infoWindowTemplateName', 'parentView.markerInfoWindowTemplateName', function () {
     return this.get('controller.infoWindowTemplateName') || this.get('parentView.markerInfoWindowTemplateName');
   }).readOnly(),
   infoWindowAnchor:       oneWay('googleObject'),
   isInfoWindowVisible:    alias('controller.isInfoWindowVisible'),
-  hasInfoWindow:          Ember.computed('parentView.markerHasInfoWindow', 'controller.hasInfoWindow', function () {
+  hasInfoWindow:          computed('parentView.markerHasInfoWindow', 'controller.hasInfoWindow', function () {
     var fromCtrl = this.get('controller.hasInfoWindow');
     if (fromCtrl === null || fromCtrl === undefined) {
       return !!this.get('parentView.markerHasInfoWindow');

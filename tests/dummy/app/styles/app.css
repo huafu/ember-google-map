@@ -28,3 +28,19 @@ ul > li {
 input.coord {
   width: 60px;
 }
+
+h3,h3:after {
+  cursor: pointer;
+}
+h3:after {
+  font-size: 0.6em;
+}
+h3.expanded:after {
+  content: ' (click to collapse)';
+}
+h3.collapsed:after {
+  content: ' (click to expand)';
+}
+div.collapsed {
+  display: none;
+}
