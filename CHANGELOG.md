@@ -1,4 +1,13 @@
 
+0.0.10 / 2014-12-10
+===================
+
+  * [MISC] Updating README
+  * [FIX] Fixed all polyline known bugs
+  * [FIX] Fixing the update of lat/lng not being handled
+  * [FEAT] Pre-version of polyline
+  * [MISC] First version of google array
+
 0.0.9 / 2014-12-07
 ==================
 
