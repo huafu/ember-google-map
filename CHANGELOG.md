@@ -1,4 +1,11 @@
 
+0.0.12 / 2014-12-12
+===================
+
+  * [MISC] Fixed the css of the demo
+  * [FEAT] Using the view's node directly as the content of an info-window
+  * [MISC] Add a class for info windows main element
+
 0.0.11 / 2014-12-11
 ===================
 
