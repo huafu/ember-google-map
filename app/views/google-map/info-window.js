@@ -9,6 +9,7 @@ var alias = computed.alias;
 var oneWay = computed.oneWay;
 
 var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
+  classNames:   ['google-info-window'],
   // will be either the marker using us, or the component if this is a detached info-window
   templateName: computed('parentView.infoWindowTemplateName', 'controller.templateName', function () {
     return this.get('controller.templateName') || this.get('parentView.infoWindowTemplateName');
