@@ -9,16 +9,16 @@ var alias = computed.alias;
 var oneWay = computed.oneWay;
 
 var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
+  classNames:   ['google-info-window'],
   // will be either the marker using us, or the component if this is a detached info-window
   templateName: computed('parentView.infoWindowTemplateName', 'controller.templateName', function () {
     return this.get('controller.templateName') || this.get('parentView.infoWindowTemplateName');
   }).readOnly(),
 
   googleProperties: {
-    zIndex:              {event: 'zindex_changed', cast: helpers.cast.integer},
-    map:                 {readOnly: true},
-    'element.outerHTML': {name: 'content', readOnly: true},
-    'lat,lng':           {
+    zIndex:    {event: 'zindex_changed', cast: helpers.cast.integer},
+    map:       {readOnly: true},
+    'lat,lng': {
       name:       'position',
       event:      'position_changed',
       toGoogle:   helpers._latLngToGoogle,
@@ -79,7 +79,6 @@ var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
     if (iw) {
       if (this.get('visible')) {
         iw.open(this.get('map'), this.get('anchor') || undefined);
-        this.notifyPropertyChange('element.outerHTML');
       }
       else {
         iw.close();
@@ -92,16 +91,13 @@ var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
     // force the creation of the marker
     if (helpers.hasGoogleLib() && !this.get('googleObject')) {
       opt = this.serializeGoogleOptions();
+      opt.content = this._backupViewElement();
       Ember.debug('[google-maps] creating new info-window: %@, anchor: %@'.fmt(opt, anchor));
       this.set('googleObject', new google.maps.InfoWindow(opt));
       this.synchronizeEmberObject();
       this.handleInfoWindowVisibility();
     }
   },
-
-  refreshInfoWindow: Ember.on('willClearRender', function () {
-    Ember.run.scheduleOnce('afterRender', this, 'notifyPropertyChange', 'element.outerHTML');
-  }),
 
   destroyGoogleInfoWindow: Ember.on('willDestroyElement', function () {
     var infoWindow = this.get('googleObject');
@@ -110,10 +106,30 @@ var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
       infoWindow.close();
       // detach from the map
       infoWindow.setMap(null);
+      // free the content node
+      this._restoreViewElement();
       this.set('googleObject', null);
       this._changingVisible = false;
     }
   }),
+
+  _backupViewElement: function () {
+    var element = this.get('element');
+    if (!this._placeholderElement) {
+      this._placeholderElement = document.createElement(element.nodeName);
+      element.parentNode.replaceChild(this._placeholderElement, element);
+    }
+    return element;
+  },
+
+  _restoreViewElement: function () {
+    var element = this.get('element');
+    if (this._placeholderElement) {
+      this._placeholderElement.parentNode.replaceChild(element, this._placeholderElement);
+      this._placeholderElement = null;
+    }
+    return element;
+  },
 
   actions: {
     handleInfoWindowEvent: function () {
