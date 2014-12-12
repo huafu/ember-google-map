@@ -44,3 +44,15 @@ h3.collapsed:after {
 div.collapsed {
   display: none;
 }
+div.google-info-window {
+  min-width: 140px;
+  margin-top: -15px;
+}
+.marker-info-window code {
+  vertical-align: middle;
+  display: inline-block;
+  max-width: 60px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
