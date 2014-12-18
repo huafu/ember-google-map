@@ -1,5 +1,6 @@
 /* globals google */
 import Ember from 'ember';
+import helpers from '../core/helpers';
 
 var EMPTY = [];
 
@@ -18,6 +19,9 @@ export default Ember.Mixin.create({
       return value;
     }
     else {
+      if (!helpers.hasGoogleLib()) {
+        return;
+      }
       return new google.maps.MVCArray(
         this._ember2google(this._startObservingEmberProperties(this.toArray().slice(), true), true)
       );
@@ -138,10 +142,12 @@ export default Ember.Mixin.create({
 
   teardownGoogleArray: Ember.beforeObserver('googleArray', Ember.on('destroy', function () {
     if (this._googleListeners) {
-      // teardown observers/events
-      for (var k in this._googleListeners) {
-        if (this._googleListeners.hasOwnProperty(k)) {
-          google.maps.event.removeListener(this._googleListeners[k]);
+      if (helpers.hasGoogleLib()) {
+        // teardown observers/events
+        for (var k in this._googleListeners) {
+          if (this._googleListeners.hasOwnProperty(k)) {
+            google.maps.event.removeListener(this._googleListeners[k]);
+          }
         }
       }
       this._googleListeners = null;

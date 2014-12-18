@@ -57,18 +57,18 @@ var helpers = {
       }
       if (!_hasGoogleLib['']) {
         Ember.warn(
-          '[google-map] Something went wrong with Google Map library. If the script tag is in your `index.html`'
-        );
-        Ember.warn(
-          '[google-map] please report the issue at https://github.com/huafu/ember-google-map/issues'
+          '[google-map] Something went wrong with Google Map library.' +
+          ' If you think it is not your side, please report the issue at' +
+          ' https://github.com/huafu/ember-google-map/issues.' +
+          ' Also be sure to have used `return this.loadGoogleMap()` in one of the 3 `model` hooks' +
+          ' of each route which would use the component (only if you have set `google.lazyLoad`' +
+          ' to true in your `config/environment.js.`)'
         );
       }
       else if (lib && !_hasGoogleLib[lib]) {
         Ember.warn(
-          '[google-map] You are using a module of ember-google-map which needs the %@ google library.'.fmt(lib)
-        );
-        Ember.warn(
-          '[google-map] But \'%@\' is not in the `ENV.googleMap.libraries` config array of your `config/environment.js`'.fmt(lib)
+          '[google-map] You are using a module of ember-google-map which needs the %@ google library.' +
+          ' But \'%@\' is not in the `ENV.googleMap.libraries` config array of your `config/environment.js`'.fmt(lib)
         );
       }
     }
