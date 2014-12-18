@@ -129,6 +129,31 @@ ENV.googleMap = {
 };
 ```
 
+### Lazy-loading of the SDK
+
+If you want to have the SDK loaded only when the user would visit the route(s) where the google map component is used, you can set `ENV.googleMap.lazyLoad` to `true`. Then in each route where you use the component, add this in one of the `beforeModel`, `model` or `afterModel` hooks:
+
+```js
+export default Ember.Route.extend({
+  model: function (params) {
+    return this.loadGoogleMap();
+  }
+});
+```
+
+It'll return a promise which will resolve to whatever you give as parameter, so if you need to still have your model loaded for example:
+
+```js
+export default Ember.Route.extend({
+  model: function (params) {
+    return this._super.apply(this, arguments).then(this.loadGoogleMap);
+    // or without using the default ember-data but your own:
+    return this.loadGoogleMap(theModelToResolveTo);
+  }
+});
+```
+
+
 ### Here is a very basic example:
 
 ```js

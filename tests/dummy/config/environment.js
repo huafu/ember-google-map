@@ -25,6 +25,9 @@ module.exports = function(environment) {
       'img-src': "'self' *.gstatic.com *.googleapis.com",
       'style-src': "'self' 'unsafe-inline' gist-assets.github.com fonts.googleapis.com",
       'frame-src': "ghbtns.com platform.twitter.com"
+    },
+    googleMap: {
+      lazyLoad: true
     }
 
   };

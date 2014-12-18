@@ -10,7 +10,13 @@ module.exports = {
       if (google.key) {
         params.push('key=' + encodeURIComponent(google.key));
       }
-      content = '<script type="text/javascript" src="' + src + '?' + params.join('&') + '"></script>';
+      src += '?' + params.join('&');
+      if (google.lazyLoad) {
+        content = '<meta name="ember-google-map-sdk-url" content="' + src + '">';
+      }
+      else {
+        content = '<script type="text/javascript" src="' + src + '"></script>';
+      }
     }
 
     return content;
