@@ -11,6 +11,8 @@
 
     <link rel="stylesheet" href="assets/vendor.css">
     <link rel="stylesheet" href="assets/dummy.css">
+
+    {{content-for 'head-footer'}}
   </head>
   <body>
     {{content-for 'body'}}
@@ -39,5 +41,6 @@
       <script src="https://gist.github.com/huafu/09acce20bfd31bba5662.js?file=application.hbs"></script>
     </div>
 
+    {{content-for 'body-footer'}}
   </body>
 </html>
