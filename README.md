@@ -108,9 +108,9 @@ Here is what is working for now:
 
 ## Updating
 
-* From `0.0.8`, the component has been renamed to `ember-google-map`, so when importing in your js files, change `google-map/...` to `ember-google-map/...`:
+* From `0.0.8`, the component has been renamed to `ember-google-map` and merged into your application, so when importing in your js files, change `google-map/...` to `../...`. For example from `app/controllers/application.js`:
 ```javascript
-import {MAP_TYPES} from 'ember-google-map/components/google-map';
+import {MAP_TYPES} from '../components/google-map';
 ```
 
 
@@ -160,7 +160,7 @@ export default Ember.Route.extend({
 // app/controllers/application.js
 
 import Ember from 'ember';
-import {MAP_TYPES} from 'google-map/components/google-map';
+import {MAP_TYPES} from '../components/google-map';
 
 export default Ember.Controller.extend({
   lat:         0,
