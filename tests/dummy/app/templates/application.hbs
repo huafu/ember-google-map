@@ -20,14 +20,14 @@
 <h3>Markers</h3>
 <div>
   <ul class="markers">
-    {{#each markers}}
+    {{#each marker in markers}}
       <li>
-        <label>title: {{input value=title}}</label>
-        <label>desc.: {{input value=description}}</label>
-        <label>lat/lng: {{input value=lat class='coord'}}/{{input value=lng class='coord'}}</label>
-        <label>{{input type='checkbox' checked=isVisible}}visible</label> |
-        <label>{{input type='checkbox' checked=isDraggable}}draggable</label>
-        <button {{action 'removeMarker' this}}>x</button>
+        <label>title: {{input value=marker.title}}</label>
+        <label>desc.: {{input value=marker.description}}</label>
+        <label>lat/lng: {{input value=marker.lat class='coord'}}/{{input value=marker.lng class='coord'}}</label>
+        <label>{{input type='checkbox' checked=marker.isVisible}}visible</label> |
+        <label>{{input type='checkbox' checked=marker.isDraggable}}draggable</label>
+        <button {{action 'removeMarker' marker}}>x</button>
       </li>
     {{/each}}
   </ul>
@@ -37,13 +37,13 @@
 <h3>Info windows</h3>
 <div>
   <ul class="info-windows">
-    {{#each infoWindows}}
+    {{#each iw in infoWindows}}
       <li>
-        <label>title: {{input value=title}}</label>
-        <label>desc.: {{input value=description}}</label>
-        <label>lat/lng: {{input value=lat class='coord'}}/{{input value=lng class='coord'}}</label>
-        <label>{{input type='checkbox' checked=isVisible}}visible</label>
-        <button {{action 'removeInfoWindow' this}}>x</button>
+        <label>title: {{input value=iw.title}}</label>
+        <label>desc.: {{input value=iw.description}}</label>
+        <label>lat/lng: {{input value=iw.lat class='coord'}}/{{input value=iw.lng class='coord'}}</label>
+        <label>{{input type='checkbox' checked=iw.isVisible}}visible</label>
+        <button {{action 'removeInfoWindow' iw}}>x</button>
       </li>
     {{/each}}
   </ul>
@@ -53,14 +53,14 @@
 <h3>Polylines</h3>
 <div>
   <ul class="polylines">
-    {{#each polylines}}
+    {{#each polyline in polylines}}
       <li>
-        <label>{{input type='checkbox' checked=isVisible}}visible</label> |
-        <label>{{input type='checkbox' checked=isDraggable}}draggable</label>
-        <label>{{input type='checkbox' checked=isEditable}}editable</label>
-        <button {{action 'removePolyline' this}}>x</button>
+        <label>{{input type='checkbox' checked=polyline.isVisible}}visible</label> |
+        <label>{{input type='checkbox' checked=polyline.isDraggable}}draggable</label>
+        <label>{{input type='checkbox' checked=polyline.isEditable}}editable</label>
+        <button {{action 'removePolyline' polyline}}>x</button>
         <ul class="plyline-path">
-          {{#each entry in path}}
+          {{#each entry in polyline.path}}
             <li>
               <label>lat/lng: {{input value=entry.lat class='coord'}}
                 /{{input value=entry.lng class='coord'}}</label>
@@ -68,7 +68,7 @@
             </li>
           {{/each}}
         </ul>
-        <button {{action 'addPolylinePathItem' path}}>add</button>
+        <button {{action 'addPolylinePathItem' polyline.path}}>add</button>
       </li>
     {{/each}}
   </ul>
@@ -78,15 +78,15 @@
 <h3>Circles</h3>
 <div>
   <ul class="circles">
-    {{#each circles}}
+    {{#each circle in circles}}
       <li>
-        <label>center lat/lng: {{input value=lat class='coord'}}
-          /{{input value=lng class='coord'}}</label>
+        <label>center lat/lng: {{input value=circle.lat class='coord'}}
+          /{{input value=circle.lng class='coord'}}</label>
         <label>radius: {{input value=radius class='coord'}}</label>
-        <label>{{input type='checkbox' checked=isVisible}}visible</label> |
-        <label>{{input type='checkbox' checked=isDraggable}}draggable</label> |
-        <label>{{input type='checkbox' checked=isEditable}}editable</label>
-        <button {{action 'removeCircle' this}}>x</button>
+        <label>{{input type='checkbox' checked=circle.isVisible}}visible</label> |
+        <label>{{input type='checkbox' checked=circle.isDraggable}}draggable</label> |
+        <label>{{input type='checkbox' checked=circle.isEditable}}editable</label>
+        <button {{action 'removeCircle' circle}}>x</button>
       </li>
     {{/each}}
   </ul>
