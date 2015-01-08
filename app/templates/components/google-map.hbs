@@ -1,20 +1,22 @@
 <div class="map-canvas"></div>
 <div style="display: none;">
   <ul>
-    {{#each _markers itemView=markerViewClass}}
-      <li>{{title}} @ {{lat}},{{lng}}</li>
+    {{#each marker in _markers itemViewClass=markerViewClass}}
+      <li>{{marker.title}} @ {{marker.lat}},{{marker.lng}}</li>
       {{#if view.hasInfoWindow}}
-        {{view 'google-map/info-window'}}
+        {{view 'google-map/info-window' context=marker}}
       {{/if}}
     {{/each}}
   </ul>
   <ul>
-    {{each _infoWindows itemView=infoWindowViewClass}}
+    {{#each iw in _infoWindows}}
+      {{view infoWindowViewClass context=iw}}
+    {{/each}}
   </ul>
   <ul>
-    {{each _polylines itemView=polylineViewClass}}
+    {{each polyline in _polylines itemViewClass=polylineViewClass}}
   </ul>
   <ul>
-    {{each _circles itemView=circleViewClass}}
+    {{each circle in _circles itemViewClass=circleViewClass}}
   </ul>
 </div>
