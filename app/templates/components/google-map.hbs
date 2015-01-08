@@ -9,7 +9,9 @@
     {{/each}}
   </ul>
   <ul>
-    {{each iw in _infoWindows itemViewClass=infoWindowViewClass}}
+    {{#each iw in _infoWindows}}
+      {{view infoWindowViewClass context=iw}}
+    {{/each}}
   </ul>
   <ul>
     {{each polyline in _polylines itemViewClass=polylineViewClass}}
