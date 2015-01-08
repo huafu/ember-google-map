@@ -1,4 +1,13 @@
 
+0.0.14 / 2015-01-08
+===================
+
+  * [FIX] Fixed info-window context
+  * [FIX] Removed deprecated {{each}}
+  * [FEAT] Updating to Ember 1.9.1 and Handlebars 2.0.0
+  * [FIX] Fixed `import` instruction in README
+  * [FEAT] Updated to ember-cli 0.1.5
+
 0.0.13 / 2014-12-18
 ===================
 

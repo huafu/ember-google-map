@@ -112,6 +112,7 @@ Here is what is working for now:
 ```javascript
 import {MAP_TYPES} from '../components/google-map';
 ```
+* Until version `0.0.13` it has been tested and working with Ember < `1.9`. From version `0.0.14` it has been updated to work with Ember `1.9.1` and Handlebars `2.0.0`.
 
 
 ## Usage & configuration
