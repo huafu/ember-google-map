@@ -62,6 +62,17 @@ Here is what is working for now:
     * `strokeOpacity`: the opacity of the line
     * `zIndex`: polyline's z-index
     * `path`: binding to an array of lat/lng array **(required)**
+* `polygons`: bindings to an array of polygons
+    * `isVisible`: whether the polygon is visible
+    * `isEditable`: whether the polygon is editable
+    * `isDraggable`: whether the polygon is draggable
+    * `strokeColor`: the color of the line
+    * `strokeWeight`: the weight of the line
+    * `strokeOpacity`: the opacity of the line
+    * `fillColor`: the color of inside the polygon
+    * `fillOpacity`: the opacity of inside the polygon
+    * `zIndex`: polygon's z-index
+    * `path`: binding to an array of lat/lng array **(required)**
 * `circles`: bindings to an array of circles
     * `lat` and `lng`: coordinates of the circle's center **(required)**
     * `radius`: radius of the circle **(required)**
