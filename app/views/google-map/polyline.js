@@ -85,7 +85,7 @@ export default Ember.View.extend(GoogleObjectMixin, {
     handlePolylineEvent: function () {
       var args = [].slice.call(arguments);
       var event = this.get('lastGoogleEventName');
-      Ember.warn(fmt(
+      Ember.debug(fmt(
         '[google-map] unhandled %@ event %@ with arguments %@',
         this.get('googleName'), event, args.join(', ')
       ));

@@ -104,7 +104,7 @@ export default Ember.View.extend(GoogleObjectMixin, {
         this.set('isInfoWindowVisible', true);
       }
       else {
-        Ember.warn(fmt(
+        Ember.debug(fmt(
           '[google-map] unhandled %@ event %@ with arguments %@',
           this.get('googleName'), event, args.join(', ')
         ));

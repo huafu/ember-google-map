@@ -144,7 +144,7 @@ export default Ember.View.extend(GoogleObjectMixin, {
         this._changingVisible = false;
       }
       else {
-        Ember.warn(fmt(
+        Ember.debug(fmt(
           '[google-map] unhandled %@ event %@ with arguments %@',
           this.get('googleName'), event, args.join(', ')
         ));
