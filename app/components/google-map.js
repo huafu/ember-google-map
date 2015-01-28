@@ -196,6 +196,49 @@ export default Ember.Component.extend(GoogleObjectMixin, {
   polylineViewClass: 'google-map/polyline',
 
   /**
+   * List of polygons to handle/show on the map
+   * @property polygons
+   * @type {Array.<{path: Array.<{lat: Number, lng: Number}>>}
+   */
+  polygons: null,
+
+  /**
+   * The array controller holding the polygons
+   * @property _polygons
+   * @type {Ember.ArrayController}
+   * @private
+   */
+  _polygons: computed(function () {
+    return this.container.lookupFactory('controller:google-map/polygons').create({
+      parentController: this
+    });
+  }).readOnly(),
+
+  /**
+   * Controller to use for each polygon
+   * @property polygonController
+   * @type {String}
+   * @default 'google-map/polygon'
+   */
+  polygonController: 'google-map/polygon',
+
+  /**
+   * Controller to use for each polygon's path
+   * @property polygonPathController
+   * @type {String}
+   * @default 'google-map/polyline-path'
+   */
+  polygonPathController: 'google-map/polyline-path',
+
+  /**
+   * View to use for each polygon
+   * @property polygonViewClass
+   * @type {String}
+   * @default 'google-map/polygon'
+   */
+  polygonViewClass: 'google-map/polygon',
+
+  /**
    * List of circles to handle/show on the map
    * @property circles
    * @type {Array.<{lat: Number, lng: Number, radius: Number}>}

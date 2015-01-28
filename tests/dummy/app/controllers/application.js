@@ -36,6 +36,20 @@ export default Ember.Controller.extend({
     }
   ],
 
+  polygons: [
+    {
+      isEditable:    true,
+      path:          [
+        {lat: 7.2, lng: -5}, {lat: 7.7, lng: -2}, {lat: 4, lng: -1.5}, {lat: 5, lng: -3.1},
+        {lat: 4.8, lng: -6.7}, {lat: 5.3, lng: -9.7}, {lat: 7.9, lng: -10.3}, {lat: 8, lng: -7.3}
+      ],
+      strokeOpacity: 0.8,
+      strokeColor:   'red',
+      fillColor:     'yellow',
+      fillOpacity:   0.5
+    }
+  ],
+
   circles: [
     {
       isEditable: true,
@@ -86,6 +100,25 @@ export default Ember.Controller.extend({
     },
 
     removePolylinePathItem: function (path, item) {
+      path.removeObject(item);
+    },
+
+    addPolygon: function () {
+      this.get('polygons').addObject({
+        isEditable: false,
+        path:       [{lat: 0, lng: 0}, {lat: 1, lng: 0}]
+      });
+    },
+
+    removePolygon: function (polyline) {
+      this.get('polygons').removeObject(polyline);
+    },
+
+    addPolygonPathItem: function (path) {
+      path.addObject({lat: 1, lng: 1});
+    },
+
+    removePolygonPathItem: function (path, item) {
       path.removeObject(item);
     }
   }

@@ -6,7 +6,7 @@
 {{google-map
   lat=lat lng=lng type=type zoom=zoom markers=markers
   infoWindows=infoWindows markerInfoWindowTemplateName='marker-info-window'
-  polylines=polylines circles=circles
+  polylines=polylines polygons=polygons circles=circles
   gopt_mapTypeControl=false gopt_backgroundColor='transparent'}}
 
 <h3>Map settings</h3>
@@ -59,7 +59,7 @@
         <label>{{input type='checkbox' checked=polyline.isDraggable}}draggable</label>
         <label>{{input type='checkbox' checked=polyline.isEditable}}editable</label>
         <button {{action 'removePolyline' polyline}}>x</button>
-        <ul class="plyline-path">
+        <ul class="polyline-path">
           {{#each entry in polyline.path}}
             <li>
               <label>lat/lng: {{input value=entry.lat class='coord'}}
@@ -68,11 +68,36 @@
             </li>
           {{/each}}
         </ul>
-        <button {{action 'addPolylinePathItem' polyline.path}}>add</button>
+        <button {{action 'addPolylinePathItem' polyline.path}}>add point</button>
       </li>
     {{/each}}
   </ul>
   <button {{action 'addPolyline'}}>add</button>
+</div>
+
+<h3>Polygons</h3>
+<div>
+  <ul class="polygons">
+    {{#each polygon in polygons}}
+      <li>
+        <label>{{input type='checkbox' checked=polygon.isVisible}}visible</label> |
+        <label>{{input type='checkbox' checked=polygon.isDraggable}}draggable</label>
+        <label>{{input type='checkbox' checked=polygon.isEditable}}editable</label>
+        <button {{action 'removePolygon' polygon}}>x</button>
+        <ul class="polygon-path">
+          {{#each entry in polygon.path}}
+            <li>
+              <label>lat/lng: {{input value=entry.lat class='coord'}}
+                /{{input value=entry.lng class='coord'}}</label>
+              <button {{action 'removePolygonPathItem' path entry}}>x</button>
+            </li>
+          {{/each}}
+        </ul>
+        <button {{action 'addPolygonPathItem' polygon.path}}>add point</button>
+      </li>
+    {{/each}}
+  </ul>
+  <button {{action 'addPolygon'}}>add</button>
 </div>
 
 <h3>Circles</h3>

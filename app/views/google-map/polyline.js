@@ -18,19 +18,21 @@ export default Ember.View.extend(GoogleObjectMixin, {
 
   templateName: 'google-map/polyline',
 
-  googleProperties: {
-    isClickable:   {name: 'clickable', optionOnly: true},
-    isVisible:     {name: 'visible', event: 'visible_changed'},
-    isDraggable:   {name: 'draggable', event: 'draggable_changed'},
-    isEditable:    {name: 'editable', event: 'editable_changed'},
-    isGeodesic:    {name: 'geodesic', optionOnly: true},
-    icons:         {optionOnly: true},
-    zIndex:        {optionOnly: true, cast: helpers.cast.integer},
-    map:           {readOnly: true},
-    strokeColor:   {optionOnly: true},
-    strokeWeight:  {optionOnly: true, cast: helpers.cast.number},
-    strokeOpacity: {optionOnly: true, cast: helpers.cast.number}
-  },
+  googleProperties: computed(function () {
+    return {
+      isClickable:   {name: 'clickable', optionOnly: true},
+      isVisible:     {name: 'visible', event: 'visible_changed'},
+      isDraggable:   {name: 'draggable', event: 'draggable_changed'},
+      isEditable:    {name: 'editable', event: 'editable_changed'},
+      isGeodesic:    {name: 'geodesic', optionOnly: true},
+      icons:         {optionOnly: true},
+      zIndex:        {optionOnly: true, cast: helpers.cast.integer},
+      map:           {readOnly: true},
+      strokeColor:   {optionOnly: true},
+      strokeWeight:  {optionOnly: true, cast: helpers.cast.number},
+      strokeOpacity: {optionOnly: true, cast: helpers.cast.number}
+    };
+  }).readOnly(),
 
   googleEvents:  computed('controller.googleEvents', function (key, value) {
     if (arguments.length < 2) {
