@@ -2,7 +2,7 @@
 
 An Ember addon to include a google-map Ember friendly component in your apps. See a bare simple demo [there](http://huafu.github.io/ember-google-map/).
 
-**This is a work in progress, plan is to other tools provided by google-map API.**
+**This is a work in progress, plan is to handle other tools provided by Google-map API.**
 
 [![NPM](https://nodei.co/npm/ember-google-map.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/ember-google-map/)
 
@@ -186,15 +186,24 @@ export default Ember.Controller.extend({
     optionLabelPath='content.label' optionValuePath='content.id' value=type}}
   </label>
 </div>
-
 ```
+
+**DO NOT BIND `lat` AND `lng` OF THE MAP TO THE SAME OBJECT AS ANOTHER COMPONENT OF THE MAP**
+```handlebars
+{{google-map lat=markersArray.firstObject.lat lng=markersArray.firstObject.lng markers=markersArray}}
+```
+**THIS IS WRONG AND WILL NOT WORK**
+
+Remember that any property is bound, as it is for the map center, so moving the map will change the
+first marker's lat and lng, and do some infinite loop between observers and bound properties.
+
 
 ### For a more complex example, visit the [GitHub page](http://huafu.github.io/ember-google-map/) of this repository.
 
 
 ## Authors
 
-* ![Huafu Gandon](https://s.gravatar.com/avatar/950590a0d4bc96f4a239cac955112eeb?s=24) [Huafu Gandon](https://github.com/huafu)
+* ![Huafu Gandon](https://s.gravatar.com/avatar/950590a0d4bc96f4a239cac955112eeb?s=24) [Huafu Gandon](https://twitter.com/huafu_g)
 
 
 ## Contributors
