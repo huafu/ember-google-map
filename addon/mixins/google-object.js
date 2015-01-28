@@ -2,29 +2,108 @@ import Ember from 'ember';
 import GoogleObjectProperty from '../core/google-object-property';
 import GoogleObjectEvent from '../core/google-object-event';
 
+var computed = Ember.computed;
+var fmt = Ember.String.fmt;
+
 /**
+ * @extension GoogleObjectMixin
  * @mixin GoogleObjectMixin
- * @uses Ember.Evented
  */
-var GoogleObjectMixin = Ember.Mixin.create(Ember.Evented, {
+var GoogleObjectMixin = Ember.Mixin.create({
+  /**
+   * The fully qualified class name of the object
+   * @property googleFQCN
+   * @type {string}
+   */
+  googleFQCN: null,
+
+  /**
+   * The class of this object
+   * @property googleClass
+   * @type {subclass of google.maps.MVCObject}
+   */
+  googleClass: computed('googleFQCN', function (key, value) {
+    var path;
+    if (arguments.length > 1) {
+      return value;
+    }
+    else {
+      path = this.get('googleFQCN');
+      if (path) {
+        return Ember.get(window, path);
+      }
+    }
+  }),
+
+
+  /**
+   * Name/label of the object for debug
+   * @property googleName
+   * @type {string}
+   */
+  googleName: computed('googleFQCN', function (key, value) {
+    var name;
+    if (arguments.length > 1) {
+      return value;
+    }
+    else {
+      name = this.get('googleFQCN');
+      return name ? Ember.String.dasherize(name.split('.').pop()) : this.toString();
+    }
+  }),
+
   /**
    * The definition of all google properties to bind
    * @property googleProperties
    * @type Object
    */
   googleProperties: Ember.required(),
+
   /**
    * The definition of all google events to bind
    * @property googleEvents
    * @type Object
    */
-  googleEvents:     Ember.required(),
+  googleEvents: Ember.required(),
+
   /**
    * The google object itself
    * @property googleObject
    * @type google.maps.MVCObject
    */
-  googleObject:     null,
+  googleObject: null,
+
+  /**
+   * Creates the google object
+   *
+   * @method createGoogleObject
+   * @param {*} [firstArg]
+   * @param {Object} [optionsOverrides]
+   * @return {google.maps.MVCObject}
+   */
+  createGoogleObject: function (optionsOverrides) {
+    var opt = this.serializeGoogleOptions(), object, firstArg, Class;
+    if (arguments.length === 2) {
+      firstArg = optionsOverrides;
+      optionsOverrides = arguments[1];
+    }
+    opt = Ember.merge(opt, optionsOverrides);
+    Ember.debug(fmt(
+      '[google-maps] creating new %@: %@',
+      this.get('googleName'), opt
+    ));
+    Class = this.get('googleClass');
+    if (firstArg) {
+      object = new Class(firstArg, opt);
+    }
+    else {
+      object = new Class(opt);
+    }
+    this.set('googleObject', object);
+    this.synchronizeEmberObject();
+    return object;
+  },
+
 
   /**
    * An array of all compiled (parsed) properties
@@ -32,7 +111,7 @@ var GoogleObjectMixin = Ember.Mixin.create(Ember.Evented, {
    * @type Array.<GoogleObjectProperty>
    * @private
    */
-  _compiledProperties: Ember.computed(function () {
+  _compiledProperties: computed(function () {
     var def = this.get('googleProperties') || {},
       res = [], d, defined = Object.create(null);
     for (var k in def) {
@@ -65,7 +144,7 @@ var GoogleObjectMixin = Ember.Mixin.create(Ember.Evented, {
    * @type Array.<GoogleObjectEvent>
    * @private
    */
-  _compiledEvents: Ember.computed(function () {
+  _compiledEvents: computed(function () {
     var def = this.get('googleEvents') || {},
       res = [], d;
     for (var k in def) {

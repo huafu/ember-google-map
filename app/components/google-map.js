@@ -1,8 +1,11 @@
-/* globals google */
 import Ember from 'ember';
 import helpers from 'ember-google-map/core/helpers';
 import GoogleObjectMixin from 'ember-google-map/mixins/google-object';
 
+var computed = Ember.computed;
+var oneWay = computed.oneWay;
+var on = Ember.on;
+var fmt = Ember.String.fmt;
 
 function obj(o) {
   return Ember.Object.create(o);
@@ -26,9 +29,10 @@ export var PLACE_TYPES = Ember.A([
  * @class GoogleMapComponent
  * @extends Ember.Component
  * @uses GoogleObjectMixin
- * @constructor
  */
-var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
+export default Ember.Component.extend(GoogleObjectMixin, {
+  googleFQCN: 'google.maps.Map',
+
   classNames: ['google-map'],
 
   /**
@@ -65,25 +69,28 @@ var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
    * @private
    */
   googleObject: null,
+
   /**
    * Initial center's latitude of the map
    * @property lat
    * @type {Number}
    */
-  lat:          0,
+  lat: 0,
+
   /**
    * Initial center's longitude of the map
    * @property lng
    * @type {Number}
    */
-  lng:          0,
+  lng: 0,
+
   /**
    * Initial zoom of the map
    * @property zoom
    * @type {Number}
    * @default 5
    */
-  zoom:         5,
+  zoom: 5,
 
   /**
    * Initial type of the map
@@ -107,7 +114,7 @@ var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
    * @type {Ember.ArrayController}
    * @private
    */
-  _markers: Ember.computed(function () {
+  _markers: computed(function () {
     return this.container.lookupFactory('controller:google-map/markers').create({
       parentController: this
     });
@@ -119,14 +126,16 @@ var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
    * @type {String}
    * @default 'google-map/marker'
    */
-  markerController:             'google-map/marker',
+  markerController: 'google-map/marker',
+
   /**
    * View to use for each marker
    * @property markerViewClass
    * @type {String}
    * @default 'google-map/marker'
    */
-  markerViewClass:              'google-map/marker',
+  markerViewClass: 'google-map/marker',
+
   /**
    * Info-window template name to use for each marker
    * @property markerInfoWindowTemplateName
@@ -134,13 +143,14 @@ var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
    * @default 'google-map/info-window'
    */
   markerInfoWindowTemplateName: 'google-map/info-window',
+
   /**
    * Whether the markers have an info-window by default
    * @property markerHasInfoWindow
    * @type {Boolean}
    * @default true
    */
-  markerHasInfoWindow:          true,
+  markerHasInfoWindow: true,
 
   /**
    * List of polylines to handle/show on the map
@@ -155,7 +165,7 @@ var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
    * @type {Ember.ArrayController}
    * @private
    */
-  _polylines: Ember.computed(function () {
+  _polylines: computed(function () {
     return this.container.lookupFactory('controller:google-map/polylines').create({
       parentController: this
     });
@@ -167,7 +177,8 @@ var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
    * @type {String}
    * @default 'google-map/polyline'
    */
-  polylineController:     'google-map/polyline',
+  polylineController: 'google-map/polyline',
+
   /**
    * Controller to use for each polyline's path
    * @property polylinePathController
@@ -175,13 +186,14 @@ var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
    * @default 'google-map/polyline-path'
    */
   polylinePathController: 'google-map/polyline-path',
+
   /**
    * View to use for each polyline
    * @property polylineViewClass
    * @type {String}
    * @default 'google-map/polyline'
    */
-  polylineViewClass:      'google-map/polyline',
+  polylineViewClass: 'google-map/polyline',
 
   /**
    * List of circles to handle/show on the map
@@ -196,7 +208,7 @@ var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
    * @type {Ember.ArrayController}
    * @private
    */
-  _circles: Ember.computed(function () {
+  _circles: computed(function () {
     return this.container.lookupFactory('controller:google-map/circles').create({
       parentController: this
     });
@@ -209,13 +221,14 @@ var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
    * @default 'google-map/circle'
    */
   circleController: 'google-map/circle',
+
   /**
    * View to use for each circle
    * @property circleViewClass
    * @type {String}
    * @default 'google-map/circle'
    */
-  circleViewClass:  'google-map/circle',
+  circleViewClass: 'google-map/circle',
 
   /**
    * Array of al info-windows to handle/show (independent from the markers' info-windows)
@@ -230,7 +243,7 @@ var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
    * @type {Ember.ArrayController}
    * @private
    */
-  _infoWindows: Ember.computed(function () {
+  _infoWindows: computed(function () {
     return this.container.lookupFactory('controller:google-map/info-windows').create({
       parentController: this
     });
@@ -242,14 +255,16 @@ var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
    * @type {String}
    * @default 'google-map/info-window'
    */
-  infoWindowController:   'google-map/info-window',
+  infoWindowController: 'google-map/info-window',
+
   /**
    * View for each info-window
    * @property infoWindowViewClass
    * @type {String}
    * @default 'google-map/info-window'
    */
-  infoWindowViewClass:    'google-map/info-window',
+  infoWindowViewClass: 'google-map/info-window',
+
   /**
    * Template for each info-window
    * @property infoWindowTemplateName
@@ -263,33 +278,27 @@ var GoogleMapComponent = Ember.Component.extend(GoogleObjectMixin, {
    * @property map
    * @type {google.maps.Map}
    */
-  map: Ember.computed.oneWay('googleObject'),
+  map: oneWay('googleObject'),
 
   /**
    * Initialize the map
    */
-  initGoogleMap: Ember.on('didInsertElement', function () {
-    var canvas, opt, map;
+  initGoogleMap: on('didInsertElement', function () {
+    var canvas;
     this.destroyGoogleMap();
     if (helpers.hasGoogleLib()) {
       canvas = this.$('div.map-canvas')[0];
-      opt = this.serializeGoogleOptions();
-      Ember.debug('[google-map] creating map with options: %@'.fmt(opt));
-      map = new google.maps.Map(canvas, opt);
-      this.set('googleObject', map);
-      this.synchronizeEmberObject();
+      this.createGoogleObject(canvas, null);
     }
   }),
 
   /**
    * Destroy the map
    */
-  destroyGoogleMap: Ember.on('willDestroyElement', function () {
+  destroyGoogleMap: on('willDestroyElement', function () {
     if (this.get('googleObject')) {
-      Ember.debug('[google-map] destroying map');
+      Ember.debug(fmt('[google-map] destroying %@', this.get('googleName')));
       this.set('googleObject', null);
     }
   })
 });
-
-export default GoogleMapComponent;

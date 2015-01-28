@@ -1,5 +1,9 @@
 import Ember from 'ember';
 
+/**
+ * @class GoogleMapPolylineController
+ * @extends Ember.ObjectController
+ */
 export default Ember.ObjectController.extend({
   pathController: Ember.computed.alias('parentController.pathController'),
 

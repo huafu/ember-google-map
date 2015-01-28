@@ -1,4 +1,3 @@
-/* global google */
 import Ember from 'ember';
 import helpers from 'ember-google-map/core/helpers';
 import GoogleObjectMixin from 'ember-google-map/mixins/google-object';
@@ -6,8 +5,16 @@ import GoogleObjectMixin from 'ember-google-map/mixins/google-object';
 var computed = Ember.computed;
 var alias = computed.alias;
 var oneWay = computed.oneWay;
+var fmt = Ember.String.fmt;
 
-var MarkerView = Ember.View.extend(GoogleObjectMixin, {
+/**
+ * @class GoogleMapMarkerView
+ * @extends Ember.View
+ * @uses GoogleObjectMixin
+ */
+export default Ember.View.extend(GoogleObjectMixin, {
+  googleFQCN: 'google.maps.Marker',
+
   googleProperties:       {
     isClickable: {name: 'clickable', event: 'clickable_changed'},
     isVisible:   {name: 'visible', event: 'visible_changed'},
@@ -40,7 +47,7 @@ var MarkerView = Ember.View.extend(GoogleObjectMixin, {
         mouseover:  'handleMarkerEvent',
         mouseup:    'handleMarkerEvent',
         rightclick: 'handleMarkerEvent'
-      }, this.get('controller.googleEvents') || {});
+      }, this.get('controller.googleEvents'));
     }
     return value;
   }),
@@ -74,13 +81,9 @@ var MarkerView = Ember.View.extend(GoogleObjectMixin, {
   map:                    oneWay('parentView.map'),
 
   initGoogleMarker: Ember.on('didInsertElement', function () {
-    var opt;
     // force the creation of the marker
     if (helpers.hasGoogleLib() && !this.get('googleObject')) {
-      opt = this.serializeGoogleOptions();
-      Ember.debug('[google-maps] creating new marker: %@'.fmt(opt));
-      this.set('googleObject', new google.maps.Marker(opt));
-      this.synchronizeEmberObject();
+      this.createGoogleObject();
     }
   }),
 
@@ -101,10 +104,12 @@ var MarkerView = Ember.View.extend(GoogleObjectMixin, {
         this.set('isInfoWindowVisible', true);
       }
       else {
-        Ember.warn('[google-map] unhandled marker event %@ with arguments %@'.fmt(event, args.join(', ')));
+        Ember.warn(fmt(
+          '[google-map] unhandled %@ event %@ with arguments %@',
+          this.get('googleName'), event, args.join(', ')
+        ));
       }
     }
   }
 });
 
-export default MarkerView;

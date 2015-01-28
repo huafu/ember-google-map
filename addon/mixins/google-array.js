@@ -4,6 +4,10 @@ import helpers from '../core/helpers';
 
 var EMPTY = [];
 
+/**
+ * @extension GoogleArrayMixin
+ * @mixin GoogleArrayMixin
+ */
 export default Ember.Mixin.create({
 
   googleArray: Ember.computed(function (key, value) {

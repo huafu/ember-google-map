@@ -1,12 +1,21 @@
-/* global google */
 import Ember from 'ember';
 import helpers from 'ember-google-map/core/helpers';
 import GoogleObjectMixin from 'ember-google-map/mixins/google-object';
 
-var alias = Ember.computed.alias;
-var oneWay = Ember.computed.oneWay;
+var computed = Ember.computed;
+var alias = computed.alias;
+var oneWay = computed.oneWay;
+var on = Ember.on;
+var fmt = Ember.String.fmt;
 
-var PolylineView = Ember.View.extend(GoogleObjectMixin, {
+/**
+ * @class GoogleMapPolylineView
+ * @extends Ember.View
+ * @uses GoogleObjectMixin
+ */
+export default Ember.View.extend(GoogleObjectMixin, {
+  googleFQCN: 'google.maps.Polyline',
+
   templateName: 'google-map/polyline',
 
   googleProperties: {
@@ -23,7 +32,7 @@ var PolylineView = Ember.View.extend(GoogleObjectMixin, {
     strokeOpacity: {optionOnly: true, cast: helpers.cast.number}
   },
 
-  googleEvents:  Ember.computed('controller.googleEvents', function (key, value) {
+  googleEvents:  computed('controller.googleEvents', function (key, value) {
     if (arguments.length < 2) {
       value = Ember.merge({
         click:      'handlePolylineEvent',
@@ -37,7 +46,7 @@ var PolylineView = Ember.View.extend(GoogleObjectMixin, {
         mouseover:  'handlePolylineEvent',
         mouseup:    'handlePolylineEvent',
         rightclick: 'handlePolylineEvent'
-      }, this.get('controller.googleEvents') || {});
+      }, this.get('controller.googleEvents'));
     }
     return value;
   }),
@@ -56,19 +65,14 @@ var PolylineView = Ember.View.extend(GoogleObjectMixin, {
   // bound to the google map object of the component
   map:           oneWay('parentView.map'),
 
-  initGooglePolyline: Ember.on('didInsertElement', function () {
-    var opt;
+  initGooglePolyline: on('didInsertElement', function () {
     // force the creation of the polyline
     if (helpers.hasGoogleLib() && !this.get('googleObject')) {
-      opt = this.serializeGoogleOptions();
-      opt.path = this.get('controller._path.googleArray');
-      Ember.debug('[google-maps] creating new polyline: %@'.fmt(opt));
-      this.set('googleObject', new google.maps.Polyline(opt));
-      this.synchronizeEmberObject();
+      this.createGoogleObject({path: this.get('controller._path.googleArray')});
     }
   }),
 
-  destroyGooglePolyline: Ember.on('willDestroyElement', function () {
+  destroyGooglePolyline: on('willDestroyElement', function () {
     var polyline = this.get('googleObject');
     if (polyline) {
       // detach from the map
@@ -81,9 +85,10 @@ var PolylineView = Ember.View.extend(GoogleObjectMixin, {
     handlePolylineEvent: function () {
       var args = [].slice.call(arguments);
       var event = this.get('lastGoogleEventName');
-      Ember.warn('[google-map] unhandled polyline event %@ with arguments %@'.fmt(event, args.join(', ')));
+      Ember.warn(fmt(
+        '[google-map] unhandled %@ event %@ with arguments %@',
+        this.get('googleName'), event, args.join(', ')
+      ));
     }
   }
 });
-
-export default PolylineView;

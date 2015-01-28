@@ -1,4 +1,3 @@
-/* global google */
 import Ember from 'ember';
 import helpers from 'ember-google-map/core/helpers';
 import GoogleObjectMixin from 'ember-google-map/mixins/google-object';
@@ -7,8 +6,16 @@ var computed = Ember.computed;
 var alias = computed.alias;
 var oneWay = computed.oneWay;
 var on = Ember.on;
+var fmt = Ember.String.fmt;
 
-var CircleView = Ember.View.extend(GoogleObjectMixin, {
+/**
+ * @class GoogleMapCircleView
+ * @extends Ember.View
+ * @uses GoogleObjectMixin
+ */
+export default Ember.View.extend(GoogleObjectMixin, {
+  googleFQCN: 'google.maps.Circle',
+
   googleProperties: {
     isClickable:   {name: 'clickable', optionOnly: true},
     isVisible:     {name: 'visible', event: 'visible_changed'},
@@ -44,7 +51,7 @@ var CircleView = Ember.View.extend(GoogleObjectMixin, {
         mouseover:  'handleCircleEvent',
         mouseup:    'handleCircleEvent',
         rightclick: 'handleCircleEvent'
-      }, this.get('controller.googleEvents') || {});
+      }, this.get('controller.googleEvents'));
     }
     return value;
   }),
@@ -68,13 +75,9 @@ var CircleView = Ember.View.extend(GoogleObjectMixin, {
   map:           oneWay('parentView.map'),
 
   initGoogleCircle: on('didInsertElement', function () {
-    var opt;
     // force the creation of the circle
     if (helpers.hasGoogleLib() && !this.get('googleObject')) {
-      opt = this.serializeGoogleOptions();
-      Ember.debug('[google-maps] creating new circle: %@'.fmt(opt));
-      this.set('googleObject', new google.maps.Circle(opt));
-      this.synchronizeEmberObject();
+      this.createGoogleObject();
     }
   }),
 
@@ -91,9 +94,10 @@ var CircleView = Ember.View.extend(GoogleObjectMixin, {
     handleCircleEvent: function () {
       var args = [].slice.call(arguments);
       var event = this.get('lastGoogleEventName');
-      Ember.warn('[google-map] unhandled circle event %@ with arguments %@'.fmt(event, args.join(', ')));
+      Ember.warn(fmt(
+        '[google-map] unhandled %@ event %@ with arguments %@',
+        this.get('googleName'), event, args.join(', ')
+      ));
     }
   }
 });
-
-export default CircleView;

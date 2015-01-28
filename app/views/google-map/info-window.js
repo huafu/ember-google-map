@@ -1,4 +1,3 @@
-/* global google */
 import Ember from 'ember';
 import helpers from 'ember-google-map/core/helpers';
 import GoogleObjectMixin from 'ember-google-map/mixins/google-object';
@@ -7,9 +6,18 @@ import MarkerView from './marker';
 var computed = Ember.computed;
 var alias = computed.alias;
 var oneWay = computed.oneWay;
+var fmt = Ember.String.fmt;
 
-var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
-  classNames:   ['google-info-window'],
+/**
+ * @class GoogleMapInfoWindowView
+ * @extends Ember.View
+ * @uses GoogleObjectMixin
+ */
+export default Ember.View.extend(GoogleObjectMixin, {
+  classNames: ['google-info-window'],
+
+  googleFQCN:   'google.maps.InfoWindow',
+
   // will be either the marker using us, or the component if this is a detached info-window
   templateName: computed('parentView.infoWindowTemplateName', 'controller.templateName', function () {
     return this.get('controller.templateName') || this.get('parentView.infoWindowTemplateName');
@@ -32,7 +40,7 @@ var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
       value = Ember.merge({
         closeclick: 'handleInfoWindowEvent',
         domready:   'handleInfoWindowEvent'
-      }, this.get('controller.googleEvents') || {});
+      }, this.get('controller.googleEvents'));
     }
     return value;
   }),
@@ -87,14 +95,9 @@ var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
   }),
 
   _initGoogleInfoWindow: function () {
-    var opt, anchor;
     // force the creation of the marker
     if (helpers.hasGoogleLib() && !this.get('googleObject')) {
-      opt = this.serializeGoogleOptions();
-      opt.content = this._backupViewElement();
-      Ember.debug('[google-maps] creating new info-window: %@, anchor: %@'.fmt(opt, anchor));
-      this.set('googleObject', new google.maps.InfoWindow(opt));
-      this.synchronizeEmberObject();
+      this.createGoogleObject({content: this._backupViewElement()});
       this.handleInfoWindowVisibility();
     }
   },
@@ -141,10 +144,11 @@ var InfoWindowView = Ember.View.extend(GoogleObjectMixin, {
         this._changingVisible = false;
       }
       else {
-        Ember.warn('[google-map] unhandled info-window event %@ with arguments %@'.fmt(event, args.join(', ')));
+        Ember.warn(fmt(
+          '[google-map] unhandled %@ event %@ with arguments %@',
+          this.get('googleName'), event, args.join(', ')
+        ));
       }
     }
   }
 });
-
-export default InfoWindowView;
