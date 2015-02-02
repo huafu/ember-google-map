@@ -1,3 +1,18 @@
+0.0.17 / 2015-02-02
+===================
+
+  * [FEAT] `autoFitBounds` and `fitBoundsArray` + many fixes
+  * [MISC] Updated README with the polygons
+
+0.0.15 / 2015-01-28
+===================
+
+  * [MISC] Updating .npmignore
+  * [MISC] Updating the script to update github pages
+  * [FEAT] Implementing polygons
+  * [MISC] Changed `warn` to `debug` for unhandled events
+  * [MISC] A bit of refactor and more doc
+  * [MISC] Improved the README
 
 0.0.14 / 2015-01-08
 ===================
@@ -57,5 +72,5 @@
 0.0.7 / 2014-11-29
 ==================
 
-* Fixed bugs when freeing the map
-* Made the addon compatible with projects not using Ember prototype extensions
+  * [FIX] Fixed bugs when freeing the map
+  * [FIX] Made the addon compatible with projects not using Ember prototype extensions
