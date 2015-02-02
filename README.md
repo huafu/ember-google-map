@@ -2,8 +2,6 @@
 
 An Ember addon to include a google-map Ember friendly component in your apps. See a bare simple demo [there](http://huafu.github.io/ember-google-map/).
 
-**This is a work in progress, plan is to handle other tools provided by Google-map API.**
-
 [![NPM](https://nodei.co/npm/ember-google-map.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/ember-google-map/)
 
 
@@ -22,6 +20,8 @@ Here is what is working for now:
     infoWindowTemplateName='another/custom/template'
     polylines=polylinesArray
     circles=circlesArray
+    autoFitBounds='markers,circles'
+    fitBoundsArray=arrayOfLatLng
 }}
 ```
 
