@@ -477,7 +477,6 @@ export default Ember.Component.extend(GoogleObjectMixin, {
     }
     if (bounds) {
       // finally make our map to fit
-      debugger;
       map.fitBounds(bounds);
     }
   },
