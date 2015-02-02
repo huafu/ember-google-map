@@ -2,6 +2,7 @@
 import Ember from 'ember';
 
 var _hasGoogleLib = {};
+var $get = Ember.get;
 
 export var cast = {
   number:  function (val) {
@@ -153,9 +154,9 @@ var helpers = {
   },
 
   latLngProperty: function () {
-    return function () {
+    return Ember.computed(function () {
       return {lat: null, lng: null};
-    }.property();
+    });
   },
 
   autoCompleteService: function () {
@@ -211,16 +212,22 @@ var helpers = {
       obj = latKey;
       latKey = null;
     }
-    return helpers.latLngToGoogleLatLng(obj[latKey || 'lat'], obj[lngKey || 'lng']);
+    return helpers.latLngToGoogleLatLng($get(obj, latKey || 'lat'), $get(obj, lngKey || 'lng'));
   },
   _boundsToGoogle:   function (swLatKey, swLngKey, neLatKey, neLngKey, obj) {
     if (arguments.length === 1) {
       obj = swLatKey;
       swLatKey = null;
+      if (obj && obj.sw && obj.ne) {
+        swLatKey = 'sw.lat';
+        swLngKey = 'sw.lng';
+        neLatKey = 'ne.lat';
+        neLngKey = 'ne.lng';
+      }
     }
     return helpers.boundsToGoogle(
-      obj[swLatKey || 'southWestLat'], obj[swLngKey || 'southWestLng'],
-      obj[neLatKey || 'northEastLat'], obj[neLngKey || 'northEastLng']
+      $get(obj, swLatKey || 'southWestLat'), $get(obj, swLngKey || 'southWestLng'),
+      $get(obj, neLatKey || 'northEastLat'), $get(obj, neLngKey || 'northEastLng')
     );
   }
 };

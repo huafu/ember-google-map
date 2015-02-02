@@ -1,3 +1,4 @@
+/* globals google */
 import Ember from 'ember';
 import helpers from 'ember-google-map/core/helpers';
 import GoogleObjectMixin from 'ember-google-map/mixins/google-object';
@@ -6,6 +7,66 @@ var computed = Ember.computed;
 var oneWay = computed.oneWay;
 var on = Ember.on;
 var fmt = Ember.String.fmt;
+var forEach = Ember.EnumerableUtils.forEach;
+var getProperties = Ember.getProperties;
+var $get = Ember.get;
+var dummyCircle;
+
+var VALID_FIT_BOUND_TYPES = ['markers', 'infoWindows', 'circles', 'polylines', 'polygons'];
+
+function getDummyCircle(center, radius) {
+  if (radius == null) {
+    radius = $get(center, 'radius');
+  }
+  if (!(center instanceof google.maps.LatLng)) {
+    center = helpers._latLngToGoogle(center);
+  }
+  if (dummyCircle) {
+    dummyCircle.setCenter(center);
+    dummyCircle.setRadius(radius);
+  }
+  else {
+    dummyCircle = new google.maps.Circle({center: center, radius: radius});
+  }
+  return dummyCircle;
+}
+
+function collectCoordsOf(type, array, items) {
+  if (['markers', 'infoWindows'].indexOf(type) !== -1) {
+    // handle simple types
+    return array.reduce(function (previous, item) {
+      var coords = getProperties(item, 'lat', 'lng');
+      if (coords.lat != null && coords.lng != null) {
+        previous.push(coords);
+      }
+      return previous;
+    }, items || []);
+  }
+  else if (type === 'circles') {
+    // handle circles
+    return array.reduce(function (previous, item) {
+      var opt = getProperties(item, 'lat', 'lng', 'radius'), bounds;
+      if (opt.lat != null && opt.lng != null && opt.radius != null) {
+        bounds = getDummyCircle(opt).getBounds();
+        previous.push(helpers._latLngFromGoogle(bounds.getNorthEast()));
+        previous.push(helpers._latLngFromGoogle(bounds.getSouthWest()));
+      }
+      return previous;
+    }, items || []);
+  }
+  else if (['polylines', 'polygons']) {
+    // handle complex types
+    return array.reduce(function (previous, item) {
+      return $get(item, '_path').reduce(function (previous, item) {
+        var coords = getProperties(item, 'lat', 'lng');
+        if (coords.lat != null && coords.lng != null) {
+          previous.push(coords);
+        }
+        return previous;
+      }, items || []);
+    }, items || []);
+  }
+}
 
 function obj(o) {
   return Ember.Object.create(o);
@@ -69,6 +130,49 @@ export default Ember.Component.extend(GoogleObjectMixin, {
    * @private
    */
   googleObject: null,
+
+  /**
+   * Auto fit bounds to type of items
+   * @property autoFitBounds
+   * @type {boolean|string}
+   */
+  autoFitBounds: false,
+
+  /**
+   * Fit bounds to view all coordinates
+   * @property fitBoundsArray
+   * @type {Array.<{lat: number, lng: number}>}
+   */
+  fitBoundsArray: computed(
+    'autoFitBounds', '_markers.@each', '_infoWindow.@each', '_polylines.@each._path.@each',
+    '_polygons.@each._path.@each', '_circles.@each', function (key, value, oldValue) {
+      var auto;
+      if (arguments.length > 1) {
+        // it's a set, save that the use defined them
+        this._fixedFitBoundsArray = value;
+      }
+      else {
+        if (this._fixedFitBoundsArray) {
+          value = this._fixedFitBoundsArray;
+        }
+        else {
+          // here comes our computation
+          auto = this.get('autoFitBounds');
+          if (auto) {
+            auto = auto === true ? VALID_FIT_BOUND_TYPES : auto.split(',');
+            value = [];
+            forEach(auto, function (type) {
+              collectCoordsOf(type, this.get('_' + type), value);
+            }, this);
+          }
+          else {
+            value = null;
+          }
+        }
+      }
+      return value;
+    }),
+
 
   /**
    * Initial center's latitude of the map
@@ -324,6 +428,62 @@ export default Ember.Component.extend(GoogleObjectMixin, {
   map: oneWay('googleObject'),
 
   /**
+   * Schedule an auto-fit of the bounds
+   *
+   * @method scheduleAutoFitBounds
+   * @param {{sw: {lat: number, lng: number}, ne: {lat: number, lng: number}}|Array.<{lat: number, lng: number}>} [coords]
+   */
+  scheduleAutoFitBounds: function (coords) {
+    Ember.run.schedule('afterRender', this, function () {
+      Ember.run.debounce(this, 'fitBoundsToContain', coords, 200);
+    });
+  },
+
+  /**
+   * Fit the bounds to contain given coordinates
+   *
+   * @method fitBoundsToContain
+   * @param {{sw: {lat: number, lng: number}, ne: {lat: number, lng: number}}|Array.<{lat: number, lng: number}>} [coords]
+   */
+  fitBoundsToContain: function (coords) {
+    var map, bounds;
+    if (this.isDestroying || this.isDestroyed || this._state !== 'inDOM') {
+      return;
+    }
+    map = this.get('googleObject');
+    if (!map) {
+      this.scheduleAutoFitBounds(coords);
+      return;
+    }
+    if (coords == null) {
+      coords = this.get('fitBoundsArray');
+    }
+    if (!coords) {
+      return;
+    }
+    if (Ember.isArray(coords)) {
+      // it's an array of lat,lng
+      coords = Ember.A(coords);
+      if (coords.get('length')) {
+        bounds = new google.maps.LatLngBounds(helpers._latLngToGoogle(coords.shiftObject()));
+        coords.forEach(function (point) {
+          bounds.extend(helpers._latLngToGoogle(point));
+        });
+      }
+    }
+    else {
+      // it's a bound object
+      bounds = helpers._boundsToGoogle(coords);
+    }
+    if (bounds) {
+      // finally make our map to fit
+      debugger;
+      map.fitBounds(bounds);
+    }
+  },
+
+
+  /**
    * Initialize the map
    */
   initGoogleMap: on('didInsertElement', function () {
@@ -332,6 +492,7 @@ export default Ember.Component.extend(GoogleObjectMixin, {
     if (helpers.hasGoogleLib()) {
       canvas = this.$('div.map-canvas')[0];
       this.createGoogleObject(canvas, null);
+      this.scheduleAutoFitBounds();
     }
   }),
 

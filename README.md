@@ -28,6 +28,12 @@ Here is what is working for now:
 * `lat` and `lng`: bindings or static coordinates of the center **(required)**
 * `zoom`: binding to the current zoom
 * `type`: binding to the type of map (can be found with `import {MAP_TYPES} from 'google-map/components/google-map';`)
+* `autoFitBounds`: defines here if you want the map to auto fit bounds on first render so that the map will automatically recenter and change zoom depending on what you set here (default: `false`) - possible values are:
+    * ``true`: fit so that anything on the map will be visible
+    * `false`: do not auto-fit bounds
+    * `string,string,...` (list of string separated by `,`): will make the map fit everything you defined in corresponding arrays 
+* `fitBoundsArray`: an array of `{lat: number, lng: number}` coordinates used so that the map will recenter on first render to fit them all in map (if set, `autoFitBounds` will be ignored)
+(possible values are `markers`, `infoWindows`, `polylines`, `polygons` or `circles`) - example: `markers,circles`
 * `markerController`: the `ObjectController` to use as a marker controller, must extend from `google-map/controllers/marker`
 * `markerInfoWindowTemplateName`: default template for a marker info-window
 * `markerHasInfoWindow`: whether to disable all markers info window or not
@@ -185,6 +191,10 @@ export default Ember.Controller.extend({
 
 ```handlebars
 {{! app/templates/application.hbs }}
+{{!--
+ DON'T FORGET TO DEFINE `lat`, `lng` AND `zoom` in your controller or to remove them
+ from the given parameters here!
+ --}}
 
 {{google-map lat=lat lng=lng type=type zoom=zoom}}
 
@@ -214,7 +224,8 @@ first marker's lat and lng, and do some infinite loop between observers and boun
 
 ## Authors
 
-* ![Huafu Gandon](https://s.gravatar.com/avatar/950590a0d4bc96f4a239cac955112eeb?s=24) [Huafu Gandon](https://twitter.com/huafu_g)
+![Huafu Gandon](https://s.gravatar.com/avatar/950590a0d4bc96f4a239cac955112eeb?s=24)
+Huafu Gandon - Follow me on twitter: [huafu_g](https://twitter.com/huafu_g)
 
 
 ## Contributors
