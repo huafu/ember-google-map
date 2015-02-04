@@ -4,6 +4,7 @@ An Ember addon to include a google-map Ember friendly component in your apps. Se
 
 [![NPM](https://nodei.co/npm/ember-google-map.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/ember-google-map/)
 
+**Be sure to read [this](https://github.com/huafu/ember-google-map#updating) and the last paragraph or [this](https://github.com/huafu/ember-google-map#here-is-a-very-basic-example) before reporting an issue**
 
 ## What is implemented for now:
 
@@ -129,7 +130,7 @@ Here is what is working for now:
 ```javascript
 import {MAP_TYPES} from '../components/google-map';
 ```
-* Until version `0.0.13` it has been tested and working with Ember < `1.9`. From version `0.0.14` it has been updated to work with Ember `1.9.1` and Handlebars `2.0.0`.
+* Until version `0.0.13` it has been tested and working with Ember < `1.9`. From version `0.0.14` it has been updated to work with Ember `1.9.1` and Handlebars `2.0.0`, so be sure to [upgrade your version of Ember](http://emberjs.com/blog/2014/12/08/ember-1-9-0-released.html#toc_handlebars-2-0) to >= `1.9` preior using this component..
 
 
 ## Usage & configuration
