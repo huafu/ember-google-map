@@ -135,7 +135,7 @@ import {MAP_TYPES} from '../components/google-map';
 
 ## Usage & configuration
 
-### Google Api key configuration
+### Google API key configuration
 
 The google map script tag will be inserted in the head section of your index.html.
 Also, if you define a `ENV.googleMap.key` variable in your Ember CLI project's configuration file (`config/environment.js`), it will be used as an API Key within this script tag.
@@ -144,7 +144,18 @@ Here is an example :
 
 ```js
 ENV.googleMap = {
-  key: 'AbCDeFgHiJkLmNoPqRsTuVwXyZ'
+  apiKey: 'AbCDeFgHiJkLmNoPqRsTuVwXyZ'
+};
+```
+
+### Using client ID instead of an API key
+
+Work customer only (see [there](https://developers.google.com/maps/documentation/business/clientside/#client_id)), 
+specify your client ID in the `clientId` key of the configuration:
+
+```js
+ENV.googleMap = {
+  clientId: 'AbCDeFgHiJkLmNoPqRsTuVwXyZ'
 };
 ```
 
@@ -170,6 +181,17 @@ export default Ember.Route.extend({
     return this.loadGoogleMap(theModelToResolveTo);
   }
 });
+```
+
+### Including additional Google Map libraries when loading the SDK
+ 
+ If you need to load some Google Map libraries such as `places` when the SDk will be loaded, specify them
+ as an array in the `libraries` key of your configuration:
+ 
+```js
+ENV.googleMap = {
+  libraries: ['places']
+};
 ```
 
 
