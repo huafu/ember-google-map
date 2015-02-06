@@ -10,6 +10,9 @@ module.exports = {
       if (google.key) {
         params.push('key=' + encodeURIComponent(google.key));
       }
+      if (typeof google.libraries !== 'undefined' && google.libraries.length > 0) {
+        params.push('libraries=' + google.libraries.join());
+      }
       src += '?' + params.join('&');
       if (google.lazyLoad) {
         content = '<meta name="ember-google-map-sdk-url" content="' + src + '">';
