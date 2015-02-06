@@ -65,7 +65,7 @@
             <li>
               <label>lat/lng: {{input value=entry.lat class='coord'}}
                 /{{input value=entry.lng class='coord'}}</label>
-              <button {{action 'removePolylinePathItem' path entry}}>x</button>
+              <button {{action 'removePolylinePathItem' polyline.path entry}}>x</button>
             </li>
           {{/each}}
         </ul>
