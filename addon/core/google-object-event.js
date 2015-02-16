@@ -1,18 +1,22 @@
 /* globals google */
 import Ember from 'ember';
 
+var slice = [].slice;
+var fmt = Ember.String.fmt;
+
 /**
  * @class GoogleObjectEvent
  * @param {String} name
- * @param {{target: Ember.Object, action: String, method: String|Function}} config
+ * @param {{target: Ember.Object, action: String, method: String|Function, [prepend]: boolean}} config
  * @constructor
  */
 var GoogleObjectEvent = function (name, config) {
   this._cfg = {
-    name:   name,
-    method: config.method || (config.action ? null : name),
-    action: config.action || null,
-    target: config.target || null
+    name:    name,
+    method:  config.method || (config.action ? null : name),
+    action:  config.action || null,
+    target:  config.target || null,
+    prepend: config.prepend === undefined ? !config.action : !!config.prepend
   };
 };
 
@@ -24,21 +28,25 @@ var GoogleObjectEvent = function (name, config) {
  * @returns {*}
  */
 GoogleObjectEvent.prototype.callHandler = function (emberObject) {
-  var method, target = this._cfg.target || emberObject;
+  var method, target = this._cfg.target || emberObject, args;
+  args = slice.call(arguments, 1);
+  if (this._cfg.prepend) {
+    args.unshift(this._cfg.name);
+  }
   if (this._cfg.action) {
-    target.set('lastGoogleEventName', this._cfg.name);
-    return target.send.apply(target, [this._cfg.action].concat([].slice.call(arguments, 1)));
+    args.unshift(this._cfg.action);
+    return target.send.apply(target, args);
   }
   method = this._cfg.method;
   if (typeof method === 'string') {
     method = target[method];
   }
   if (method) {
-    return method.apply(target, [].slice.call(arguments).concat([this._cfg.name]));
+    return method.apply(target, args);
   }
   else {
     // silently warn that the method does not exists and return
-    Ember.warn('the method `%@` was not found on the target, no action taken'.fmt(this._cfg.method));
+    Ember.warn(fmt('[google-map] The method `%@` was not found on the target, no action taken.'));
   }
 };
 

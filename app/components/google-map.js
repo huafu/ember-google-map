@@ -124,6 +124,12 @@ export default Ember.Component.extend(GoogleObjectMixin, {
   },
 
   /**
+   * @inheritDoc
+   */
+  googleEvents: {},
+
+
+  /**
    * Our google map object
    * @property googleObject
    * @type {google.maps.Map}
@@ -330,9 +336,9 @@ export default Ember.Component.extend(GoogleObjectMixin, {
    * Controller to use for each polygon's path
    * @property polygonPathController
    * @type {String}
-   * @default 'google-map/polyline-path'
+   * @default 'google-map/polygon-path'
    */
-  polygonPathController: 'google-map/polyline-path',
+  polygonPathController: 'google-map/polygon-path',
 
   /**
    * View to use for each polygon

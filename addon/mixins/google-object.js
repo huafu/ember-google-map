@@ -3,7 +3,9 @@ import GoogleObjectProperty from '../core/google-object-property';
 import GoogleObjectEvent from '../core/google-object-event';
 
 var computed = Ember.computed;
+var oneWay = computed.oneWay;
 var fmt = Ember.String.fmt;
+var forEach = Ember.EnumerableUtils.forEach;
 
 /**
  * @extension GoogleObjectMixin
@@ -64,7 +66,7 @@ var GoogleObjectMixin = Ember.Mixin.create({
    * @property googleEvents
    * @type Object
    */
-  googleEvents: Ember.required(),
+  googleEvents: oneWay('controller.googleEvents'),
 
   /**
    * The google object itself
@@ -89,8 +91,7 @@ var GoogleObjectMixin = Ember.Mixin.create({
     }
     opt = Ember.merge(opt, optionsOverrides);
     Ember.debug(fmt(
-      '[google-maps] creating new %@: %@',
-      this.get('googleName'), opt
+      '[google-maps] creating new %@: %@', this.get('googleName'), opt
     ));
     Class = this.get('googleClass');
     if (firstArg) {
@@ -135,7 +136,7 @@ var GoogleObjectMixin = Ember.Mixin.create({
         res.push(new GoogleObjectProperty(def[i], {name: k, optionOnly: true}));
       }
     }
-    return res;
+    return Ember.A(res);
   }).readOnly(),
 
   /**
@@ -145,9 +146,22 @@ var GoogleObjectMixin = Ember.Mixin.create({
    * @private
    */
   _compiledEvents: computed(function () {
-    var def = this.get('googleEvents') || {},
-      res = [], d;
-    for (var k in def) {
+    var def, k, res, d, defaultTarget;
+    def = this.get('googleEvents') || {};
+    res = [];
+    defaultTarget = this.get('googleEventsTarget');
+
+    // first add our core events
+    forEach(this.get('_coreGoogleEvents') || [], function (name) {
+      res.push(new GoogleObjectEvent(name, {
+        target:  this,
+        method:  '_handleCoreEvent',
+        prepend: true
+      }));
+    });
+
+    // then add user defined events
+    for (k in def) {
       if (def.hasOwnProperty(k)) {
         d = def[k];
         if (typeof d === 'string') {
@@ -156,12 +170,28 @@ var GoogleObjectMixin = Ember.Mixin.create({
         else if (d === true) {
           d = {};
         }
+        if (!d.target && defaultTarget) {
+          d.target = defaultTarget;
+        }
         res.push(new GoogleObjectEvent(k, d));
         d = null;
       }
     }
-    return res;
+    return Ember.A(res);
   }).readOnly(),
+
+  /**
+   * Handle a core event
+   *
+   * @method _handleCoreEvent
+   * @param {string} name
+   */
+  _handleCoreEvent: function (name) {
+    Ember.debug(fmt(
+      '[google-map] Unhandled core event `%@` triggered on `%@`', name, this.get('googleName')
+    ));
+  },
+
 
   /**
    * Serialize all google options into an object usable with google object constructor

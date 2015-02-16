@@ -1,27 +1,27 @@
 import Ember from 'ember';
 import helpers from 'ember-google-map/core/helpers';
-import GoogleObjectMixin from 'ember-google-map/mixins/google-object';
+import GoogleMapCoreView from './core';
 import MarkerView from './marker';
 
+var observer = Ember.observer;
+var on = Ember.on;
+var scheduleOnce = Ember.run.scheduleOnce;
 var computed = Ember.computed;
 var alias = computed.alias;
 var oneWay = computed.oneWay;
-var fmt = Ember.String.fmt;
+var any = computed.any;
 
 /**
  * @class GoogleMapInfoWindowView
- * @extends Ember.View
- * @uses GoogleObjectMixin
+ * @extends GoogleMapCoreView
  */
-export default Ember.View.extend(GoogleObjectMixin, {
+export default GoogleMapCoreView.extend({
   classNames: ['google-info-window'],
 
   googleFQCN:   'google.maps.InfoWindow',
 
   // will be either the marker using us, or the component if this is a detached info-window
-  templateName: computed('parentView.infoWindowTemplateName', 'controller.templateName', function () {
-    return this.get('controller.templateName') || this.get('parentView.infoWindowTemplateName');
-  }).readOnly(),
+  templateName: any('controller.templateName', 'parentView.infoWindowTemplateName'),
 
   googleProperties: {
     zIndex:    {event: 'zindex_changed', cast: helpers.cast.integer},
@@ -34,26 +34,26 @@ export default Ember.View.extend(GoogleObjectMixin, {
     }
   },
 
-  // merge from whatever defined from the controller so we can handle events locally if needed
-  googleEvents:     computed('controller.googleEvents', function (key, value) {
-    if (arguments.length < 2) {
-      value = Ember.merge({
-        closeclick: 'handleInfoWindowEvent',
-        domready:   'handleInfoWindowEvent'
-      }, this.get('controller.googleEvents'));
-    }
-    return value;
+  isMarkerInfoWindow: computed('parentView', function () {
+    return (this.get('parentView') instanceof MarkerView);
   }),
 
+  googleMapComponent: computed('isMarkerInfoWindow', function () {
+    return this.get(this.get('isMarkerInfoWindow') ? 'parentView.parentView' : 'parentView');
+  }),
+
+  _coreGoogleEvents: ['closeclick'],
+
   // aliased from controller so that if they are not defined they use the values from the controller
-  zIndex:           alias('controller.zIndex'),
-  lat:              alias('controller.lat'),
-  lng:              alias('controller.lng'),
-  anchor:           oneWay('parentView.infoWindowAnchor'),
+  zIndex:            alias('controller.zIndex'),
+  lat:               alias('controller.lat'),
+  lng:               alias('controller.lng'),
+  anchor:            oneWay('parentView.infoWindowAnchor'),
 
   visible: computed('parentView.isInfoWindowVisible', 'controller.isVisible', function (key, value) {
+    var isMarkerIW = this.get('isMarkerInfoWindow');
     if (arguments.length < 2) {
-      if (this.get('parentView') instanceof MarkerView) {
+      if (isMarkerIW) {
         value = this.get('parentView.isInfoWindowVisible');
       }
       else {
@@ -62,7 +62,7 @@ export default Ember.View.extend(GoogleObjectMixin, {
       }
     }
     else {
-      if (this.get('parentView') instanceof MarkerView) {
+      if (isMarkerIW) {
         this.set('parentView.isInfoWindowVisible', value);
       }
       else {
@@ -72,14 +72,11 @@ export default Ember.View.extend(GoogleObjectMixin, {
     return value;
   }),
 
-  // bound to the google map object of the component
-  map:     oneWay('parentView.map'),
-
-  initGoogleInfoWindow: Ember.on('didInsertElement', function () {
-    Ember.run.schedule('afterRender', this, '_initGoogleInfoWindow');
+  initGoogleObject: on('didInsertElement', function () {
+    scheduleOnce('afterRender', this, '_initGoogleInfoWindow');
   }),
 
-  handleInfoWindowVisibility: Ember.observer('visible', function () {
+  handleInfoWindowVisibility: observer('visible', function () {
     if (this._changingVisible) {
       return;
     }
@@ -102,7 +99,7 @@ export default Ember.View.extend(GoogleObjectMixin, {
     }
   },
 
-  destroyGoogleInfoWindow: Ember.on('willDestroyElement', function () {
+  destroyGoogleObject: on('willDestroyElement', function () {
     var infoWindow = this.get('googleObject');
     if (infoWindow) {
       this._changingVisible = true;
@@ -134,21 +131,11 @@ export default Ember.View.extend(GoogleObjectMixin, {
     return element;
   },
 
-  actions: {
-    handleInfoWindowEvent: function () {
-      var args = [].slice.call(arguments);
-      var event = this.get('lastGoogleEventName');
-      if (event === 'closeclick') {
-        this._changingVisible = true;
-        this.set('visible', false);
-        this._changingVisible = false;
-      }
-      else {
-        Ember.debug(fmt(
-          '[google-map] unhandled %@ event %@ with arguments %@',
-          this.get('googleName'), event, args.join(', ')
-        ));
-      }
+  _handleCoreEvent: function (name) {
+    if (name === 'closeclick') {
+      this._changingVisible = true;
+      this.set('visible', false);
+      this._changingVisible = false;
     }
   }
 });
