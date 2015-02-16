@@ -29,7 +29,7 @@ var GoogleObjectEvent = function (name, config) {
  */
 GoogleObjectEvent.prototype.callHandler = function (emberObject) {
   var method, target = this._cfg.target || emberObject, args;
-  args = slice.call(arguments, 1);
+  args = slice.call(arguments);
   if (this._cfg.prepend) {
     args.unshift(this._cfg.name);
   }
