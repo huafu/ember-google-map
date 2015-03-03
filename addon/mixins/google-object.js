@@ -11,7 +11,8 @@ var forEach = Ember.EnumerableUtils.forEach;
  * @extension GoogleObjectMixin
  * @mixin GoogleObjectMixin
  */
-var GoogleObjectMixin = Ember.Mixin.create({
+var GoogleObjectMixin;
+GoogleObjectMixin = Ember.Mixin.create({
   /**
    * The fully qualified class name of the object
    * @property googleFQCN
@@ -211,15 +212,24 @@ var GoogleObjectMixin = Ember.Mixin.create({
    * Synchronize this Ember object by reading all values of the properties from google object
    */
   synchronizeEmberObject: function () {
-    var def = this.get('_compiledProperties'),
-      go = this.get('googleObject');
+    var def, go, val;
+    def = this.get('_compiledProperties');
+    go = this.get('googleObject');
     if (!go) {
       return;
     }
     this.beginPropertyChanges();
     for (var i = 0; i < def.length; i++) {
       if (!def[i]._cfg.readOnly) {
-        this.setProperties(def[i].readGoogle(go));
+        try {
+          val = def[i].readGoogle(go);
+        }
+        catch (e) {
+          val = null;
+        }
+        if (val) {
+          this.setProperties(val);
+        }
       }
     }
     this.endPropertyChanges();

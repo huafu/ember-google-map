@@ -32,7 +32,7 @@ var GoogleObjectProperty = function (key, config) {
  *
  * @returns {String}
  */
-GoogleObjectProperty.prototype.getName = function(){
+GoogleObjectProperty.prototype.getName = function () {
   return this._cfg.name;
 };
 
