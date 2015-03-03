@@ -434,6 +434,28 @@ export default Ember.Component.extend(GoogleObjectMixin, {
   map: oneWay('googleObject'),
 
   /**
+   * The registered google street view component to be used
+   * @property streetViewComponent
+   * @type {GoogleStreetViewComponent}
+   */
+  streetViewComponent: computed(function (key, value) {
+    var map, streetView;
+    map = this.get('googleObject');
+    if (arguments.length > 1) {
+      this._streetViewComponent = value;
+      streetView = value ? value.get('googleObject') : null;
+      if (map) {
+        map.setStreetView(streetView || null);
+      }
+    }
+    else {
+      value = this._streetViewComponent;
+    }
+    return value;
+  }),
+
+
+  /**
    * Schedule an auto-fit of the bounds
    *
    * @method scheduleAutoFitBounds
@@ -492,11 +514,16 @@ export default Ember.Component.extend(GoogleObjectMixin, {
    * Initialize the map
    */
   initGoogleMap: on('didInsertElement', function () {
-    var canvas;
+    var canvas, options, streetView;
     this.destroyGoogleMap();
     if (helpers.hasGoogleLib()) {
-      canvas = this.$('div.map-canvas')[0];
-      this.createGoogleObject(canvas, null);
+      canvas = this.$('div.map-canvas').get(0);
+      // add specific street view if we have one
+      streetView = this.get('streetViewComponent.googleObject');
+      if (streetView) {
+        options = {streetView: streetView};
+      }
+      this.createGoogleObject(canvas, options);
       this.scheduleAutoFitBounds();
     }
   }),

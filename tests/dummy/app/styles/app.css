@@ -9,44 +9,63 @@ html, body {
   right: 10px;
 }
 
-div.map-canvas {
+div.google-map {
+  position: relative;
+}
+
+div.google-street-view {
+  position: absolute;
+  width: 100%;
+  top: 0;
+}
+
+div.map-canvas, div.street-view-canvas {
   margin-left: auto;
   margin-right: auto;
   width: 700px;
   height: 400px;
 }
+
 ul {
   margin: 0px;
   padding: 0px;
 }
+
 ul > li {
   list-style: none;
   margin: 2px;
   padding: 2px;
   border-bottom: 1px solid #ccc;
 }
+
 input.coord {
   width: 60px;
 }
 
-h3,h3:after {
+h3, h3:after {
   cursor: pointer;
 }
+
 h3:after {
   font-size: 0.6em;
 }
+
 h3.expanded:after {
   content: ' (click to collapse)';
 }
+
 h3.collapsed:after {
   content: ' (click to expand)';
 }
+
 div.collapsed {
   display: none;
 }
+
 div.google-info-window {
   min-width: 140px;
 }
+
 .marker-info-window code {
   vertical-align: middle;
   display: inline-block;
@@ -54,4 +73,12 @@ div.google-info-window {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.marker-info-window > *:first-child {
+  margin-top: 0;
+}
+
+.marker-info-window > *:last-child {
+  margin-bottom: 0;
 }

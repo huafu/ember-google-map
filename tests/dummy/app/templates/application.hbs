@@ -3,19 +3,32 @@
   <a href="https://github.com/huafu/ember-google-map">ember-google-map</a>
 </h2>
 
-{{google-map
-  lat=lat lng=lng type=type zoom=zoom markers=markers
-  infoWindows=infoWindows markerInfoWindowTemplateName='marker-info-window'
-  polylines=polylines polygons=polygons circles=circles
-  gopt_mapTypeControl=false gopt_backgroundColor='transparent'
-  autoFitBounds=true}}
+{{#google-map
+    lat=lat lng=lng type=type zoom=zoom
+    markers=markers
+    infoWindows=infoWindows
+    polylines=polylines polygons=polygons
+    circles=circles
+    gopt_mapTypeControl=false gopt_backgroundColor='transparent'
+    autoFitBounds=false}}
+  {{google-street-view isVisible=streetView.isVisible lat=streetView.lat lng=streetView.lng
+      heading=streetView.heading pitch=streetView.pitch}}
+{{/google-map}}
 
 <h3>Map settings</h3>
 <div>
-  <label>center lat/lng: {{input value=lat class='coord'}}/{{input value=lng class='coord'}}</label>
-  <label>zoom: {{input value=zoom}}</label>
-  <label>type: {{view 'select' content=mapTypes
-  optionLabelPath='content.label' optionValuePath='content.id' value=type}}</label>
+  <div>
+    <label>center lat/lng: {{input value=lat class='coord'}}/{{input value=lng class='coord'}}</label>
+    <label>zoom: {{input value=zoom}}</label>
+    <label>type: {{view 'select' content=mapTypes
+    optionLabelPath='content.label' optionValuePath='content.id' value=type}}</label>
+  </div>
+  <div>
+    <label>{{input type='checkbox' checked=streetView.isVisible}} street view:&nbsp;</label>
+    <label>position lat/lng: {{input value=streetView.lat class='coord'}}/{{input value=streetView.lng class='coord'}}</label>
+    <label>heading: {{input value=streetView.heading class='coord'}}</label>
+    <label>pitch: {{input value=streetView.pitch class='coord'}}</label>
+  </div>
 </div>
 
 <h3>Markers</h3>
@@ -25,7 +38,8 @@
       <li>
         <label>title: {{input value=marker.title}}</label>
         <label>desc.: {{input value=marker.description}}</label>
-        <label>lat/lng: {{input value=marker.lat class='coord'}}/{{input value=marker.lng class='coord'}}</label>
+        <label>lat/lng: {{input value=marker.lat class='coord'}}
+          /{{input value=marker.lng class='coord'}}</label>
         <label>{{input type='checkbox' checked=marker.isVisible}}visible</label> |
         <label>{{input type='checkbox' checked=marker.isDraggable}}draggable</label>
         <button {{action 'removeMarker' marker}}>x</button>
@@ -42,7 +56,8 @@
       <li>
         <label>title: {{input value=iw.title}}</label>
         <label>desc.: {{input value=iw.description}}</label>
-        <label>lat/lng: {{input value=iw.lat class='coord'}}/{{input value=iw.lng class='coord'}}</label>
+        <label>lat/lng: {{input value=iw.lat class='coord'}}
+          /{{input value=iw.lng class='coord'}}</label>
         <label>{{input type='checkbox' checked=iw.isVisible}}visible</label>
         <button {{action 'removeInfoWindow' iw}}>x</button>
       </li>
@@ -108,7 +123,7 @@
       <li>
         <label>center lat/lng: {{input value=circle.lat class='coord'}}
           /{{input value=circle.lng class='coord'}}</label>
-        <label>radius: {{input value=radius class='coord'}}</label>
+        <label>radius: {{input value=circle.radius class='coord'}}</label>
         <label>{{input type='checkbox' checked=circle.isVisible}}visible</label> |
         <label>{{input type='checkbox' checked=circle.isDraggable}}draggable</label> |
         <label>{{input type='checkbox' checked=circle.isEditable}}editable</label>

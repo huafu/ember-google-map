@@ -2,46 +2,58 @@ import Ember from 'ember';
 import {MAP_TYPES} from '../components/google-map';
 
 export default Ember.Controller.extend({
-  lat:      10,
-  lng:      10,
-  zoom:     10,
+  lat:      13.6439,
+  lng:      100.5265,
+  zoom:     15,
   type:     'road',
   mapTypes: MAP_TYPES,
 
+  streetView: {
+    lat:       13.64543,
+    lng:       100.524244,
+    isVisible: false,
+    heading:   -19.689363,
+    pitch:     0
+  },
+
   markers: [
-    {title: 'one', lat: 5, lng: 5, description: 'hello 1', isDraggable: true},
-    {title: 'two', lat: 5, lng: 0, hasInfoWindow: false},
     {
-      title:                  'three',
-      lat:                    0,
-      lng:                    5,
+      title:                  'Dummy',
+      lat:                    13.6496,
+      lng:                    100.5289,
+      description:            'Hello, World!',
       infoWindowTemplateName: 'marker-info-window',
-      helloWorld:             'Hello World!'
+      isDraggable:            true
     }
   ],
 
   infoWindows: [
-    {title: 'some info window', lat: -5, lng: -5, description: 'hello everybody!'}
+    {title: 'What?', lat: 13.6481, lng: 100.5231, description: 'I guess 42!'}
   ],
 
   polylines: [
     {
-      isEditable:    true,
+      isEditable:    false,
       path:          [
-        {lat: 2.8, lng: -3.6}, {lat: 1.5, lng: 0.2}, {lat: -3, lng: 2}, {lat: -5.5, lng: -0.8},
-        {lat: -5.9, lng: -8.9}, {lat: -3.4, lng: -11.6}, {lat: 1.2, lng: -11.1}, {lat: 2.8, lng: -7}
+        {lat: 13.6446, lng: 100.5147},
+        {lat: 13.6447, lng: 100.5183},
+        {lat: 13.6423, lng: 100.5215},
+        {lat: 13.6381, lng: 100.5172}
       ],
       strokeOpacity: 0.8,
-      strokeColor:   'blue'
+      strokeColor:   'blue',
+      strokeWeight:  7
     }
   ],
 
   polygons: [
     {
-      isEditable:    true,
+      isEditable:    false,
       path:          [
-        {lat: 7.2, lng: -5}, {lat: 7.7, lng: -2}, {lat: 4, lng: -1.5}, {lat: 5, lng: -3.1},
-        {lat: 4.8, lng: -6.7}, {lat: 5.3, lng: -9.7}, {lat: 7.9, lng: -10.3}, {lat: 8, lng: -7.3}
+        {lat: 13.6460, lng: 100.5321},
+        {lat: 13.6397, lng: 100.5334},
+        {lat: 13.6403, lng: 100.5266},
+        {lat: 13.6443, lng: 100.5250}
       ],
       strokeOpacity: 0.8,
       strokeColor:   'red',
@@ -52,16 +64,21 @@ export default Ember.Controller.extend({
 
   circles: [
     {
-      isEditable: true,
-      lat:        -4.4,
-      lng:        6.8,
-      radius:     314907
+      isEditable: false,
+      lat:        13.6419,
+      lng:        100.5171,
+      radius:     250
     }
   ],
 
   actions: {
     addMarker: function () {
-      this.get('markers').addObject({title: 'new', lat: 0, lng: 0, isDraggable: true});
+      this.get('markers').addObject({
+        title:       'new',
+        lat:         this.get('lat'),
+        lng:         this.get('lng'),
+        isDraggable: true
+      });
     },
 
     removeMarker: function (marker) {
@@ -69,7 +86,12 @@ export default Ember.Controller.extend({
     },
 
     addCircle: function () {
-      this.get('circles').addObject({lat: 0, lng: 0, radius: 300000, isEditable: true});
+      this.get('circles').addObject({
+        lat:        this.get('lat'),
+        lng:        this.get('lng'),
+        radius:     1000,
+        isEditable: true
+      });
     },
 
     removeCircle: function (circle) {
@@ -77,7 +99,12 @@ export default Ember.Controller.extend({
     },
 
     addInfoWindow: function () {
-      this.get('infoWindows').addObject({title: 'new iw', description: 'hello', lat: -5, lng: 0});
+      this.get('infoWindows').addObject({
+        title:       'new iw',
+        description: 'hello',
+        lat:         this.get('lat'),
+        lng:         this.get('lng')
+      });
     },
 
     removeInfoWindow: function (marker) {
@@ -86,8 +113,11 @@ export default Ember.Controller.extend({
 
     addPolyline: function () {
       this.get('polylines').addObject({
-        isEditable: false,
-        path:       [{lat: 0, lng: 0}, {lat: 1, lng: 0}]
+        isEditable: true,
+        path:       [
+          {lat: this.get('lat'), lng: this.get('lng')},
+          {lat: this.get('lat') - 0.005, lng: this.get('lng')}
+        ]
       });
     },
 
@@ -96,7 +126,8 @@ export default Ember.Controller.extend({
     },
 
     addPolylinePathItem: function (path) {
-      path.addObject({lat: 1, lng: 1});
+      var last = path.get('lastObject');
+      path.addObject({lat: last.lat - 0.005, lng: last.lng});
     },
 
     removePolylinePathItem: function (path, item) {
@@ -105,8 +136,11 @@ export default Ember.Controller.extend({
 
     addPolygon: function () {
       this.get('polygons').addObject({
-        isEditable: false,
-        path:       [{lat: 0, lng: 0}, {lat: 1, lng: 0}]
+        isEditable: true,
+        path:       [
+          {lat: this.get('lat'), lng: this.get('lng')},
+          {lat: this.get('lat') - 0.005, lng: this.get('lng')}
+        ]
       });
     },
 
@@ -115,7 +149,8 @@ export default Ember.Controller.extend({
     },
 
     addPolygonPathItem: function (path) {
-      path.addObject({lat: 1, lng: 1});
+      var last = path.get('lastObject');
+      path.addObject({lat: last.lat - 0.005, lng: last.lng});
     },
 
     removePolygonPathItem: function (path, item) {

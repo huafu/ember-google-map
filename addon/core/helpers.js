@@ -22,7 +22,8 @@ export var cast = {
   }
 };
 
-var helpers = {
+var helpers;
+helpers = {
   TYPE_ROAD:      'road',
   TYPE_TERRAIN:   'terrain',
   TYPE_HYBRID:    'hybrid',
@@ -213,6 +214,14 @@ var helpers = {
       latKey = null;
     }
     return helpers.latLngToGoogleLatLng($get(obj, latKey || 'lat'), $get(obj, lngKey || 'lng'));
+  },
+  _povFromGoogle:    function (val) {
+    return helpers.makeObj('heading', val.heading, 'pitch', val.pitch);
+  },
+  _povToGoogle:      function (obj) {
+    if (obj.heading != null && obj.pitch != null && helpers.hasGoogleLib()) {
+      return {heading: cast.number(obj.heading), pitch: cast.number(obj.pitch)};
+    }
   },
   _boundsToGoogle:   function (swLatKey, swLngKey, neLatKey, neLngKey, obj) {
     if (arguments.length === 1) {
