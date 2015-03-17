@@ -10,7 +10,11 @@
     "build": "ember build",
     "test": "ember test"
   },
-  "repository": "https://github.com/cometaworks/ember-google-map.git",
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/cometaworks/ember-google-map.git"
+    },
+
   "engines": {
     "node": ">= 0.10.0"
   },
@@ -38,5 +42,5 @@
   "ember-addon": {
     "configPath": "tests/dummy/config"
   },
-  "private": true,
+  "private": true
 }
