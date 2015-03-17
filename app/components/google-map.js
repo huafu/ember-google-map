@@ -497,7 +497,7 @@ export default Ember.Component.extend(GoogleObjectMixin, {
     this.destroyGoogleMap();
     if (helpers.hasGoogleLib()) {
       canvas = this.$('div.map-canvas')[0];
-      this.createGoogleObject(canvas, null);
+      map = this.createGoogleObject(canvas, null);
     }
     $(document).on('shown.bs.tab', function () { 
       google.maps.event.trigger(map, 'resize'); 
