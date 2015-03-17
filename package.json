@@ -1,6 +1,7 @@
 {
   "name": "ember-google-map",
   "version": "0.0.19",
+  "private": true,
   "directories": {
     "doc": "doc",
     "test": "tests"
@@ -42,5 +43,4 @@
   "ember-addon": {
     "configPath": "tests/dummy/config"
   },
-  "private": true
 }
