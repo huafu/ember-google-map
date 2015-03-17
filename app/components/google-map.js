@@ -493,12 +493,15 @@ export default Ember.Component.extend(GoogleObjectMixin, {
    */
   initGoogleMap: on('didInsertElement', function () {
     var canvas;
+    var map;
     this.destroyGoogleMap();
     if (helpers.hasGoogleLib()) {
       canvas = this.$('div.map-canvas')[0];
-      this.createGoogleObject(canvas, null);
-      this.scheduleAutoFitBounds();
+      map = this.createGoogleObject(canvas, null);
     }
+    $(document).on('shown.bs.tab', function () { 
+      google.maps.event.trigger(map, 'resize'); 
+    });
   }),
 
   /**
