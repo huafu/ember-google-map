@@ -1,6 +1,7 @@
 {
   "name": "ember-google-map",
   "version": "0.0.19",
+  "private": true,
   "directories": {
     "doc": "doc",
     "test": "tests"
@@ -10,7 +11,11 @@
     "build": "ember build",
     "test": "ember test"
   },
-  "repository": "https://github.com/huafu/ember-google-map.git",
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/cometaworks/ember-google-map.git"
+    },
+
   "engines": {
     "node": ">= 0.10.0"
   },
@@ -37,5 +42,5 @@
   ],
   "ember-addon": {
     "configPath": "tests/dummy/config"
-  }
+  },
 }
