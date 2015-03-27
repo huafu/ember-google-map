@@ -6,6 +6,7 @@ import GoogleObjectMixin from 'ember-google-map/mixins/google-object';
 var computed = Ember.computed;
 var oneWay = computed.oneWay;
 var on = Ember.on;
+var observer = Ember.observer;
 var fmt = Ember.String.fmt;
 var forEach = Ember.EnumerableUtils.forEach;
 var getProperties = Ember.getProperties;
@@ -138,11 +139,19 @@ export default Ember.Component.extend(GoogleObjectMixin, {
   googleObject: null,
 
   /**
+   * Always auto-fit bounds
+   * @property alwaysAutoFitBounds
+   * @type {boolean}
+   */
+  alwaysAutoFitBounds: false,
+
+  /**
    * Auto fit bounds to type of items
    * @property autoFitBounds
    * @type {boolean|string}
    */
   autoFitBounds: false,
+
 
   /**
    * Fit bounds to view all coordinates
@@ -150,8 +159,9 @@ export default Ember.Component.extend(GoogleObjectMixin, {
    * @type {Array.<{lat: number, lng: number}>}
    */
   fitBoundsArray: computed(
-    'autoFitBounds', '_markers.@each', '_infoWindow.@each', '_polylines.@each._path.@each',
-    '_polygons.@each._path.@each', '_circles.@each', function (key, value, oldValue) {
+    'autoFitBounds', '_markers.[]', '_infoWindow.[]', '_polylines.@each._path.[]',
+    '_polygons.@each._path.[]', '_circles.[]',
+    function (key, value/*, oldValue*/) {
       var auto;
       if (arguments.length > 1) {
         // it's a set, save that the use defined them
@@ -177,7 +187,8 @@ export default Ember.Component.extend(GoogleObjectMixin, {
         }
       }
       return value;
-    }),
+    }
+  ),
 
 
   /**
@@ -436,45 +447,57 @@ export default Ember.Component.extend(GoogleObjectMixin, {
   /**
    * Schedule an auto-fit of the bounds
    *
-   * @method scheduleAutoFitBounds
-   * @param {{sw: {lat: number, lng: number}, ne: {lat: number, lng: number}}|Array.<{lat: number, lng: number}>} [coords]
+   * @method _scheduleAutoFitBounds
    */
-  scheduleAutoFitBounds: function (coords) {
+  _scheduleAutoFitBounds: function () {
     Ember.run.schedule('afterRender', this, function () {
-      Ember.run.debounce(this, 'fitBoundsToContain', coords, 200);
+      Ember.run.debounce(this, '_fitBounds', 200);
     });
   },
 
   /**
+   * Observes the length of the autoFitBounds array
+   *
+   * @method _observesAutoFitBoundLength
+   * @private
+   */
+  _observesAutoFitBoundLength: on('init', observer('fitBoundsArray.length', function () {
+    if (this.get('alwaysAutoFitBounds')) {
+      this._scheduleAutoFitBounds();
+    }
+  })),
+
+
+  /**
    * Fit the bounds to contain given coordinates
    *
-   * @method fitBoundsToContain
-   * @param {{sw: {lat: number, lng: number}, ne: {lat: number, lng: number}}|Array.<{lat: number, lng: number}>} [coords]
+   * @method _fitBounds
    */
-  fitBoundsToContain: function (coords) {
-    var map, bounds;
-    if (this.isDestroying || this.isDestroyed || this._state !== 'inDOM') {
+  _fitBounds: function () {
+    var map, bounds, coords;
+    if (this.isDestroying || this.isDestroyed) {
       return;
     }
     map = this.get('googleObject');
-    if (!map) {
-      this.scheduleAutoFitBounds(coords);
+    if (this._state !== 'inDOM' || !map) {
+      this._scheduleAutoFitBounds(coords);
       return;
     }
-    if (coords == null) {
-      coords = this.get('fitBoundsArray');
-    }
+    coords = this.get('fitBoundsArray');
     if (!coords) {
       return;
     }
     if (Ember.isArray(coords)) {
       // it's an array of lat,lng
-      coords = Ember.A(coords);
+      coords = coords.slice();
       if (coords.get('length')) {
-        bounds = new google.maps.LatLngBounds(helpers._latLngToGoogle(coords.shiftObject()));
-        coords.forEach(function (point) {
+        bounds = new google.maps.LatLngBounds(helpers._latLngToGoogle(coords.shift()));
+        forEach(coords, function (point) {
           bounds.extend(helpers._latLngToGoogle(point));
         });
+      }
+      else {
+        return;
       }
     }
     else {
@@ -497,7 +520,7 @@ export default Ember.Component.extend(GoogleObjectMixin, {
     if (helpers.hasGoogleLib()) {
       canvas = this.$('div.map-canvas')[0];
       this.createGoogleObject(canvas, null);
-      this.scheduleAutoFitBounds();
+      this._scheduleAutoFitBounds();
     }
   }),
 
