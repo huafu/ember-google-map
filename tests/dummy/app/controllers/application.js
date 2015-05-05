@@ -60,6 +60,11 @@ export default Ember.Controller.extend({
   ],
 
   actions: {
+    didClickMap: function (view, event) {
+      var latLng = event.latLng;
+      this.get('markers').pushObject({lat: latLng.lat(), lng: latLng.lng()});
+    },
+
     addMarker: function () {
       this.get('markers').addObject({title: 'new', lat: 0, lng: 0, isDraggable: true});
     },
