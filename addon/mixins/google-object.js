@@ -69,6 +69,13 @@ var GoogleObjectMixin = Ember.Mixin.create({
   googleEvents: oneWay('controller.googleEvents'),
 
   /**
+   * The default target for our actions
+   * @property googleEventsTarget
+   * @type {Ember.Object}
+   */
+  googleEventsTarget: oneWay('targetObject'),
+
+  /**
    * The google object itself
    * @property googleObject
    * @type google.maps.MVCObject
@@ -177,6 +184,19 @@ var GoogleObjectMixin = Ember.Mixin.create({
         d = null;
       }
     }
+
+    // finally add all overwritten events (`ev_xyz` properties)
+    forEach(Ember.keys(this), function (key) {
+      var d, matches, action;
+      if ((matches = key.match(/^ev_(.+)$/)) && (action = this.get(key))) {
+        d = {action: this.get(key)};
+        if (defaultTarget) {
+          d.target = defaultTarget;
+        }
+        res.push(new GoogleObjectEvent(matches[1], d));
+      }
+    }, this);
+
     return Ember.A(res);
   }).readOnly(),
 
