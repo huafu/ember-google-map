@@ -1,6 +1,6 @@
 {
   "name": "ember-google-map",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "directories": {
     "doc": "doc",
     "test": "tests"
