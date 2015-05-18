@@ -4,7 +4,7 @@
     {{#each marker in _markers itemViewClass=markerViewClass}}
       <li>{{marker.title}} @ {{marker.lat}},{{marker.lng}}</li>
       {{#if view.hasInfoWindow}}
-        {{view 'google-map/info-window' context=marker}}
+        {{view view.infoWindowViewClass context=marker}}
       {{/if}}
     {{/each}}
   </ul>

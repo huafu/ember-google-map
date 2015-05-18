@@ -47,6 +47,10 @@ export default GoogleMapCoreView.extend({
     return this.get('controller.infoWindowTemplateName') || this.get('parentView.markerInfoWindowTemplateName');
   }).readOnly(),
 
+  infoWindowViewClass: computed('controller.infoWindowViewClass', 'parentView.infoWindowViewClass', function () {
+    return this.get('controller.infoWindowViewClass') || this.get('parentView.infoWindowViewClass');
+  }).readOnly(),
+
   infoWindowAnchor: oneWay('googleObject'),
 
   isInfoWindowVisible: alias('controller.isInfoWindowVisible'),
