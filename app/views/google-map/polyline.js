@@ -40,6 +40,7 @@ export default GoogleMapCoreView.extend({
   isDraggable:      alias('controller.isDraggable'),
   isClickable:      alias('controller.isClickable'),
   isEditable:       alias('controller.isEditable'),
+  isGeodesic:       alias('controller.isGeodesic'),
   icons:            alias('controller.icons'),
 
   initGoogleObject: on('didInsertElement', function () {
