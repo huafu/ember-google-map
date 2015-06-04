@@ -21,7 +21,6 @@ export default GoogleMapCoreView.extend({
       isVisible:     {name: 'visible', event: 'visible_changed'},
       isDraggable:   {name: 'draggable', event: 'draggable_changed'},
       isEditable:    {name: 'editable', event: 'editable_changed'},
-      isGeodesic:    {name: 'geodesic', optionOnly: true},
       icons:         {optionOnly: true},
       zIndex:        {optionOnly: true, cast: helpers.cast.integer},
       map:           {readOnly: true},
