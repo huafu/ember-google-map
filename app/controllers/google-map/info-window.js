@@ -1,7 +1,2 @@
-import Ember from 'ember';
-
-/**
- * @class GoogleMapInfoWindowController
- * @extends Ember.ObjectController
- */
-export default Ember.ObjectController.extend({});
+import GoogleMapInfoWindowController from 'ember-google-map/controllers/google-map/info-window';
+export default GoogleMapInfoWindowController;
