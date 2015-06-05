@@ -1,7 +1,2 @@
-import Ember from 'ember';
-
-/**
- * @class GoogleMapCircleController
- * @extends Ember.ObjectController
- */
-export default Ember.ObjectController.extend({});
+import GoogleMapCircleController from 'ember-google-map/controllers/google-map/circle';
+export default GoogleMapCircleController;

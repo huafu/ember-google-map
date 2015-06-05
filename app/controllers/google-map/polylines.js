@@ -1,11 +1,2 @@
-import Ember from 'ember';
-
-/**
- * @class GoogleMapPolylinesController
- * @extends Ember.ArrayController
- */
-export default Ember.ArrayController.extend({
-  itemController: Ember.computed.alias('parentController.polylineController'),
-  model:          Ember.computed.alias('parentController.polylines'),
-  pathController: Ember.computed.alias('parentController.polylinePathController')
-});
+import GoogleMapPolylinesController from 'ember-google-map/controllers/google-map/polylines';
+export default GoogleMapPolylinesController;
