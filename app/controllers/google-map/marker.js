@@ -14,6 +14,7 @@ export default Ember.Controller.extend({
   isVisible:              alias('model.isVisible'),
   isDraggable:            alias('model.isDraggable'),
   isClickable:            alias('model.isClickable'),
+  isOptimized:            alias('model.isOptimized'),
   icon:                   alias('model.icon'),
   lat:                    alias('model.lat'),
   lng:                    alias('model.lng'),

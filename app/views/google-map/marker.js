@@ -40,6 +40,7 @@ export default GoogleMapCoreView.extend({
   isVisible:   alias('controller.isVisible'),
   isDraggable: alias('controller.isDraggable'),
   isClickable: alias('controller.isClickable'),
+  isOptimized: alias('controller.isOptimized'),
   icon:        alias('controller.icon'),
   lat:         alias('controller.lat'),
   lng:         alias('controller.lng'),
