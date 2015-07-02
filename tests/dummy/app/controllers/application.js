@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import {MAP_TYPES} from '../components/google-map';
 
+
 export default Ember.Controller.extend({
   lat:      10,
   lng:      10,
@@ -8,7 +9,7 @@ export default Ember.Controller.extend({
   type:     'road',
   mapTypes: MAP_TYPES,
 
-  markers: [
+  markers: Ember.A([
     {title: 'one', lat: 5, lng: 5, description: 'hello 1', isDraggable: true},
     {title: 'two', lat: 5, lng: 0, hasInfoWindow: false},
     {
@@ -18,46 +19,46 @@ export default Ember.Controller.extend({
       infoWindowTemplateName: 'marker-info-window',
       helloWorld:             'Hello World!'
     }
-  ],
+  ]),
 
-  infoWindows: [
+  infoWindows: Ember.A([
     {title: 'some info window', lat: -5, lng: -5, description: 'hello everybody!'}
-  ],
+  ]),
 
-  polylines: [
+  polylines: Ember.A([
     {
       isEditable:    true,
-      path:          [
+      path:          Ember.A([
         {lat: 2.8, lng: -3.6}, {lat: 1.5, lng: 0.2}, {lat: -3, lng: 2}, {lat: -5.5, lng: -0.8},
         {lat: -5.9, lng: -8.9}, {lat: -3.4, lng: -11.6}, {lat: 1.2, lng: -11.1}, {lat: 2.8, lng: -7}
-      ],
+      ]),
       strokeOpacity: 0.8,
       strokeColor:   'blue'
     }
-  ],
+  ]),
 
-  polygons: [
+  polygons: Ember.A([
     {
       isEditable:    true,
-      path:          [
+      path:          Ember.A([
         {lat: 7.2, lng: -5}, {lat: 7.7, lng: -2}, {lat: 4, lng: -1.5}, {lat: 5, lng: -3.1},
         {lat: 4.8, lng: -6.7}, {lat: 5.3, lng: -9.7}, {lat: 7.9, lng: -10.3}, {lat: 8, lng: -7.3}
-      ],
+      ]),
       strokeOpacity: 0.8,
       strokeColor:   'red',
       fillColor:     'yellow',
       fillOpacity:   0.5
     }
-  ],
+  ]),
 
-  circles: [
+  circles: Ember.A([
     {
       isEditable: true,
       lat:        -4.4,
       lng:        6.8,
       radius:     314907
     }
-  ],
+  ]),
 
   actions: {
     didClickMap: function (view, event) {
