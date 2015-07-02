@@ -4,6 +4,7 @@ import GoogleMapCoreView from './core';
 import MarkerView from './marker';
 
 var observer = Ember.observer;
+var run = Ember.run;
 var on = Ember.on;
 var scheduleOnce = Ember.run.scheduleOnce;
 var computed = Ember.computed;
@@ -18,7 +19,7 @@ var any = computed.any;
 export default GoogleMapCoreView.extend({
   classNames: ['google-info-window'],
 
-  googleFQCN:   'google.maps.InfoWindow',
+  googleFQCN: 'google.maps.InfoWindow',
 
   // will be either the marker using us, or the component if this is a detached info-window
   templateName: any('controller.templateName', 'parentView.infoWindowTemplateName'),
@@ -34,42 +35,49 @@ export default GoogleMapCoreView.extend({
     }
   },
 
-  isMarkerInfoWindow: computed('parentView', function () {
-    return (this.get('parentView') instanceof MarkerView);
+  isMarkerInfoWindow: computed('parentView', {
+    get() {
+      return (this.get('parentView') instanceof MarkerView);
+    }
   }),
 
-  googleMapComponent: computed('isMarkerInfoWindow', function () {
-    return this.get(this.get('isMarkerInfoWindow') ? 'parentView.parentView' : 'parentView');
+  googleMapComponent: computed('isMarkerInfoWindow', {
+    get() {
+      return this.get(this.get('isMarkerInfoWindow') ? 'parentView.parentView' : 'parentView');
+    }
   }),
 
   _coreGoogleEvents: ['closeclick'],
 
   // aliased from controller so that if they are not defined they use the values from the controller
-  zIndex:            alias('controller.zIndex'),
-  lat:               alias('controller.lat'),
-  lng:               alias('controller.lng'),
-  anchor:            oneWay('parentView.infoWindowAnchor'),
+  zIndex: alias('controller.zIndex'),
+  lat:    alias('controller.lat'),
+  lng:    alias('controller.lng'),
+  anchor: oneWay('parentView.infoWindowAnchor'),
 
-  visible: computed('parentView.isInfoWindowVisible', 'controller.isVisible', function (key, value) {
-    var isMarkerIW = this.get('isMarkerInfoWindow');
-    if (arguments.length < 2) {
+  visible: computed('parentView.isInfoWindowVisible', 'controller.isVisible', {
+    get() {
+      var value, isMarkerIW = this.get('isMarkerInfoWindow');
       if (isMarkerIW) {
         value = this.get('parentView.isInfoWindowVisible');
       }
       else {
         value = this.getWithDefault('controller.isVisible', true);
-        this.set('controller.isVisible', value);
+        run(this, 'set', 'controller.isVisible', value);
       }
-    }
-    else {
+      return value;
+    },
+    set(key, value) {
+      var isMarkerIW = this.get('isMarkerInfoWindow');
+      value = Boolean(value);
       if (isMarkerIW) {
         this.set('parentView.isInfoWindowVisible', value);
       }
       else {
         this.set('controller.isVisible', value);
       }
+      return value;
     }
-    return value;
   }),
 
   initGoogleObject: on('didInsertElement', function () {

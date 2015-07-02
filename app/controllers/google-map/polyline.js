@@ -1,15 +1,19 @@
 import Ember from 'ember';
 
+var computed = Ember.computed;
+
 /**
  * @class GoogleMapPolylineController
  * @extends Ember.ObjectController
  */
 export default Ember.ObjectController.extend({
-  pathController: Ember.computed.alias('parentController.pathController'),
+  pathController: computed.alias('parentController.pathController'),
 
-  _path: Ember.computed('path', 'pathController', function () {
-    return this.container.lookupFactory('controller:' + this.get('pathController')).create({
-      parentController: this
-    });
-  }).readOnly()
+  _path: computed('path', 'pathController', {
+    get () {
+      return this.container.lookupFactory('controller:' + this.get('pathController')).create({
+        parentController: this
+      });
+    }
+  })
 });

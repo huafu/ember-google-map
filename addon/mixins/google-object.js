@@ -3,7 +3,7 @@ import GoogleObjectProperty from '../core/google-object-property';
 import GoogleObjectEvent from '../core/google-object-event';
 
 var computed = Ember.computed;
-var oneWay = computed.oneWay;
+var get$ = Ember.get;
 var fmt = Ember.String.fmt;
 var forEach = Ember.EnumerableUtils.forEach;
 
@@ -24,16 +24,15 @@ var GoogleObjectMixin = Ember.Mixin.create({
    * @property googleClass
    * @type {subclass of google.maps.MVCObject}
    */
-  googleClass: computed('googleFQCN', function (key, value) {
-    var path;
-    if (arguments.length > 1) {
-      return value;
-    }
-    else {
-      path = this.get('googleFQCN');
+  googleClass: computed('googleFQCN', {
+    get() {
+      var path = this.get('googleFQCN');
       if (path) {
-        return Ember.get(window, path);
+        return get$(window, path);
       }
+    },
+    set(key, value) {
+      return value;
     }
   }),
 
@@ -43,14 +42,13 @@ var GoogleObjectMixin = Ember.Mixin.create({
    * @property googleName
    * @type {string}
    */
-  googleName: computed('googleFQCN', function (key, value) {
-    var name;
-    if (arguments.length > 1) {
-      return value;
-    }
-    else {
-      name = this.get('googleFQCN');
+  googleName: computed('googleFQCN', {
+    get() {
+      var name = this.get('googleFQCN');
       return name ? Ember.String.dasherize(name.split('.').pop()) : this.toString();
+    },
+    set(key, value) {
+      return value;
     }
   }),
 
@@ -59,21 +57,21 @@ var GoogleObjectMixin = Ember.Mixin.create({
    * @property googleProperties
    * @type Object
    */
-  googleProperties: Ember.required(),
+  googleProperties: null,
 
   /**
    * The definition of all google events to bind
    * @property googleEvents
    * @type Object
    */
-  googleEvents: oneWay('controller.googleEvents'),
+  googleEvents: computed.oneWay('controller.googleEvents'),
 
   /**
    * The default target for our actions
    * @property googleEventsTarget
    * @type {Ember.Object}
    */
-  googleEventsTarget: oneWay('targetObject'),
+  googleEventsTarget: computed.oneWay('targetObject'),
 
   /**
    * The google object itself
@@ -119,32 +117,34 @@ var GoogleObjectMixin = Ember.Mixin.create({
    * @type Array.<GoogleObjectProperty>
    * @private
    */
-  _compiledProperties: computed(function () {
-    var def = this.get('googleProperties') || {},
-      res = [], d, defined = Object.create(null);
-    for (var k in def) {
-      if (def.hasOwnProperty(k)) {
-        d = def[k];
-        if (typeof d === 'string') {
-          d = {name: d};
+  _compiledProperties: computed({
+    get() {
+      var def = this.get('googleProperties') || {},
+        res = [], d, defined = Object.create(null);
+      for (var k in def) {
+        if (def.hasOwnProperty(k)) {
+          d = def[k];
+          if (typeof d === 'string') {
+            d = {name: d};
+          }
+          else if (d === true) {
+            d = {};
+          }
+          res.push(d = new GoogleObjectProperty(k, d));
+          defined[d.getName()] = null;
+          d = null;
         }
-        else if (d === true) {
-          d = {};
+      }
+      // now read all properties of the object which name start with 'gopt_'
+      def = Ember.keys(this);
+      for (var i = 0; i < def.length; i++) {
+        if (/^gopt_/.test(def[i]) && (k = def[i].substr(5)) && !(k in defined)) {
+          res.push(new GoogleObjectProperty(def[i], {name: k, optionOnly: true}));
         }
-        res.push(d = new GoogleObjectProperty(k, d));
-        defined[d.getName()] = null;
-        d = null;
       }
+      return Ember.A(res);
     }
-    // now read all properties of the object which name start with 'gopt_'
-    def = Ember.keys(this);
-    for (var i = 0; i < def.length; i++) {
-      if (/^gopt_/.test(def[i]) && (k = def[i].substr(5)) && !(k in defined)) {
-        res.push(new GoogleObjectProperty(def[i], {name: k, optionOnly: true}));
-      }
-    }
-    return Ember.A(res);
-  }).readOnly(),
+  }),
 
   /**
    * An array of all compiled (parsed) events
@@ -152,53 +152,55 @@ var GoogleObjectMixin = Ember.Mixin.create({
    * @type Array.<GoogleObjectEvent>
    * @private
    */
-  _compiledEvents: computed(function () {
-    var def, k, res, d, defaultTarget;
-    def = this.get('googleEvents') || {};
-    res = [];
-    defaultTarget = this.get('googleEventsTarget');
+  _compiledEvents: computed({
+    get () {
+      var def, k, res, d, defaultTarget;
+      def = this.get('googleEvents') || {};
+      res = [];
+      defaultTarget = this.get('googleEventsTarget');
 
-    // first add our core events
-    forEach(this.get('_coreGoogleEvents') || [], function (name) {
-      res.push(new GoogleObjectEvent(name, {
-        target:  this,
-        method:  '_handleCoreEvent',
-        prepend: true
-      }));
-    });
+      // first add our core events
+      forEach(this.get('_coreGoogleEvents') || [], function (name) {
+        res.push(new GoogleObjectEvent(name, {
+          target:  this,
+          method:  '_handleCoreEvent',
+          prepend: true
+        }));
+      });
 
-    // then add user defined events
-    for (k in def) {
-      if (def.hasOwnProperty(k)) {
-        d = def[k];
-        if (typeof d === 'string') {
-          d = {action: d};
+      // then add user defined events
+      for (k in def) {
+        if (def.hasOwnProperty(k)) {
+          d = def[k];
+          if (typeof d === 'string') {
+            d = {action: d};
+          }
+          else if (d === true) {
+            d = {};
+          }
+          if (!d.target && defaultTarget) {
+            d.target = defaultTarget;
+          }
+          res.push(new GoogleObjectEvent(k, d));
+          d = null;
         }
-        else if (d === true) {
-          d = {};
-        }
-        if (!d.target && defaultTarget) {
-          d.target = defaultTarget;
-        }
-        res.push(new GoogleObjectEvent(k, d));
-        d = null;
       }
+
+      // finally add all overwritten events (`ev_xyz` properties)
+      forEach(Ember.keys(this), function (key) {
+        var d, matches, action;
+        if ((matches = key.match(/^ev_(.+)$/)) && (action = this.get(key))) {
+          d = {action: this.get(key)};
+          if (defaultTarget) {
+            d.target = defaultTarget;
+          }
+          res.push(new GoogleObjectEvent(matches[1], d));
+        }
+      }, this);
+
+      return Ember.A(res);
     }
-
-    // finally add all overwritten events (`ev_xyz` properties)
-    forEach(Ember.keys(this), function (key) {
-      var d, matches, action;
-      if ((matches = key.match(/^ev_(.+)$/)) && (action = this.get(key))) {
-        d = {action: this.get(key)};
-        if (defaultTarget) {
-          d.target = defaultTarget;
-        }
-        res.push(new GoogleObjectEvent(matches[1], d));
-      }
-    }, this);
-
-    return Ember.A(res);
-  }).readOnly(),
+  }),
 
   /**
    * Handle a core event
