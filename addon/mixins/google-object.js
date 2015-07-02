@@ -5,6 +5,7 @@ import GoogleObjectEvent from '../core/google-object-event';
 var computed = Ember.computed;
 var get$ = Ember.get;
 var fmt = Ember.String.fmt;
+var dasherize = Ember.String.dasherize;
 var forEach = Ember.EnumerableUtils.forEach;
 
 /**
@@ -45,7 +46,7 @@ var GoogleObjectMixin = Ember.Mixin.create({
   googleName: computed('googleFQCN', {
     get() {
       var name = this.get('googleFQCN');
-      return name ? Ember.String.dasherize(name.split('.').pop()) : this.toString();
+      return name ? dasherize(name.split('.').pop()) : this.toString();
     },
     set(key, value) {
       return value;

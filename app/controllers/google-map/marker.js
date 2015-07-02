@@ -1,7 +1,23 @@
 import Ember from 'ember';
 
+var computed = Ember.computed;
+var alias = computed.alias;
+
 /**
  * @class GoogleMapMarkerController
- * @extends Ember.ObjectController
+ * @extends Ember.Controller
  */
-export default Ember.ObjectController.extend({});
+export default Ember.Controller.extend({
+  title:                  alias('model.title'),
+  opacity:                alias('model.opacity'),
+  zIndex:                 alias('model.zIndex'),
+  isVisible:              alias('model.isVisible'),
+  isDraggable:            alias('model.isDraggable'),
+  isClickable:            alias('model.isClickable'),
+  icon:                   alias('model.icon'),
+  lat:                    alias('model.lat'),
+  lng:                    alias('model.lng'),
+  infoWindowTemplateName: alias('model.infoWindowTemplateName'),
+  isInfoWindowVisible:    alias('model.isInfoWindowVisible'),
+  hasInfoWindow:          alias('model.hasInfoWindow')
+});
