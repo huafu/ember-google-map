@@ -499,7 +499,7 @@ export default Ember.Component.extend(GoogleObjectMixin, {
     if (Ember.isArray(coords)) {
       // it's an array of lat,lng
       coords = coords.slice();
-      if (coords.get('length')) {
+      if (get$(coords, 'length')) {
         bounds = new google.maps.LatLngBounds(helpers._latLngToGoogle(coords.shift()));
         forEach(coords, function (point) {
           bounds.extend(helpers._latLngToGoogle(point));
