@@ -12,5 +12,7 @@ export default Ember.Controller.extend({
   zIndex:       alias('model.zIndex'),
   lat:          alias('model.lat'),
   lng:          alias('model.lng'),
-  isVisible:    alias('model.isVisible')
+  isVisible:    alias('model.isVisible'),
+  title:        alias('model.title'),
+  description:  alias('model.description')
 });
