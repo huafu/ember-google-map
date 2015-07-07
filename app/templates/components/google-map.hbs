@@ -1,7 +1,7 @@
 <div class="map-canvas"></div>
 <div style="display: none;">
   <ul>
-    {{#each marker in _markers itemViewClass=markerViewClass}}
+    {{#each _markers itemViewClass=markerViewClass as |marker|}}
       <li>{{marker.title}} @ {{marker.lat}},{{marker.lng}}</li>
       {{#if view.hasInfoWindow}}
         {{view 'google-map/info-window' context=marker}}
@@ -9,17 +9,17 @@
     {{/each}}
   </ul>
   <ul>
-    {{#each iw in _infoWindows}}
+    {{#each _infoWindows as |iw|}}
       {{view infoWindowViewClass context=iw}}
     {{/each}}
   </ul>
   <ul>
-    {{each polyline in _polylines itemViewClass=polylineViewClass}}
+    {{each _polylines itemViewClass=polylineViewClass as |polyline|}}
   </ul>
   <ul>
-    {{each polygon in _polygons itemViewClass=polygonViewClass}}
+    {{each _polygons itemViewClass=polygonViewClass as |polygon|}}
   </ul>
   <ul>
-    {{each circle in _circles itemViewClass=circleViewClass}}
+    {{each _circles itemViewClass=circleViewClass as |circle|}}
   </ul>
 </div>
