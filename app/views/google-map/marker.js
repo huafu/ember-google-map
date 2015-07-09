@@ -46,17 +46,17 @@ export default GoogleMapCoreView.extend({
   lng:         alias('controller.lng'),
 
   // get the info window template name from the component or own controller
-  infoWindowTemplateName: computed.any('controller.infoWindowTemplateName', 'parentView.markerInfoWindowTemplateName'),
+  infoWindowTemplateName: computed.any('controller.infoWindowTemplateName', 'googleMapComponent.markerInfoWindowTemplateName'),
 
   infoWindowAnchor: oneWay('googleObject'),
 
   isInfoWindowVisible: alias('controller.isInfoWindowVisible'),
 
-  hasInfoWindow: computed('parentView.markerHasInfoWindow', 'controller.hasInfoWindow', {
+  hasInfoWindow: computed('googleMapComponent.markerHasInfoWindow', 'controller.hasInfoWindow', {
     get() {
       var fromCtrl = this.get('controller.hasInfoWindow');
-      if (fromCtrl === null || fromCtrl === undefined) {
-        return !!this.get('parentView.markerHasInfoWindow');
+      if (fromCtrl == null) {
+        return Boolean(this.get('googleMapComponent.markerHasInfoWindow'));
       }
       return fromCtrl;
     }

@@ -13,7 +13,7 @@ var on = Ember.on;
  * @uses GoogleObjectMixin
  */
 export default Ember.View.extend(GoogleObjectMixin, {
-  googleMapComponent: computed('parentView', {
+  googleMapComponent: computed({
     get() {
       var parent = this.get('parentView');
       while (parent && !(parent instanceof GoogleMapComponent)) {

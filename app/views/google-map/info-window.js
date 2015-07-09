@@ -40,12 +40,6 @@ export default GoogleMapCoreView.extend({
     }
   }),
 
-  googleMapComponent: computed('isMarkerInfoWindow', {
-    get() {
-      return this.get(this.get('isMarkerInfoWindow') ? 'parentView.parentView' : 'parentView');
-    }
-  }),
-
   _coreGoogleEvents: ['closeclick'],
 
   // aliased from controller so that if they are not defined they use the values from the controller
