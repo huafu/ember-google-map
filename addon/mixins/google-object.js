@@ -137,7 +137,7 @@ var GoogleObjectMixin = Ember.Mixin.create({
         }
       }
       // now read all properties of the object which name start with 'gopt_'
-      def = Ember.keys(this);
+      def = Object.keys(this);
       for (var i = 0; i < def.length; i++) {
         if (/^gopt_/.test(def[i]) && (k = def[i].substr(5)) && !(k in defined)) {
           res.push(new GoogleObjectProperty(def[i], {name: k, optionOnly: true}));
@@ -188,7 +188,7 @@ var GoogleObjectMixin = Ember.Mixin.create({
       }
 
       // finally add all overwritten events (`ev_xyz` properties)
-      forEach(Ember.keys(this), function (key) {
+      forEach(Object.keys(this), function (key) {
         var d, matches, action;
         if ((matches = key.match(/^ev_(.+)$/)) && (action = this.get(key))) {
           d = {action: this.get(key)};
