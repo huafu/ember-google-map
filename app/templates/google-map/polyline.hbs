@@ -1,5 +1,5 @@
 <ul>
-  {{#each point in _path}}
+  {{#each _path as |point|}}
     <li>{{point.lat}},{{point.lng}}</li>
   {{/each}}
 </ul>

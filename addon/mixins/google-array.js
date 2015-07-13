@@ -2,6 +2,8 @@
 import Ember from 'ember';
 import helpers from '../core/helpers';
 
+var computed = Ember.computed;
+
 var EMPTY = [];
 
 /**
@@ -10,25 +12,23 @@ var EMPTY = [];
  */
 export default Ember.Mixin.create({
 
-  googleArray: Ember.computed(function (key, value) {
-    var array;
-    if (arguments.length > 1) {
-      // set
-      array = value ? value.getArray().slice() : [];
-      this.set('observersEnabled', false);
-      this.replace(0, this.get('length') || 0, this._startObservingEmberProperties(
-        this._google2ember(array, true), true
-      ));
-      this.set('observersEnabled', true);
-      return value;
-    }
-    else {
+  googleArray: computed({
+    get() {
       if (!helpers.hasGoogleLib()) {
         return;
       }
       return new google.maps.MVCArray(
         this._ember2google(this._startObservingEmberProperties(this.toArray().slice(), true), true)
       );
+    },
+    set(key, value) {
+      var array = value ? value.getArray().slice() : [];
+      this.set('observersEnabled', false);
+      this.replace(0, this.get('length') || 0, this._startObservingEmberProperties(
+        this._google2ember(array, true), true
+      ));
+      this.set('observersEnabled', true);
+      return value;
     }
   }),
 
@@ -121,14 +121,13 @@ export default Ember.Mixin.create({
 
   observersEnabledLevel: 0,
 
-  observersEnabled: Ember.computed(function (key, value) {
-    if (arguments.length > 1) {
-      value = this.incrementProperty('observersEnabledLevel', value ? 1 : -1);
+  observersEnabled: computed({
+    get() {
+      return this.get('observersEnabledLevel') === 0;
+    },
+    set(key, value) {
+      return this.incrementProperty('observersEnabledLevel', value ? 1 : -1) === 0;
     }
-    else {
-      value = this.get('observersEnabledLevel');
-    }
-    return (value === 0);
   }),
 
   setupGoogleArray: Ember.observer('googleArray', Ember.on('init', function () {

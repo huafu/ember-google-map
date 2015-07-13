@@ -21,7 +21,7 @@
 <h3>Markers</h3>
 <div>
   <ul class="markers">
-    {{#each marker in markers}}
+    {{#each markers as |marker|}}
       <li>
         <label>title: {{input value=marker.title}}</label>
         <label>desc.: {{input value=marker.description}}</label>
@@ -38,7 +38,7 @@
 <h3>Info windows</h3>
 <div>
   <ul class="info-windows">
-    {{#each iw in infoWindows}}
+    {{#each infoWindows as |iw|}}
       <li>
         <label>title: {{input value=iw.title}}</label>
         <label>desc.: {{input value=iw.description}}</label>
@@ -54,14 +54,14 @@
 <h3>Polylines</h3>
 <div>
   <ul class="polylines">
-    {{#each polyline in polylines}}
+    {{#each polylines as |polyline|}}
       <li>
         <label>{{input type='checkbox' checked=polyline.isVisible}}visible</label> |
         <label>{{input type='checkbox' checked=polyline.isDraggable}}draggable</label>
         <label>{{input type='checkbox' checked=polyline.isEditable}}editable</label>
         <button {{action 'removePolyline' polyline}}>x</button>
         <ul class="polyline-path">
-          {{#each entry in polyline.path}}
+          {{#each polyline.path as |entry|}}
             <li>
               <label>lat/lng: {{input value=entry.lat class='coord'}}
                 /{{input value=entry.lng class='coord'}}</label>
@@ -79,14 +79,14 @@
 <h3>Polygons</h3>
 <div>
   <ul class="polygons">
-    {{#each polygon in polygons}}
+    {{#each polygons as |polygon|}}
       <li>
         <label>{{input type='checkbox' checked=polygon.isVisible}}visible</label> |
         <label>{{input type='checkbox' checked=polygon.isDraggable}}draggable</label>
         <label>{{input type='checkbox' checked=polygon.isEditable}}editable</label>
         <button {{action 'removePolygon' polygon}}>x</button>
         <ul class="polygon-path">
-          {{#each entry in polygon.path}}
+          {{#each polygon.path as |entry|}}
             <li>
               <label>lat/lng: {{input value=entry.lat class='coord'}}
                 /{{input value=entry.lng class='coord'}}</label>
@@ -104,7 +104,7 @@
 <h3>Circles</h3>
 <div>
   <ul class="circles">
-    {{#each circle in circles}}
+    {{#each circles as |circle|}}
       <li>
         <label>center lat/lng: {{input value=circle.lat class='coord'}}
           /{{input value=circle.lng class='coord'}}</label>

@@ -12,14 +12,16 @@ var alias = computed.alias;
 export default GoogleMapPolylineView.extend({
   googleFQCN: 'google.maps.Polygon',
 
-  googleProperties: computed(function () {
-    return Ember.merge(this._super(), {
-      fillColor:   {optionOnly: true},
-      fillOpacity: {optionOnly: true, cast: helpers.cast.number}
-    });
-  }).readOnly(),
+  googleProperties: computed({
+    get() {
+      return Ember.merge(this._super(), {
+        fillColor:   {optionOnly: true},
+        fillOpacity: {optionOnly: true, cast: helpers.cast.number}
+      });
+    }
+  }),
 
   // aliased from controller so that if they are not defined they use the values from the controller
-  fillColor:        alias('controller.fillColor'),
-  fillOpacity:      alias('controller.fillOpacity')
+  fillColor:   alias('controller.fillColor'),
+  fillOpacity: alias('controller.fillOpacity')
 });

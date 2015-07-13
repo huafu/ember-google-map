@@ -2,6 +2,9 @@
 import Ember from 'ember';
 import helpers from './helpers';
 
+var camelize = Ember.String.camelize;
+var capitalize = Ember.String.capitalize;
+
 /**
  * Handle the linking between a google and an ember object's properties
  *
@@ -15,7 +18,7 @@ var GoogleObjectProperty = function (key, config) {
   this._cfg = {
     key:        key,
     properties: props,
-    name:       config.name || props.join('_').camelize(),
+    name:       config.name || camelize(props.join('_')),
     toGoogle:   config.toGoogle || null,
     fromGoogle: config.fromGoogle || null,
     read:       config.read || null,
@@ -32,7 +35,7 @@ var GoogleObjectProperty = function (key, config) {
  *
  * @returns {String}
  */
-GoogleObjectProperty.prototype.getName = function(){
+GoogleObjectProperty.prototype.getName = function () {
   return this._cfg.name;
 };
 
@@ -91,7 +94,7 @@ GoogleObjectProperty.prototype.readGoogle = function (googleObject) {
     return Object.create(null);
   }
   else {
-    val = googleObject['get' + this._cfg.name.capitalize()]();
+    val = googleObject['get' + capitalize(this._cfg.name)]();
   }
   return this.fromGoogleValue(val);
 };
@@ -124,7 +127,7 @@ GoogleObjectProperty.prototype.writeGoogle = function (googleObject, obj) {
     this._cfg.write.call(this, googleObject, val);
   }
   else {
-    googleObject['set' + this._cfg.name.capitalize()](val);
+    googleObject['set' + capitalize(this._cfg.name)](val);
   }
 };
 

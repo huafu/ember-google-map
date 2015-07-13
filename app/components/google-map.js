@@ -4,20 +4,20 @@ import helpers from 'ember-google-map/core/helpers';
 import GoogleObjectMixin from 'ember-google-map/mixins/google-object';
 
 var computed = Ember.computed;
-var oneWay = computed.oneWay;
+var run = Ember.run;
 var on = Ember.on;
 var observer = Ember.observer;
 var fmt = Ember.String.fmt;
 var forEach = Ember.EnumerableUtils.forEach;
 var getProperties = Ember.getProperties;
-var $get = Ember.get;
+var get$ = Ember.get;
 var dummyCircle;
 
 var VALID_FIT_BOUND_TYPES = ['markers', 'infoWindows', 'circles', 'polylines', 'polygons'];
 
 function getDummyCircle(center, radius) {
   if (radius == null) {
-    radius = $get(center, 'radius');
+    radius = get$(center, 'radius');
   }
   if (!(center instanceof google.maps.LatLng)) {
     center = helpers._latLngToGoogle(center);
@@ -58,7 +58,7 @@ function collectCoordsOf(type, array, items) {
   else if (['polylines', 'polygons']) {
     // handle complex types
     return array.reduce(function (previous, item) {
-      return $get(item, '_path').reduce(function (previous, item) {
+      return get$(item, '_path').reduce(function (previous, item) {
         var coords = getProperties(item, 'lat', 'lng');
         if (coords.lat != null && coords.lng != null) {
           previous.push(coords);
@@ -161,13 +161,9 @@ export default Ember.Component.extend(GoogleObjectMixin, {
   fitBoundsArray: computed(
     'autoFitBounds', '_markers.[]', '_infoWindow.[]', '_polylines.@each._path.[]',
     '_polygons.@each._path.[]', '_circles.[]',
-    function (key, value/*, oldValue*/) {
-      var auto;
-      if (arguments.length > 1) {
-        // it's a set, save that the use defined them
-        this._fixedFitBoundsArray = value;
-      }
-      else {
+    {
+      get() {
+        var auto, value;
         if (this._fixedFitBoundsArray) {
           value = this._fixedFitBoundsArray;
         }
@@ -185,8 +181,11 @@ export default Ember.Component.extend(GoogleObjectMixin, {
             value = null;
           }
         }
+        return value;
+      },
+      set(key, value) {
+        this._fixedFitBoundsArray = value;
       }
-      return value;
     }
   ),
 
@@ -235,11 +234,13 @@ export default Ember.Component.extend(GoogleObjectMixin, {
    * @type {Ember.ArrayController}
    * @private
    */
-  _markers: computed(function () {
-    return this.container.lookupFactory('controller:google-map/markers').create({
-      parentController: this
-    });
-  }).readOnly(),
+  _markers: computed({
+    get () {
+      return this.container.lookupFactory('controller:google-map/markers').create({
+        parentController: this
+      });
+    }
+  }),
 
   /**
    * Controller to use for each marker
@@ -286,11 +287,13 @@ export default Ember.Component.extend(GoogleObjectMixin, {
    * @type {Ember.ArrayController}
    * @private
    */
-  _polylines: computed(function () {
-    return this.container.lookupFactory('controller:google-map/polylines').create({
-      parentController: this
-    });
-  }).readOnly(),
+  _polylines: computed({
+    get () {
+      return this.container.lookupFactory('controller:google-map/polylines').create({
+        parentController: this
+      });
+    }
+  }),
 
   /**
    * Controller to use for each polyline
@@ -329,11 +332,13 @@ export default Ember.Component.extend(GoogleObjectMixin, {
    * @type {Ember.ArrayController}
    * @private
    */
-  _polygons: computed(function () {
-    return this.container.lookupFactory('controller:google-map/polygons').create({
-      parentController: this
-    });
-  }).readOnly(),
+  _polygons: computed({
+    get () {
+      return this.container.lookupFactory('controller:google-map/polygons').create({
+        parentController: this
+      });
+    }
+  }),
 
   /**
    * Controller to use for each polygon
@@ -372,11 +377,13 @@ export default Ember.Component.extend(GoogleObjectMixin, {
    * @type {Ember.ArrayController}
    * @private
    */
-  _circles: computed(function () {
-    return this.container.lookupFactory('controller:google-map/circles').create({
-      parentController: this
-    });
-  }).readOnly(),
+  _circles: computed({
+    get () {
+      return this.container.lookupFactory('controller:google-map/circles').create({
+        parentController: this
+      });
+    }
+  }),
 
   /**
    * Controller to use for each circle
@@ -407,11 +414,13 @@ export default Ember.Component.extend(GoogleObjectMixin, {
    * @type {Ember.ArrayController}
    * @private
    */
-  _infoWindows: computed(function () {
-    return this.container.lookupFactory('controller:google-map/info-windows').create({
-      parentController: this
-    });
-  }).readOnly(),
+  _infoWindows: computed({
+    get () {
+      return this.container.lookupFactory('controller:google-map/info-windows').create({
+        parentController: this
+      });
+    }
+  }),
 
   /**
    * Controller for each info-window
@@ -442,7 +451,7 @@ export default Ember.Component.extend(GoogleObjectMixin, {
    * @property map
    * @type {google.maps.Map}
    */
-  map: oneWay('googleObject'),
+  map: computed.oneWay('googleObject'),
 
   /**
    * Schedule an auto-fit of the bounds
@@ -450,8 +459,8 @@ export default Ember.Component.extend(GoogleObjectMixin, {
    * @method _scheduleAutoFitBounds
    */
   _scheduleAutoFitBounds: function () {
-    Ember.run.schedule('afterRender', this, function () {
-      Ember.run.debounce(this, '_fitBounds', 200);
+    run.schedule('afterRender', this, function () {
+      run.debounce(this, '_fitBounds', 200);
     });
   },
 
@@ -490,7 +499,7 @@ export default Ember.Component.extend(GoogleObjectMixin, {
     if (Ember.isArray(coords)) {
       // it's an array of lat,lng
       coords = coords.slice();
-      if (coords.get('length')) {
+      if (get$(coords, 'length')) {
         bounds = new google.maps.LatLngBounds(helpers._latLngToGoogle(coords.shift()));
         forEach(coords, function (point) {
           bounds.extend(helpers._latLngToGoogle(point));

@@ -154,8 +154,10 @@ var helpers = {
   },
 
   latLngProperty: function () {
-    return Ember.computed(function () {
-      return {lat: null, lng: null};
+    return Ember.computed({
+      get() {
+        return {lat: null, lng: null};
+      }
     });
   },
 

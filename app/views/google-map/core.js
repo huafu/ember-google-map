@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import helpers from 'ember-google-map/core/helpers';
 import GoogleObjectMixin from 'ember-google-map/mixins/google-object';
+import GoogleMapComponent from '../../components/google-map';
 
 var computed = Ember.computed;
 var oneWay = computed.oneWay;
@@ -12,11 +13,21 @@ var on = Ember.on;
  * @uses GoogleObjectMixin
  */
 export default Ember.View.extend(GoogleObjectMixin, {
-  googleMapComponent: oneWay('parentView'),
+  googleMapComponent: computed({
+    get() {
+      var parent = this.get('parentView');
+      while (parent && !(parent instanceof GoogleMapComponent)) {
+        parent = parent.get('parentView');
+      }
+      return parent;
+    }
+  }),
 
   googleEventsTarget: oneWay('googleMapComponent.targetObject'),
 
   map: oneWay('googleMapComponent.map'),
+
+  controller: oneWay('context'),
 
   initGoogleObject: on('didInsertElement', function () {
     // force the creation of the object
