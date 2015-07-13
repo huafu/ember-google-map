@@ -27,6 +27,8 @@ export default Ember.View.extend(GoogleObjectMixin, {
 
   map: oneWay('googleMapComponent.map'),
 
+  controller: oneWay('context'),
+
   initGoogleObject: on('didInsertElement', function () {
     // force the creation of the object
     if (helpers.hasGoogleLib() && !this.get('googleObject')) {

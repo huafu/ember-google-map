@@ -2,10 +2,12 @@
 <div style="display: none;">
   <ul>
     {{#each _markers itemViewClass=markerViewClass as |marker|}}
-      <li>{{marker.title}} @ {{marker.lat}},{{marker.lng}}</li>
-      {{#if view.hasInfoWindow}}
-        {{view 'google-map/info-window' context=marker}}
-      {{/if}}
+      {{#view markerViewClass context=marker}}
+        <li>{{marker.title}} @ {{marker.lat}},{{marker.lng}}</li>
+        {{#if view.hasInfoWindow}}
+          {{view 'google-map/info-window' context=marker}}
+        {{/if}}
+      {{/view}}
     {{/each}}
   </ul>
   <ul>
@@ -14,15 +16,18 @@
     {{/each}}
   </ul>
   <ul>
-    {{#each _polylines itemViewClass=polylineViewClass as |polyline|}}
+    {{#each _polylines as |polyline|}}
+      {{view polylineViewClass context=polyline}}
     {{/each}}
   </ul>
   <ul>
-    {{#each _polygons itemViewClass=polygonViewClass as |polygon|}}
+    {{#each _polygons as |polygon|}}
+      {{view polygonViewClass context=polygon}}
     {{/each}}
   </ul>
   <ul>
-    {{#each _circles itemViewClass=circleViewClass as |circle|}}
+    {{#each _circles as |circle|}}
+      {{view circleViewClass context=circle}}
     {{/each}}
   </ul>
 </div>

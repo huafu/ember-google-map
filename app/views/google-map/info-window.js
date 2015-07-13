@@ -43,7 +43,6 @@ export default GoogleMapCoreView.extend({
   _coreGoogleEvents: ['closeclick'],
 
   // aliased from controller so that if they are not defined they use the values from the controller
-  controller: alias('context'),
   zIndex: alias('controller.zIndex'),
   lat:    alias('controller.lat'),
   lng:    alias('controller.lng'),
