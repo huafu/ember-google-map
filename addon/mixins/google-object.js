@@ -251,7 +251,7 @@ var GoogleObjectMixin = Ember.Mixin.create({
   /**
    * Unlink the google object
    */
-  unlinkGoogleObject: Ember.beforeObserver('googleObject', function () {
+  unlinkGoogleObject: Ember.observer('googleObject', function () {
     this.get('_compiledEvents').invoke('unlink');
     this.get('_compiledProperties').invoke('unlink');
   }),
