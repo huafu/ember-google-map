@@ -17,7 +17,7 @@ export default GoogleMapCoreView.extend({
     isClickable: {name: 'clickable', event: 'clickable_changed'},
     isVisible:   {name: 'visible', event: 'visible_changed'},
     isDraggable: {name: 'draggable', event: 'draggable_changed'},
-    isOptimized: {name: 'optimized', readOnly: true},
+    isOptimized: {name: 'optimized', optionOnly: true},
     title:       {event: 'title_changed'},
     opacity:     {cast: helpers.cast.number},
     icon:        {event: 'icon_changed'},
