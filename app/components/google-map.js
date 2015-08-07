@@ -185,6 +185,7 @@ export default Ember.Component.extend(GoogleObjectMixin, {
       },
       set(key, value) {
         this._fixedFitBoundsArray = value;
+        return value;
       }
     }
   ),
