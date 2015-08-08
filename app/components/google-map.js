@@ -127,7 +127,9 @@ export default Ember.Component.extend(GoogleObjectMixin, {
   /**
    * @inheritDoc
    */
-  googleEvents: {},
+  googleEvents: {
+    click: 'click'
+  },
 
 
   /**
