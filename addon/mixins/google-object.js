@@ -1,10 +1,9 @@
 import Ember from 'ember';
-import GoogleObjectProperty from '../core/google-object-property';
-import GoogleObjectEvent from '../core/google-object-event';
+import GoogleObjectProperty from 'ember-google-map/core/google-object-property';
+import GoogleObjectEvent from 'ember-google-map/core/google-object-event';
 
 var computed = Ember.computed;
 var get$ = Ember.get;
-var run = Ember.run;
 var fmt = Ember.String.fmt;
 var dasherize = Ember.String.dasherize;
 var forEach = Ember.EnumerableUtils.forEach;
