@@ -185,7 +185,6 @@ export default Ember.Component.extend(GoogleObjectMixin, {
       },
       set(key, value) {
         this._fixedFitBoundsArray = value;
-        return value;
       }
     }
   ),
@@ -205,7 +204,10 @@ export default Ember.Component.extend(GoogleObjectMixin, {
    */
   lng: 0,
 
-  /**
+  place: {},
+
+  search: false,
+ /**
    * Initial zoom of the map
    * @property zoom
    * @type {Number}
@@ -227,7 +229,7 @@ export default Ember.Component.extend(GoogleObjectMixin, {
    * @property markers
    * @type {Array.<{lat: Number, lng: Number, title: String}>}
    */
-  markers: null,
+  markers: [],
 
   /**
    * The array controller holding the markers
@@ -529,7 +531,68 @@ export default Ember.Component.extend(GoogleObjectMixin, {
     this.destroyGoogleMap();
     if (helpers.hasGoogleLib()) {
       canvas = this.$('div.map-canvas')[0];
-      this.createGoogleObject(canvas, null);
+      var map = this.createGoogleObject(canvas, null);
+      if (this.get('search')) { 
+	      //var input = $('<input id="map-input_' + this.elementId + '" class="map-controls map-input" type="text" placeholder="Enter a location">')[0];
+	      var markers = this.get('markers');
+	      var input = document.getElementById('map-input_' + this.elementId);
+	      map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+	      var searchBox = new google.maps.places.SearchBox(input);
+	      google.maps.event.addListenerOnce(map, 'idle', function(){
+		input.style.display = "";
+	      });
+	      var _this = this;
+	      google.maps.event.addListener(searchBox, 'places_changed', function() {
+		    var places = searchBox.getPlaces();
+		    if (places.length == 0) {
+		      this.set('lat', null);
+		      this.set('lng', null);
+		      return;
+		    }
+		    _this.set('place', places[0]);
+		    this.set('lat', places[0].geometry.location.lat());
+		    this.set('lng', places[0].geometry.location.lng());
+
+		    for (var i = 0, marker; marker = markers[i]; i++) {
+		      marker.setMap(null);
+		    }
+
+		    // For each place, get the icon, place name, and location.
+		    markers = [];
+		    var bounds = new google.maps.LatLngBounds();
+		    for (var i = 0, place; place = places[i]; i++) {
+		      var image = {
+			url: place.icon,
+			size: new google.maps.Size(71, 71),
+			origin: new google.maps.Point(0, 0),
+			anchor: new google.maps.Point(17, 34),
+			scaledSize: new google.maps.Size(25, 25)
+		      };
+
+		      // Create a marker for each place.
+		      var marker = new google.maps.Marker({
+			map: map,
+			icon: image,
+			title: place.name,
+			position: place.geometry.location
+		      });
+
+		      markers.pushObject(marker);
+
+		      bounds.extend(place.geometry.location);
+		    }
+
+		    map.fitBounds(bounds);
+             });
+	     google.maps.event.addListener(map, 'bounds_changed', function() {
+		   if (map.getZoom !== 12)
+			map.setZoom(12);
+	           var bounds = map.getBounds();
+		   searchBox.setBounds(bounds);
+	     });
+
+      }
       this._scheduleAutoFitBounds();
     }
   }),
