@@ -1,2 +1,2 @@
-import GoogleMapPolylineView from 'ember-google-map/views/google-map/polyline';
+import GoogleMapPolylineView from 'ember-google-map/views/polyline';
 export default GoogleMapPolylineView;

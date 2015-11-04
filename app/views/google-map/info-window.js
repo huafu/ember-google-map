@@ -1,2 +1,2 @@
-import GoogleMapInfoWindowView from 'ember-google-map/views/google-map/info-window';
+import GoogleMapInfoWindowView from 'ember-google-map/views/info-window';
 export default GoogleMapInfoWindowView;

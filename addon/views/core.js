@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import helpers from 'ember-google-map/core/helpers';
 import GoogleObjectMixin from 'ember-google-map/mixins/google-object';
-import GoogleMapComponent from 'ember-google-map/omponents/google-map';
+import GoogleMapComponent from 'ember-google-map/components/google-map';
 
 var computed = Ember.computed;
 var oneWay = computed.oneWay;

@@ -1,2 +1,2 @@
-import GoogleMapPolylineController from 'ember-google-map/controllers/google-map/polyline';
+import GoogleMapPolylineController from 'ember-google-map/controllers/polyline';
 export default GoogleMapPolylineController;

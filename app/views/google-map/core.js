@@ -1,2 +1,2 @@
-import GoogleMapCoreView from 'ember-google-map/views/google-map/core';
+import GoogleMapCoreView from 'ember-google-map/views/core';
 export default GoogleMapCoreView;

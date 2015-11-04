@@ -1,2 +1,2 @@
-import GoogleMapPolygonPathController from 'ember-google-map/controllers/google-map/polygon-path';
+import GoogleMapPolygonPathController from 'ember-google-map/controllers/polygon-path';
 export default GoogleMapPolygonPathController;

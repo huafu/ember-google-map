@@ -1,2 +1,2 @@
-import GoogleMapMarkerController from 'ember-google-map/controllers/google-map/marker';
+import GoogleMapMarkerController from 'ember-google-map/controllers/marker';
 export default GoogleMapMarkerController;

@@ -1,2 +1,2 @@
-import GoogleMapInfoWindowController from 'ember-google-map/controllers/google-map/info-window';
+import GoogleMapInfoWindowController from 'ember-google-map/controllers/info-window';
 export default GoogleMapInfoWindowController;

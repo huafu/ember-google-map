@@ -1,2 +1,2 @@
-import GoogleMapMarkerView from 'ember-google-map/views/google-map/marker';
+import GoogleMapMarkerView from 'ember-google-map/views/marker';
 export default GoogleMapMarkerView;

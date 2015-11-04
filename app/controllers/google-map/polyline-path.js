@@ -1,2 +1,2 @@
-import GoogleMapPolylinePathController from 'ember-google-map/controllers/google-map/polyline-path';
+import GoogleMapPolylinePathController from 'ember-google-map/controllers/polyline-path';
 export default GoogleMapPolylinePathController;

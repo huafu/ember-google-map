@@ -1,2 +1,2 @@
-import GoogleMapCirclesController from 'ember-google-map/controllers/google-map/circles';
+import GoogleMapCirclesController from 'ember-google-map/controllers/circles';
 export default GoogleMapCirclesController;
