@@ -4,6 +4,7 @@ import GoogleObjectEvent from '../core/google-object-event';
 
 var computed = Ember.computed;
 var get$ = Ember.get;
+var run = Ember.run;
 var fmt = Ember.String.fmt;
 var dasherize = Ember.String.dasherize;
 var forEach = Ember.EnumerableUtils.forEach;
@@ -79,7 +80,16 @@ var GoogleObjectMixin = Ember.Mixin.create({
    * @property googleObject
    * @type google.maps.MVCObject
    */
-  googleObject: null,
+  googleObject: computed({
+    get() {
+      return null;
+    },
+    set(key, value) {
+      this.unlinkGoogleObject();
+      this.linkGoogleObject(value);
+      return value;
+    }
+  }),
 
   /**
    * Creates the google object
@@ -251,21 +261,23 @@ var GoogleObjectMixin = Ember.Mixin.create({
   /**
    * Unlink the google object
    */
-  unlinkGoogleObject: Ember.beforeObserver('googleObject', function () {
-    this.get('_compiledEvents').invoke('unlink');
-    this.get('_compiledProperties').invoke('unlink');
-  }),
+  unlinkGoogleObject() {
+    if (this.cacheFor('googleObject'))
+    {
+      this.get('_compiledEvents').invoke('unlink');
+      this.get('_compiledProperties').invoke('unlink');
+    }
+  },
 
   /**
    * Link the google object to this object
    */
-  linkGoogleObject: Ember.observer('googleObject', function () {
-    var obj = this.get('googleObject');
+  linkGoogleObject(obj) {
     if (obj) {
       this.get('_compiledProperties').invoke('link', this, obj);
       this.get('_compiledEvents').invoke('link', this, obj);
     }
-  }),
+  },
 
   /**
    * Destroy our object, removing all listeners and pointers to google's object

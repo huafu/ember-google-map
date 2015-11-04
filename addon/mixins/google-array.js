@@ -3,6 +3,7 @@ import Ember from 'ember';
 import helpers from '../core/helpers';
 
 var computed = Ember.computed;
+var run = Ember.run;
 
 var EMPTY = [];
 
@@ -14,20 +15,26 @@ export default Ember.Mixin.create({
 
   googleArray: computed({
     get() {
+      var value;
       if (!helpers.hasGoogleLib()) {
         return;
       }
-      return new google.maps.MVCArray(
+      value = new google.maps.MVCArray(
         this._ember2google(this._startObservingEmberProperties(this.toArray().slice(), true), true)
       );
+      this.setupGoogleArray(value);
+      return value;
     },
     set(key, value) {
-      var array = value ? value.getArray().slice() : [];
+      var array;
+      this.teardownGoogleArray();
+      array = value ? value.getArray().slice() : [];
       this.set('observersEnabled', false);
       this.replace(0, this.get('length') || 0, this._startObservingEmberProperties(
         this._google2ember(array, true), true
       ));
       this.set('observersEnabled', true);
+      this.setupGoogleArray(value);
       return value;
     }
   }),
@@ -130,9 +137,7 @@ export default Ember.Mixin.create({
     }
   }),
 
-  setupGoogleArray: Ember.observer('googleArray', Ember.on('init', function () {
-    var googleArray = this.get('googleArray');
-    Ember.warn('setting up a google array but it has not been teardown first', !this._googleListeners);
+  setupGoogleArray(googleArray) {
     if (googleArray) {
       // setup observers/events
       this._googleListeners = {
@@ -141,9 +146,9 @@ export default Ember.Mixin.create({
         setAt:    googleArray.addListener('set_at', this.handleGoogleSetAt.bind(this))
       };
     }
-  })),
+  },
 
-  teardownGoogleArray: Ember.beforeObserver('googleArray', Ember.on('destroy', function () {
+  teardownGoogleArray: Ember.on('destroy', function () {
     if (this._googleListeners) {
       if (helpers.hasGoogleLib()) {
         // teardown observers/events
@@ -156,7 +161,7 @@ export default Ember.Mixin.create({
       this._googleListeners = null;
     }
     this._stopObservingEmberProperties(this.toArray(), true);
-  })),
+  }),
 
   handleGoogleInsertAt: function (index) {
     if (this.get('observersEnabled')) {

@@ -7,7 +7,7 @@ module.exports = {
   contentFor: function (type, config) {
     var src, content = '', google = config.googleMap || {}, params = [], apiKey;
     if (type === 'head') {
-      src = "//maps.googleapis.com/maps/api/js";
+      src = '//maps.googleapis.com/maps/api/js';
       // shouldn't need encoding, but who knows what version format it can handle
       params.push('v=' + encodeURIComponent(google.version || '3'));
       // grab either API key or client ID
@@ -32,6 +32,10 @@ module.exports = {
       // add channel param if specified
       if (google.channel) {
         params.push('channel=' + encodeURIComponent(google.channel));
+      }
+      // force the protocol if specified
+      if (google.protocol) {
+        src = protocol + ':' + src;
       }
       // build our URL
       src += '?' + params.join('&');
