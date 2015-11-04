@@ -29,6 +29,10 @@ module.exports = {
       if (google.libraries && google.libraries.length) {
         params.push('libraries=' + encodeURIComponent(google.libraries.join(',')));
       }
+      // add channel param if specified
+      if (google.channel) {
+        params.push('channel=' + encodeURIComponent(google.channel));
+      }
       // build our URL
       src += '?' + params.join('&');
       if (google.lazyLoad) {
