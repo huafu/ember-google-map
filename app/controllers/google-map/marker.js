@@ -9,6 +9,7 @@ var alias = computed.alias;
  */
 export default Ember.Controller.extend({
   title:                  alias('model.title'),
+  description:            alias('model.description'),
   opacity:                alias('model.opacity'),
   zIndex:                 alias('model.zIndex'),
   isVisible:              alias('model.isVisible'),
