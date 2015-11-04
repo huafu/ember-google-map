@@ -1,9 +1,8 @@
 /* globals google */
 import Ember from 'ember';
-import helpers from '../core/helpers';
+import helpers from 'ember-google-map/core/helpers';
 
 var computed = Ember.computed;
-var run = Ember.run;
 
 var EMPTY = [];
 
