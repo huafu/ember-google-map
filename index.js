@@ -35,7 +35,7 @@ module.exports = {
       }
       // force the protocol if specified
       if (google.protocol) {
-        src = protocol + ':' + src;
+        src = google.protocol + ':' + src;
       }
       // build our URL
       src += '?' + params.join('&');
