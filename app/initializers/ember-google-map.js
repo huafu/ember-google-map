@@ -1,6 +1,6 @@
 import loadGoogleMap from 'ember-google-map/utils/load-google-map';
 
-export function initialize(container, application) {
+export function initialize(application) {
   application.register('util:load-google-map', loadGoogleMap, {instantiate: false});
   application.inject('route', 'loadGoogleMap', 'util:load-google-map');
 }
