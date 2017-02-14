@@ -164,7 +164,8 @@ var GoogleObjectMixin = Ember.Mixin.create({
    */
   _compiledEvents: computed({
     get () {
-      var def, k, res, d, defaultTarget;
+      var attrs, attr, def, k, res, d, defaultTarget;
+      attrs = this.get('attrs');
       def = this.get('googleEvents') || {};
       res = [];
       defaultTarget = this.get('googleEventsTarget');
@@ -197,16 +198,16 @@ var GoogleObjectMixin = Ember.Mixin.create({
       }
 
       // finally add all overwritten events (`ev_xyz` properties)
-      forEach(Object.keys(this), function (key) {
-        var d, matches, action;
-        if ((matches = key.match(/^ev_(.+)$/)) && (action = this.get(key))) {
-          d = {action: this.get(key)};
+      for (attr in attrs) {
+        var c, matches, action;
+        if ((matches = attr.match(/^ev_(.+)$/)) && (action = this.get(attr))) {
+          c = {action: this.get(attr)};
           if (defaultTarget) {
-            d.target = defaultTarget;
+            c.target = defaultTarget;
           }
-          res.push(new GoogleObjectEvent(matches[1], d));
+          res.push(new GoogleObjectEvent(matches[1], c));
         }
-      }, this);
+      }
 
       return Ember.A(res);
     }
